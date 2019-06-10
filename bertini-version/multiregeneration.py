@@ -137,8 +137,15 @@ def homotopy(dirName, variablesString, functionNames, functionsList, indexToTrac
         elif i is indexToTrack:
             body+="\n %s = s*(%s) + (1-s)*(%s);"%(functionNames[i],
                     functionsList[i], targetFunctionString)
+
+    try: # Jose moved this before defining inputText?
+        os.mkdir(dirName)
+    except:
+        print("Ope! Error opening directory '%s'"%dirName)
+
 # TODO: replace variable %s with a list of variable groups from variables
 # and indicate if hom_variable_group or variable_group
+# Write input file.
     inputText = '''
         CONFIG
             UserHomotopy: 1;
@@ -153,38 +160,35 @@ def homotopy(dirName, variablesString, functionNames, functionsList, indexToTrac
         END;
     ''' % (variablesString,
                 ",".join(functionNames),body)
-    startBody = ""
-    for sol in startSolutionsList:
-        startBody += "\n\n%s"%(sol)
-    startText = "%d%s"%(len(startSolutionsList), startBody)
-
-    try:
-        os.mkdir(dirName)
-    except:
-        print("Ope! Error opening directory '%s'"%dirName)
 
     inputFile = open("%s/input"%dirName, "w")
     inputFile.write(inputText)
     inputFile.close()
 
+# Write start file.
+    startBody = ""
+    for sol in startSolutionsList:
+        startBody += "\n\n%s"%(sol)
+    startText = "%d%s"%(len(startSolutionsList), startBody)
+
     startFile = open("%s/start"%dirName, "w")
     startFile.write(startText)
     startFile.close()
 
+# Change directory to call Bertini? What is happening here?
     os.chdir(dirName)
-
     try:
         bertiniCommand = "bertini input"
         process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)
         output, error = process.communicate()
     except:
-        print(error)
-
+        print(error)  # TODO: error description
+# Check to see if there are nonsingular_solutions
     try:
         solutionsFile = open("nonsingular_solutions", "r")
         solutionsLines = solutionsFile.readlines()
         solutionsFile.close()
-    except:
+    except:  # Should this be an error?
         print("Ope! Error opening file '%s/nonsingular_solutions'"%dirName)
 
     out = ""
@@ -197,6 +201,7 @@ def homotopy(dirName, variablesString, functionNames, functionsList, indexToTrac
 
 
 def regenerate(useFunction, currentDimension, regenerationLinearIndex, point):
+    # Performs the regeneration homotopy
     regenerationSystem = []
     regenerationSystemFunctionNames = []
     currentIndexInSystem = -1
