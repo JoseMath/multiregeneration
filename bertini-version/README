@@ -1,0 +1,8 @@
+TODO: Write a friendly introduction
+
+Example: Run the following commands
+
+    cd test-twisted-cubic
+    python ../multiregeneration.py
+
+The data of the run will be stored in test-twisted-cubic/run.
