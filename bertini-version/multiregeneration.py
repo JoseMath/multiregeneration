@@ -43,6 +43,7 @@ variablesString = ",".join(flatVariablesList)
 # r = inputFile.r
 # startSolution = inputFile.startSolution
 
+# Jose thinks startSolution should be a file name rather than a list of numbers. 
 
 def vanishes(dirName, variablesString, functionString, point):
 # a function that returns True if functionString defines a polynomial vanishing at point
@@ -72,7 +73,7 @@ def vanishes(dirName, variablesString, functionString, point):
             function f;
             f = %s;
         END;
-    ''' % (variablesString,
+        ''' % (variablesString,
                 functionString)
     inputFile = open("%s/input"%dirName, "w")
     inputFile.write(inputText)
@@ -80,6 +81,7 @@ def vanishes(dirName, variablesString, functionString, point):
 
 # Write start file for evaluation.
 # Why don't we copy this file from nonsingular_solutions?
+# I don't think we should be writing start files. We should be copying them around directories.
     startText = "1\n\n"+point
     startFile = open("%s/start"%dirName, "w")
     startFile.write(startText)
@@ -158,7 +160,7 @@ def homotopy(dirName, variablesString, functionNames, functionsList, indexToTrac
         s = t;
         %s
         END;
-    ''' % (variablesString,
+        ''' % (variablesString,
                 ",".join(functionNames),body)
 
     inputFile = open("%s/input"%dirName, "w")
