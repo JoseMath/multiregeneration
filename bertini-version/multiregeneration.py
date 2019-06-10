@@ -101,7 +101,7 @@ def vanishes(dirName, variablesString, functionString, point):
         solutionsLines = solutionsFile.readlines()
         solutionsFile.close()
     except:
-        print("Ope! Error opening file 'raw_solutions'")
+        print("Ope! Error opening file 'function'")
 
     # TODO return true of false for zero of nonzero
     value = solutionsLines[2].split(' ')
@@ -189,11 +189,11 @@ def homotopy(dirName, variablesString, functionNames, functionsList, indexToTrac
         print(error)
 
     try:
-        solutionsFile = open("raw_solutions", "r")
+        solutionsFile = open("nonsingular_solutions", "r")
         solutionsLines = solutionsFile.readlines()
         solutionsFile.close()
     except:
-        print("Ope! Error opening file '%s/raw_solutions'"%dirName)
+        print("Ope! Error opening file '%s/nonsingular_solutions'"%dirName)
 
     out = ""
     for i in range(2, len(solutionsLines)):
@@ -230,6 +230,7 @@ def regenerate(useFunction, currentDimension, regenerationLinearIndex, point):
     dirName = directoryName("regen_", useFunction, currentDimension, 
             regenerationLinearIndex, point)
 
+    print("regenerating point = %s"%point)
     regeneratedPoint = homotopy(dirName, 
             variablesString, 
             regenerationSystemFunctionNames,
@@ -294,6 +295,7 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
                 linearProductHomotopySytem.append(l[i][j])
                 linearProductHomotopySytemNames.append("l_%d_%d"%(i,j))
 
+    print("tracking point = %s"%point)
     trackedPoint = homotopy(dirName, 
             variablesString, 
             linearProductHomotopySytemNames,
