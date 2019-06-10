@@ -43,7 +43,7 @@ variablesString = ",".join(flatVariablesList)
 # r = inputFile.r
 # startSolution = inputFile.startSolution
 
-# Jose thinks startSolution should be a file name rather than a list of numbers. 
+# Jose thinks startSolution should be a file name rather than a list of numbers.
 
 def vanishes(dirName, variablesString, functionString, point):
 # a function that returns True if functionString defines a polynomial vanishing at point
@@ -64,6 +64,7 @@ def vanishes(dirName, variablesString, functionString, point):
 # Write input file for evaluation.
 # TODO: replace variable_group %s with a list of variable groups from variables
 # and indicate if hom_variable_group or variable_group
+# TODO: change the ``f" in the Bertini input file to a nonstandard notation so it doesn't conflict with a user choice.
     inputText = '''
         CONFIG
             TrackType:-4;
@@ -82,7 +83,7 @@ def vanishes(dirName, variablesString, functionString, point):
 # Write start file for evaluation.
 # Why don't we copy this file from nonsingular_solutions?
 # I don't think we should be writing start files. We should be copying them around directories.
-    startText = "1\n\n"+point
+    startText = "1\n\n"+point # The first one is because we always track one solution per process.
     startFile = open("%s/start"%dirName, "w")
     startFile.write(startText)
     startFile.close()
@@ -140,7 +141,7 @@ def homotopy(dirName, variablesString, functionNames, functionsList, indexToTrac
             body+="\n %s = s*(%s) + (1-s)*(%s);"%(functionNames[i],
                     functionsList[i], targetFunctionString)
 
-    try: # Jose moved this before defining inputText?
+    try: # Jose moved this before defining inputText.
         os.mkdir(dirName)
     except:
         print("Ope! Error opening directory '%s'"%dirName)
@@ -157,12 +158,11 @@ def homotopy(dirName, variablesString, functionNames, functionsList, indexToTrac
             function %s;
             pathvariable t;
             parameter s;
-        s = t;
+            s = t;
         %s
         END;
         ''' % (variablesString,
                 ",".join(functionNames),body)
-
     inputFile = open("%s/input"%dirName, "w")
     inputFile.write(inputText)
     inputFile.close()
@@ -203,7 +203,7 @@ def homotopy(dirName, variablesString, functionNames, functionsList, indexToTrac
 
 
 def regenerate(useFunction, currentDimension, regenerationLinearIndex, point):
-    # Performs the regeneration homotopy
+    # Performs the regeneration homotopy.
     regenerationSystem = []
     regenerationSystemFunctionNames = []
     currentIndexInSystem = -1
