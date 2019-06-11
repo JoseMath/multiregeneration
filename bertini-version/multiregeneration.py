@@ -303,7 +303,9 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
     else:
         regeneratedPoint = point
 
-    # TODO: if regenerated point is singular, throw it out
+    if regeneratedPoint is "": #if not smooth the string will be empty
+      return
+
 
     #track the regenerated point to the target function
     dirName = directoryName(depth, useFunction, currentDimension,
@@ -338,6 +340,10 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
             0,
             functions[depth],
             [regeneratedPoint])
+
+
+    if not trackedPoint: # if it's singular the string will be empty
+      return
 
     if depth+1 is len(functions):
       with open(solutionFileName(depth, useFunction, currentDimension, 
