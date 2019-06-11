@@ -112,25 +112,27 @@ def vanishes(dirName, variablesString, functionString, point):
     zerosPastDecimalReal = int(value[0].split('e')[1])
     zerosPastDecimalImaginary = int(value[1].split('e')[1])
 
-    os.chdir(cwd) #Can we move this right after the previous except?
-    return (zerosPastDecimalReal < logTolerance
+    isVanishing = (zerosPastDecimalReal < logTolerance
             and zerosPastDecimalImaginary < logTolerance)
 
+    with open("isVanishing", "w") as isVanishingFile:
+      isVanishingFile.write(str(isVanishing))
+    
+    os.chdir(cwd) #Can we move this right after the previous except?
+    return isVanishing
 
-def directoryName(prefix, useFunction, currentDimension, regenerationLinearIndex, point):
+def directoryName(depth, useFunction, currentDimension, varGroup, 
+    regenLinear, homotopyKind, point):
 # Makes the directory for each process.
-    dirName = prefix
-    for b in useFunction:
-        if b:
-            dirName += "1"
-        else:
-            dirName += "0"
-    dirName +="_dim"
-    for d in currentDimension:
-        i = regenerationLinearIndex[0]
-        dirName+="_%d"%currentDimension[i]
-    dirName +="_r_%d_%d"%tuple(regenerationLinearIndex)
-    dirName +="_hash_%d"%(abs(hash(point)) % (10 ** 8)) # add a hash
+    dirName = "depth_%d_gens_%s_dim_%s_varGroup\
+_%d_regenLinear_%d_homotopy_%s\
+_hash_%s"%(depth, 
+            "".join(map(lambda b: "1" if b else "0", useFunction)),
+            "_".join(map(str, currentDimension)), 
+            varGroup, 
+            regenLinear, 
+            homotopyKind,
+            (abs(hash(point)) % (10 ** 8)))
     return dirName
 
 
@@ -205,7 +207,7 @@ def homotopy(dirName, variablesString, functionNames, functionsList, indexToTrac
     return out
 
 
-def regenerate(useFunction, currentDimension, regenerationLinearIndex, point):
+def regenerate(depth, useFunction, currentDimension, regenerationLinearIndex, point):
     # Performs the regeneration homotopy.
     regenerationSystem = []
     regenerationSystemFunctionNames = []
@@ -229,8 +231,9 @@ def regenerate(useFunction, currentDimension, regenerationLinearIndex, point):
             # Then the target l to get rid of is the last one in that
             # variable group
 
-    dirName = directoryName("regen_", useFunction, currentDimension,
-            regenerationLinearIndex, point)
+    dirName = directoryName(depth, useFunction, currentDimension, 
+        regenerationLinearIndex[0], regenerationLinearIndex[1], "regen", 
+        point)
 
     print("regenerating point = %s"%point)
     regeneratedPoint = homotopy(dirName,
@@ -255,8 +258,9 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
     if depth >= len(functions):
         return
 
-    checkVanishesDirName = directoryName("evaluate_%d_"%depth, useFunction, currentDimension,
-            regenerationLinearIndex, point)
+    checkVanishesDirName = directoryName(depth, useFunction, 
+        currentDimension, regenerationLinearIndex[0], 
+        regenerationLinearIndex[1], "eval", point)
 
     if vanishes(checkVanishesDirName, variablesString,
             functions[depth],
@@ -266,15 +270,16 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
         return
 
     if regenerationLinearIndex[1] is not 0:
-        regeneratedPoint = regenerate(useFunction, currentDimension, regenerationLinearIndex, point)
+        regeneratedPoint = regenerate(depth, useFunction, currentDimension, regenerationLinearIndex, point)
     else:
         regeneratedPoint = point
 
     # TODO: if regenerated point is singular, throw it out
 
     #track the regenerated point to the target function
-    dirName = directoryName("track_depth_%d_"%depth, useFunction, currentDimension,
-            regenerationLinearIndex, point)
+    dirName = directoryName(depth, useFunction, currentDimension, 
+        regenerationLinearIndex[0], regenerationLinearIndex[1], 
+        "linearProduct", point)
 
     i = regenerationLinearIndex[0]
     linearProduct = "(%s)"%l[i][currentDimension[i]-1]

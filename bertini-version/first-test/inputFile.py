@@ -36,4 +36,4 @@ r = [[None, "(123 + 234*I)*x + (345 + 456*I)*y"]]
 #Give the name of the directory where you would like the script to run
 # its homotopy continuations. If the specified directory already exists,
 # it will be deleted when the script is run.
-workingDirectory = "run2"
+workingDirectory = "run"
