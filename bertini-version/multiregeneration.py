@@ -1,7 +1,6 @@
-#TODO: 1. have a intermediate steps dir where you do all the
-# homotopies. Check for it and delete it at the beginning of each run
-# 2. Do the projective case. 3. Think about the hypothesis that would
-# ensure the following: if a point ...
+#TODO: Think about the hypothesis that would
+# ensure the following: if a point gets thrown out along the way,
+# then that point
 
 import shutil
 import sys
@@ -181,7 +180,6 @@ END;
         solutionsFile.close()
     except:
         print("Ope! Error opening file 'function'")
-    # TODO return true of false for zero of nonzero  # isn't this already done?
     value = solutionsLines[2].split(' ')
 
     isVanishing = isZero(value[0], logTolerance) and isZero(value[1],
@@ -272,14 +270,21 @@ END;
         process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)
         output, error = process.communicate()
     except:
-        print(error)  # TODO: error description
+        print("There the command `bertini input` exited with the\
+            following' error. Make sure you have bertini installed.")
+        print(error)
+
+
 # Check to see if there are nonsingular_solutions
-    try:
-        solutionsFile = open("nonsingular_solutions", "r")
-        solutionsLines = solutionsFile.readlines()
-        solutionsFile.close()
-    except:  # Should this be an error?
-        print("Ope! Error opening file '%s/nonsingular_solutions'"%dirName)
+    if not os.path.isfile("nonsingular_solutions"):
+      print("Exiting because could  not find 'nonsingular_solutions'.\
+          Bertini gave the following output.\n\n")
+      print(repr(output))
+      sys.exit(1)
+
+    solutionsFile = open("nonsingular_solutions", "r")
+    solutionsLines = solutionsFile.readlines()
+    solutionsFile.close()
 
     out = ""
     for i in range(2, len(solutionsLines)):
@@ -365,7 +370,9 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
     else:
         regeneratedPoint = point
 
-    # TODO: if regenerated point is singular, throw it out
+    if regeneratedPoint is "": #if not smooth the string will be empty
+      return
+
 
     #track the regenerated point to the target function
     dirName = directoryName(depth, useFunction, currentDimension,
@@ -400,6 +407,10 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
             0,
             functions[depth],
             [regeneratedPoint])
+
+
+    if not trackedPoint: # if it's singular the string will be empty
+      return
 
     if depth+1 is len(functions):
       with open(solutionFileName(depth, useFunction, currentDimension,
