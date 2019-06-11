@@ -32,7 +32,17 @@ import os
 
 
 ### Configuration ###
+# Optional inputs
 projectiveVariableGroups = [] # This can be specified in the inputFile
+
+# TODO: Restart mode.
+depth = 0 # Begin the computation at a different depth index
+
+
+verbose = 1 # Integer that is larger if we want to print more
+# Level 0 for nothing except errors
+# Level 1 messages we would usually like printed
+# Level 2 for debugginh
 exec(open("inputFile.py").read())
 
 flatVariablesList = [item for sublist in variables for item in sublist]
@@ -40,9 +50,22 @@ variablesString = ",".join(flatVariablesList)
 bertiniVariableGroupString = ""
 for c, value in enumerate(variables):
     if c in projectiveVariableGroups:
-        bertiniVariableGroupString+="hom_variable_group "+",".join(value)+" ;\n"
+        bertiniVariableGroupString+="\nhom_variable_group "+",".join(value)+" ;"
     else:
+<<<<<<< HEAD
+        bertiniVariableGroupString+="\nvariable_group "+",".join(value)+" ;"
+
+if verbose > 0:
+    print("\n################### Starting multiregeneration ####################")
+    print("\nThese variable groups have been selected:"+bertiniVariableGroupString)
+    print("\nSolutions in a directory with linearProduct in it's name and :")
+    for c, f in enumerate(functions): # 0 is the depth we start with
+        if c >= depth:
+            print("depth > "+str(c)+" satisfy "+ f+" = 0")
+
+=======
         bertiniVariableGroupString+="variable_group "+",".join(value)+" ;\n"
+>>>>>>> 9c7c8ae51e431b45624a6325dd0bf66a10717438
 #####################
 
 # variables = inputFile.variables
@@ -382,10 +405,16 @@ def main():
 
     for i in range(len(variables)):
         for j in range(degrees[0][i]):
+<<<<<<< HEAD
+            print([i,j])
+            regenerateAndTrack(depth,
+                [False for f in functions], # gens
+=======
             regenerateAndTrack(0,
                 [False for f in functions],
+>>>>>>> 9c7c8ae51e431b45624a6325dd0bf66a10717438
                 [(len(group) - 1 if i in projectiveVariableGroups else len(group)) for group in variables],
-                [i,j],
+                [i,j], # varGroup and regenLinear
                 startSolution)
 
     os.chdir("..")

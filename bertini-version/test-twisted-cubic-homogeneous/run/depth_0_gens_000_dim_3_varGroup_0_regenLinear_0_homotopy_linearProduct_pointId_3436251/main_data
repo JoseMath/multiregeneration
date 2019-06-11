@@ -3,19 +3,19 @@ Variables:  x y z w
 Rank: 3
 -------------------------
 Solution 0 (path number 0)
-Estimated condition number: 2.916119804291437e+01
-Function residual: 2.60074589697393e-16
-Latest Newton residual: 3.37958608576187e-29
+Estimated condition number: 1.890912163659258e+01
+Function residual: 8.10603381072514e-17
+Latest Newton residual: 6.25079756105180e-20
 T value at final sample point: 3.906250000000000e-04
-Maximum precision utilized: 96
+Maximum precision utilized: 64
 T value of first precision increase: 1.000000000000000e+00
-Accuracy estimate, internal coordinates (difference of last two endpoint estimates):  9.665132053475790e-13
-Accuracy estimate, user's coordinates (after dehomogenization, if applicable):  1.199069141950198e-12
+Accuracy estimate, internal coordinates (difference of last two endpoint estimates):  3.185431429838350e-13
+Accuracy estimate, user's coordinates (after dehomogenization, if applicable):  6.070300305355782e-13
 Cycle number: 1
-0.111481607689377445886285078083e0 -0.148168174580690010929922133906e-1
-0.334621833696210619338127530814e0 -0.221396453638477587568901780140e-1
-0.100000000000000000000000000000e1 0.000000000000000000000000000000e0
-0.123670835491837000040965692119e0 -0.491328819667033459633042620868e-1
+0.111481607689377553332e0 -0.148168174580690462184e-1
+0.334621833696210621036e0 -0.221396453638477544218e-1
+0.100000000000000000000e1 0.000000000000000000000e0
+0.123670835491837018889e0 -0.491328819667033431588e-1
 Paths with the same endpoint, to the prescribed tolerance:  
 Multiplicity: 1
 -------------------------
@@ -27,9 +27,9 @@ At tol=1.000000000000e-10, there appears to be a unique solution.
 CONFIG
 
 UserHomotopy: 2;
-CoeffBound: 1.689913000000e+01;
+CoeffBound: 1.599431000000e+01;
 DegreeBound: 2.000000000000e+00;
-RandomSeed: 1560275627;
+RandomSeed: 1560280040;
 
 END;
 

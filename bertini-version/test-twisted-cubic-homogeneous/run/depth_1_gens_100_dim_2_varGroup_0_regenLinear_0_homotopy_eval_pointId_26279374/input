@@ -1,0 +1,11 @@
+
+CONFIG
+    TrackType:-4;
+END;
+INPUT
+    
+hom_variable_group x,y,z,w ;
+    function f;
+    f = y*w-z^2;
+END;
+        

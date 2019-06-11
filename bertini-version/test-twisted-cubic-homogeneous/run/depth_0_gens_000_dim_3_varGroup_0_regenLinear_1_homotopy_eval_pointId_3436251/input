@@ -3,8 +3,8 @@ CONFIG
     TrackType:-4;
 END;
 INPUT
-    hom_variable_group x,y,z,w ;
-
+    
+hom_variable_group x,y,z,w ;
     function f;
     f = x*z-y^2;
 END;
