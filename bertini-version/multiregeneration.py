@@ -49,7 +49,7 @@ variablesString = ",".join(flatVariablesList)
 # Jose thinks startSolution should be a file name rather than a list of numbers.
 
 def isZero(s, logTolerance):
-  if and([not str(i) in s for i in range(1, 10)]):
+  if all([not str(i) in s for i in range(1, 10)]):
     return True
   return int(s.split("e")[1]) < logTolerance
 
