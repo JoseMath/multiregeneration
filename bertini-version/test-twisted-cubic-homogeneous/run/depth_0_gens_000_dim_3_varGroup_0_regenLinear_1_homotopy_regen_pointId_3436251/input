@@ -3,8 +3,8 @@ CONFIG
     UserHomotopy: 2;
 END;
 INPUT
-    hom_variable_group x,y,z,w ;
-
+    
+hom_variable_group x,y,z,w ;
     function l_0_0,l_0_1,l_0_2;
     pathvariable t;
     parameter s;
