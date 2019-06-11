@@ -137,11 +137,7 @@ def directoryName(depth, useFunction, currentDimension, varGroup,
 # Makes the directory for each process.
     dirName = "depth_%d_gens_%s_dim_%s_varGroup\
 _%d_regenLinear_%d_homotopy_%s\
-<<<<<<< HEAD
-_hash_%s"%(depth,
-=======
 _pointId_%s"%(depth, 
->>>>>>> 59d763f3231d17ea7dda48ae9a59e4603c610c10
             "".join(map(lambda b: "1" if b else "0", useFunction)),
             "_".join(map(str, currentDimension)),
             varGroup,
