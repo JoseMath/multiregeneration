@@ -137,7 +137,11 @@ def directoryName(depth, useFunction, currentDimension, varGroup,
 # Makes the directory for each process.
     dirName = "depth_%d_gens_%s_dim_%s_varGroup\
 _%d_regenLinear_%d_homotopy_%s\
+<<<<<<< HEAD
 _pointId_%s"%(depth,
+=======
+_pointId_%s"%(depth, 
+>>>>>>> 3df8a08863b0f0adbd99b0999ff47973968d954b
             "".join(map(lambda b: "1" if b else "0", useFunction)),
             "_".join(map(str, currentDimension)),
             varGroup,
@@ -246,7 +250,7 @@ def regenerate(depth, useFunction, currentDimension, regenerationLinearIndex, po
         regenerationLinearIndex[0], regenerationLinearIndex[1], "regen",
         point)
 
-    print("regenerating point = %s"%point)
+    print("i,j = " + str(regenerationLinearIndex))
     regeneratedPoint = homotopy(dirName,
             variablesString,
             regenerationSystemFunctionNames,
@@ -354,7 +358,7 @@ def main():
     os.chdir(workingDirectory)
 
     for i in range(len(variables)):
-        for j in range(len(variables[i])):
+        for j in range(degrees[0][i]):
             regenerateAndTrack(0, [False for f in functions],
                     [len(group) for group in variables], [i,j], startSolution)
 
