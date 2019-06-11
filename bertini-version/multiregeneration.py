@@ -32,10 +32,18 @@ import os
 
 
 ### Configuration ###
+projectiveVariableGroups = [] # This can be specified in the inputFile
 exec(open("inputFile.py").read())
 
 flatVariablesList = [item for sublist in variables for item in sublist]
 variablesString = ",".join(flatVariablesList)
+bertiniVariableGroupString = ""
+for c, value in enumerate(variables):
+    if c in projectiveVariableGroups:
+        bertiniVariableGroupString+="hom_variable_group "+",".join(value)+" ;\n"
+    else:
+        bertiniVariableGroupString+="variable_group "+",".join(value)+" ;\n"
+print(bertiniVariableGroupString)
 #####################
 
 # variables = inputFile.variables
@@ -117,20 +125,20 @@ def vanishes(dirName, variablesString, functionString, point):
 
     with open("isVanishing", "w") as isVanishingFile:
       isVanishingFile.write(str(isVanishing))
-    
+
     os.chdir(cwd) #Can we move this right after the previous except?
     return isVanishing
 
-def directoryName(depth, useFunction, currentDimension, varGroup, 
+def directoryName(depth, useFunction, currentDimension, varGroup,
     regenLinear, homotopyKind, point):
 # Makes the directory for each process.
     dirName = "depth_%d_gens_%s_dim_%s_varGroup\
 _%d_regenLinear_%d_homotopy_%s\
-_hash_%s"%(depth, 
+_hash_%s"%(depth,
             "".join(map(lambda b: "1" if b else "0", useFunction)),
-            "_".join(map(str, currentDimension)), 
-            varGroup, 
-            regenLinear, 
+            "_".join(map(str, currentDimension)),
+            varGroup,
+            regenLinear,
             homotopyKind,
             (abs(hash(point)) % (10 ** 8)))
     return dirName
@@ -231,8 +239,8 @@ def regenerate(depth, useFunction, currentDimension, regenerationLinearIndex, po
             # Then the target l to get rid of is the last one in that
             # variable group
 
-    dirName = directoryName(depth, useFunction, currentDimension, 
-        regenerationLinearIndex[0], regenerationLinearIndex[1], "regen", 
+    dirName = directoryName(depth, useFunction, currentDimension,
+        regenerationLinearIndex[0], regenerationLinearIndex[1], "regen",
         point)
 
     print("regenerating point = %s"%point)
@@ -258,8 +266,8 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
     if depth >= len(functions):
         return
 
-    checkVanishesDirName = directoryName(depth, useFunction, 
-        currentDimension, regenerationLinearIndex[0], 
+    checkVanishesDirName = directoryName(depth, useFunction,
+        currentDimension, regenerationLinearIndex[0],
         regenerationLinearIndex[1], "eval", point)
 
     if vanishes(checkVanishesDirName, variablesString,
@@ -277,8 +285,8 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
     # TODO: if regenerated point is singular, throw it out
 
     #track the regenerated point to the target function
-    dirName = directoryName(depth, useFunction, currentDimension, 
-        regenerationLinearIndex[0], regenerationLinearIndex[1], 
+    dirName = directoryName(depth, useFunction, currentDimension,
+        regenerationLinearIndex[0], regenerationLinearIndex[1],
         "linearProduct", point)
 
     i = regenerationLinearIndex[0]
