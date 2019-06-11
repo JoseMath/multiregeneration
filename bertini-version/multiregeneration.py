@@ -285,9 +285,18 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
     if vanishes(checkVanishesDirName, variablesString,
             functions[depth],
             point, logTolerance):
-        regenerateAndTrack(depth + 1, useFunction, currentDimension,
-                regenerationLinearIndex, point)
+
+      if depth+1 is len(functions):
+        with open(solutionFileName(depth, useFunction, currentDimension, 
+          regenerationLinearIndex[0], regenerationLinearIndex[1], 
+          point), "w") as solutionFile:
+          solutionFile.write(point)
         return
+
+      regenerateAndTrack(depth + 1, useFunction, currentDimension,
+              regenerationLinearIndex, point)
+
+      return
 
     if regenerationLinearIndex[1] is not 0:
         regeneratedPoint = regenerate(depth, useFunction, currentDimension, regenerationLinearIndex, point)
