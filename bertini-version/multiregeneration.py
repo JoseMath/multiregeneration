@@ -109,7 +109,7 @@ def defineLinearThroughPoint(i,variables,point):
         else:
             terms[x]="(%s+I*%s)*(1/(%s)%s-%s)"%(str(randomNumberGenerator()),
                 str(randomNumberGenerator()),
-                str(pp[-1])
+                str(pp[-1]),
                 str(terms[x]),
                 str(pp[x]))
     linearString = ",".join(terms)
