@@ -1,0 +1,57 @@
+Number of variables: 4
+Variables:  x y z w
+Rank: 3
+-------------------------
+Solution 0 (path number 0)
+Estimated condition number: 4.328046893479732e+00
+Function residual: 5.551115123125783e-17
+Latest Newton residual: 1.181827529874672e-16
+T value at final sample point: 2.441406250000000e-05
+Maximum precision utilized: 52
+T value of first precision increase: 0.000000000000000e+00
+Accuracy estimate, internal coordinates (difference of last two endpoint estimates):  2.063372714121491e-14
+Accuracy estimate, user's coordinates (after dehomogenization, if applicable):  3.671079323274334e-14
+Cycle number: 1
+-1.527624690706889e-01 -6.526625475657266e-01
+0.000000000000000e+00 0.000000000000000e+00
+0.000000000000000e+00 0.000000000000000e+00
+1.000000000000000e+00 0.000000000000000e+00
+Paths with the same endpoint, to the prescribed tolerance:  
+Multiplicity: 1
+-------------------------
+At tol=1.000000000000e-10, there appears to be a unique solution.
+
+
+*************** input file needed to reproduce this run ***************
+
+CONFIG
+
+UserHomotopy: 2;
+CoeffBound: 2.061435000000e+01;
+DegreeBound: 2.000000000000e+00;
+RandomSeed: 1560275628;
+
+END;
+
+INPUT
+
+hom_variable_group x,y,z,w;
+function f1,f2,l_0_0;
+pathvariable t;
+parameter s;
+s=t;
+f1=x*z-y^2;
+f2=y*w-z^2;
+l_0_0=s*((1.14+1.02*I)*(x-2*y)+(0.14-2.02*I)*(3*y-z)+(2.14+0.07*I)*(z-5*w))+(1-s)*((.422+0.2*I)*(x+.1*y+.3*I*z+.2*z+I*w)+(.123+.234*I)*x);
+
+END;
+
+
+*************** version information ***************
+Bertini(TM) v1.6
+GMP v6.1.2, MPFR v4.0.2
+
+Authors:
+D.J. Bates, J.D. Hauenstein,
+A.J. Sommese, C.W. Wampler
+
