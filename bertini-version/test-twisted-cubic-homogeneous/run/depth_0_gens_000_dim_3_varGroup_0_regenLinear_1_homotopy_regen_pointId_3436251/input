@@ -1,0 +1,16 @@
+
+CONFIG
+    UserHomotopy: 2;
+END;
+INPUT
+    hom_variable_group x,y,z,w ;
+
+    function l_0_0,l_0_1,l_0_2;
+    pathvariable t;
+    parameter s;
+    s = t;
+    
+ l_0_0 = (1.14+1.02*I)*(x-2*y)+(0.14-2.02*I)*(3*y-z)+(2.14+0.07*I)*(z-5*w);
+ l_0_1 = (1.14-2.02*I)*(3*y-z)+.34*(z-5*w);
+ l_0_2 = s*((0.14+0.07*I)*(z-5*w)+(2.14-1.02*I)*(x-2*y)) + (1-s)*((.422 + 0.2*I)*(x+.1*y+.3*I*z+.2*z+I*w)+(.123 + .234*I)*x);
+END;
