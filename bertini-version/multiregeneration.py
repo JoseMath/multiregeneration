@@ -82,15 +82,15 @@ def vanishes(dirName, variablesString, functionString, point, logTolerance):
 # and indicate if hom_variable_group or variable_group
 # TODO: change the ``f" in the Bertini input file to a nonstandard notation so it doesn't conflict with a user choice.
     inputText = '''
-        CONFIG
-            TrackType:-4;
-        END;
-        INPUT
-            variable_group %s;
-            function f;
-            f = %s;
-        END;
-        ''' % (variablesString,
+CONFIG
+    TrackType:-4;
+END;
+INPUT
+    %s
+    function f;
+    f = %s;
+END;
+        ''' % (bertiniVariableGroupString, # use variable groups
                 functionString)
     inputFile = open("%s/input"%dirName, "w")
     inputFile.write(inputText)
@@ -123,7 +123,7 @@ def vanishes(dirName, variablesString, functionString, point, logTolerance):
     # TODO return true of false for zero of nonzero  # isn't this already done?
     value = solutionsLines[2].split(' ')
 
-    isVanishing = isZero(value[0], logTolerance) and isZero(value[1], 
+    isVanishing = isZero(value[0], logTolerance) and isZero(value[1],
         logTolerance)
 
     with open("isVanishing", "w") as isVanishingFile:
@@ -137,11 +137,7 @@ def directoryName(depth, useFunction, currentDimension, varGroup,
 # Makes the directory for each process.
     dirName = "depth_%d_gens_%s_dim_%s_varGroup\
 _%d_regenLinear_%d_homotopy_%s\
-<<<<<<< HEAD
-_hash_%s"%(depth,
-=======
-_pointId_%s"%(depth, 
->>>>>>> 59d763f3231d17ea7dda48ae9a59e4603c610c10
+_pointId_%s"%(depth,
             "".join(map(lambda b: "1" if b else "0", useFunction)),
             "_".join(map(str, currentDimension)),
             varGroup,
@@ -170,18 +166,18 @@ def homotopy(dirName, variablesString, functionNames, functionsList, indexToTrac
 # and indicate if hom_variable_group or variable_group
 # Write input file.
     inputText = '''
-        CONFIG
-            UserHomotopy: 1;
-        END;
-        INPUT
-            variable %s;
-            function %s;
-            pathvariable t;
-            parameter s;
-            s = t;
-        %s
-        END;
-        ''' % (variablesString,
+CONFIG
+    UserHomotopy: 2;
+END;
+INPUT
+    %s
+    function %s;
+    pathvariable t;
+    parameter s;
+    s = t;
+    %s
+END;
+''' % (bertiniVariableGroupString,
                 ",".join(functionNames),body)
     inputFile = open("%s/input"%dirName, "w")
     inputFile.write(inputText)
