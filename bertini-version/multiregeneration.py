@@ -43,7 +43,6 @@ for c, value in enumerate(variables):
         bertiniVariableGroupString+="hom_variable_group "+",".join(value)+" ;\n"
     else:
         bertiniVariableGroupString+="variable_group "+",".join(value)+" ;\n"
-print(bertiniVariableGroupString)
 #####################
 
 # variables = inputFile.variables
@@ -146,6 +145,17 @@ _pointId_%s"%(depth,
             (abs(hash(point)) % (10 ** 8)))
     return dirName
 
+def solutionFileName(depth, useFunction, currentDimension, varGroup,
+    regenLinear, point):
+# Makes the directory for each process.
+    solutionFileName = "all_full_depth_solutions/depth_%d_gens_%s_dim_%s_varGroup\
+_%d_regenLinear_%d_pointId_%s"%(depth,
+            "".join(map(lambda b: "1" if b else "0", useFunction)),
+            "_".join(map(str, currentDimension)),
+            varGroup,
+            regenLinear,
+            (abs(hash(point)) % (10 ** 8)))
+    return solutionFileName
 
 def homotopy(dirName, variablesString, functionNames, functionsList, indexToTrack, targetFunctionString, startSolutionsList):
 # Now write Bertini-input files and call a homotopy.
@@ -246,7 +256,6 @@ def regenerate(depth, useFunction, currentDimension, regenerationLinearIndex, po
         regenerationLinearIndex[0], regenerationLinearIndex[1], "regen",
         point)
 
-    print("i,j = " + str(regenerationLinearIndex))
     regeneratedPoint = homotopy(dirName,
             variablesString,
             regenerationSystemFunctionNames,
@@ -266,8 +275,8 @@ def regenerate(depth, useFunction, currentDimension, regenerationLinearIndex, po
 # small.
 
 def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearIndex, point):
-    if depth >= len(functions):
-        return
+    if any([d < 0 for d in currentDimension]):
+      return
 
     checkVanishesDirName = directoryName(depth, useFunction,
         currentDimension, regenerationLinearIndex[0],
@@ -293,7 +302,6 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
         "linearProduct", point)
 
     i = regenerationLinearIndex[0]
-    print currentDimension
     linearProduct = "(%s)"%l[i][currentDimension[i]-1]
     for j in range(1, degrees[depth][i]):
         linearProduct += "*(%s)"%r[i][j]
@@ -314,7 +322,6 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
                 linearProductHomotopySytem.append(l[i][j])
                 linearProductHomotopySytemNames.append("l_%d_%d"%(i,j))
 
-    print("tracking point = %s"%point)
     trackedPoint = homotopy(dirName,
             variablesString,
             linearProductHomotopySytemNames,
@@ -323,28 +330,31 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
             functions[depth],
             [regeneratedPoint])
 
+    if depth+1 is len(functions):
+      with open(solutionFileName(depth, useFunction, currentDimension, 
+        regenerationLinearIndex[0], regenerationLinearIndex[1], 
+        trackedPoint), "w") as solutionFile:
+        solutionFile.write(trackedPoint)
+      return
+
     for i in range(len(variables)):
-        if currentDimension[i] is not 0: #TODO: replace this with a condition
-            # that depends on the expexcted multidimension
-            if depth+1 < len(functions):
-                for j in range(degrees[depth+1][i]):
+      for j in range(degrees[depth+1][i]):
 
-                    newUseFunction = []
-                    for b in useFunction:
-                        newUseFunction.append(b)
-                    newUseFunction[depth] = True
+          newUseFunction = []
+          for b in useFunction:
+              newUseFunction.append(b)
+          newUseFunction[depth] = True
 
-                    newCurrentDimension = []
-                    for d in currentDimension:
-                        newCurrentDimension.append(d)
-                    newCurrentDimension[i] = currentDimension[i]-1
+          newCurrentDimension = []
+          for d in currentDimension:
+              newCurrentDimension.append(d)
+          newCurrentDimension[i] = currentDimension[i]-1
 
-                    child_pid = os.fork()
-                    if child_pid == 0:
-                        regenerateAndTrack(depth+1, newUseFunction,
-                                newCurrentDimension, [i,j], trackedPoint)
-                        print("\nprocess terminating at edge")
-                        sys.exit(0)
+          child_pid = os.fork()
+          if child_pid == 0:
+              regenerateAndTrack(depth+1, newUseFunction,
+                      newCurrentDimension, [i,j], trackedPoint)
+              sys.exit(0)
 
 
 def main():
@@ -353,10 +363,10 @@ def main():
 
     os.mkdir(workingDirectory)
     os.chdir(workingDirectory)
+    os.mkdir("all_full_depth_solutions")
 
     for i in range(len(variables)):
         for j in range(degrees[0][i]):
-            print([i,j])
             regenerateAndTrack(0,
                 [False for f in functions],
                 [(len(group) - 1 if i in projectiveVariableGroups else len(group)) for group in variables],
