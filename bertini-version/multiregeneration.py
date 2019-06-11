@@ -56,7 +56,12 @@ print(bertiniVariableGroupString)
 
 # Jose thinks startSolution should be a file name rather than a list of numbers.
 
-def vanishes(dirName, variablesString, functionString, point):
+def isZero(s, logTolerance):
+  if all([not str(i) in s for i in range(1, 10)]):
+    return True
+  return int(s.split("e")[1]) < logTolerance
+
+def vanishes(dirName, variablesString, functionString, point, logTolerance):
 # a function that returns True if functionString defines a polynomial vanishing at point
 # What is going on with the comments below?
     # currentVariable = 0
@@ -117,11 +122,9 @@ def vanishes(dirName, variablesString, functionString, point):
         print("Ope! Error opening file 'function'")
     # TODO return true of false for zero of nonzero  # isn't this already done?
     value = solutionsLines[2].split(' ')
-    zerosPastDecimalReal = int(value[0].split('e')[1])
-    zerosPastDecimalImaginary = int(value[1].split('e')[1])
 
-    isVanishing = (zerosPastDecimalReal < logTolerance
-            and zerosPastDecimalImaginary < logTolerance)
+    isVanishing = isZero(value[0], logTolerance) and isZero(value[1], 
+        logTolerance)
 
     with open("isVanishing", "w") as isVanishingFile:
       isVanishingFile.write(str(isVanishing))
@@ -134,7 +137,11 @@ def directoryName(depth, useFunction, currentDimension, varGroup,
 # Makes the directory for each process.
     dirName = "depth_%d_gens_%s_dim_%s_varGroup\
 _%d_regenLinear_%d_homotopy_%s\
+<<<<<<< HEAD
 _hash_%s"%(depth,
+=======
+_pointId_%s"%(depth, 
+>>>>>>> 59d763f3231d17ea7dda48ae9a59e4603c610c10
             "".join(map(lambda b: "1" if b else "0", useFunction)),
             "_".join(map(str, currentDimension)),
             varGroup,
@@ -272,7 +279,7 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
 
     if vanishes(checkVanishesDirName, variablesString,
             functions[depth],
-            point):
+            point, logTolerance):
         regenerateAndTrack(depth + 1, useFunction, currentDimension,
                 regenerationLinearIndex, point)
         return
