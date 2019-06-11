@@ -32,7 +32,9 @@ import random
 
 
 ### Configuration ###
-# Optional inputs
+# Optional inputs # This can be specified in the inputFile
+startSolution = []
+l = []
 projectiveVariableGroups = []  # This can be specified in the inputFile
 randomNumberGenerator = random.random
 
@@ -75,46 +77,86 @@ if verbose > 0:
 
 # Jose thinks startSolution should be a file name rather than a list of numbers.
 # Check inputFile.py
-for i in range(len(variables)):
-    isHomGroup = i in projectiveVariableGroups
-    n = len(l[i])-isHomGroup
-    if len(l[i])  in [0,n]:
-        print("Ope!: the %s entry of l needs to have length 0 or %s" % (i, n))
+
+if not len(l) == 0:
+    for i in range(len(l)):
+        isHomGroup = i in projectiveVariableGroups
+        n = len(l[i])-isHomGroup
+        if len(l[i]) in [n]:
+            print("Ope!: the %s entry of l needs to have length %s" % (i, n))
+else:
+    print("l is not defined by inputFile.py and will be generated at random")
+    print("This process will also overwrite startSolution solution")
 
 
+def defineLinearsThroughPoint(variables):
+    # os.chdir(dirName)
+    # try:
+    #     pointFile = open("inputPoint", "r")
+    #     pointLines = pointFile.readlines() # each line is a number.
+    #     pointFile.close()
+    # except:  # Should this be an error?
+    #     print("Ope! Error opening file '%s/inputPoint'"%dirName)
+    # out = ""
+    # for i in range(2, len(pointLines)):
+    #     out+="\n%s"%pointLines[i]
+    # os.chdir("..")
+    spoint = []
+    for i in range(len(variables)):
+        spoint += [[]]
+        for j in range(len(variables[i])):
+            spoint[i]+=[[str(randomNumberGenerator()),str(randomNumberGenerator())]]
+#    print(spoint)
+    startSolution = ""
+    for i in range(len(spoint)):
+        for j in range(len(spoint[i])):
+            startSolution+=spoint[i][j][0]+" "+spoint[i][j][1]
+            if j<range(len(spoint[i]))[-1]:
+                startSolution+="\n"
+    print startSolution
+    ell = []
+    for i in range(len(variables)):
+        ell += [[]]
+        isAffGroup=1
+        if i in projectiveVariableGroups:
+            isAffGroup = 0
+        terms =range(len(variables[i])+isAffGroup-1)
+#        print(terms)
+        for j in range(len(variables[i])+isAffGroup-1):
+            linearString=""
+            for x in range(len(variables[i])+isAffGroup-1):
+                if isAffGroup:
+                    terms[x]="(%s+I*%s)*(%s-(%s+I*%s)"%(
+                        str(randomNumberGenerator()),
+                        str(randomNumberGenerator()),
+                        str(terms[x]),
+                        spoint[i][x][0],
+                        spoint[i][x][1],
+                        )
+                else:
+                    terms[x]="(%s+I*%s)*((%s+I*%s)*%s-(%s+I*%s)*%s)"%(
+#                        str(randomNumberGenerator()),
+#                        str(randomNumberGenerator()),
+                        str(1),
+                        str(2),
+                        str(spoint[i][-1][0]),
+                        str(spoint[-1][i][1]),
+                        str(variables[i][x]),
+                        str(spoint[i][x][0]),
+                        str(spoint[i][x][0]),
+                        str(variables[i][-1]))
+            #print(terms)
+            linearString = "+".join(terms)
+        #    print("Linear")
+        #    print(linearString)
+        #    print(" ENd Linear")
+            ell[i]+=[linearString]
+    print(ell)
+    l =str(ell)
 
-
-
-def defineLinearThroughPoint(i,variables,point):
-    os.chdir(dirName)
-    try:
-        pointFile = open("inputPoint", "r")
-        pointLines = pointFile.readlines() # each line is a number.
-        pointFile.close()
-    except:  # Should this be an error?
-        print("Ope! Error opening file '%s/inputPoint'"%dirName)
-    out = ""
-    for i in range(2, len(pointLines)):
-        out+="\n%s"%pointLines[i]
-    os.chdir("..")
-
-    terms = variables[i]
-    pp =point[i]
-    for x in range(len(terms)+1-isAffGroup):
-        if isAffGroup:
-            terms[x]="(%s+I*%s)*(%s-%s)"%(str(randomNumberGenerator()),
-                str(randomNumberGenerator()),
-                str(terms[x]),
-                str(pp[x]))
-        else:
-            terms[x]="(%s+I*%s)*(1/(%s)%s-%s)"%(str(randomNumberGenerator()),
-                str(randomNumberGenerator()),
-                str(pp[-1]),
-                str(terms[x]),
-                str(pp[x]))
-    linearString = ",".join(terms)
-    print(linearString)
-
+#TODO be able to input the file without a start point or l
+if l==[]:
+    defineLinearsThroughPoint(variables)
 
 def isZero(s, logTolerance):
   if all([not str(i) in s for i in range(1, 10)]):
