@@ -26,6 +26,9 @@ import os
 # r = [[None, "x1 - 2*x2 + 2.1"], [None, "5*y1 + y2 - 25"]] #So that the
 # # indexing matches the write up, we want the r to start at 1.
 
+# Can we have our file names consist of strings likes _class_index
+# where class takes a value in {depth, dim, group, deg, type, prune}
+# and the respective class_index are in  NN, n_\bullet, [k], NN, {smooth, singular, infinity, {0,1}}
 
 
 ### Configuration ###
