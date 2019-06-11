@@ -8,6 +8,7 @@ import sys
 import subprocess
 import hashlib
 import os
+import random
 
 # variables = [["x1", "x2"], ["y1", "y2"]]
 # len(variables)
@@ -33,13 +34,14 @@ import os
 
 ### Configuration ###
 # Optional inputs
-projectiveVariableGroups = [] # This can be specified in the inputFile
+projectiveVariableGroups = []  # This can be specified in the inputFile
+randomNumberGenerator = random.random
 
 # TODO: Restart mode.
-depth = 0 # Begin the computation at a different depth index
+depth = 0  # Begin the computation at a different depth index
 
 
-verbose = 1 # Integer that is larger if we want to print more
+verbose = 1  # Integer that is larger if we want to print more
 # Level 0 for nothing except errors
 # Level 1 messages we would usually like printed
 # Level 2 for debugginh
@@ -52,7 +54,6 @@ for c, value in enumerate(variables):
     if c in projectiveVariableGroups:
         bertiniVariableGroupString+="\nhom_variable_group "+",".join(value)+" ;"
     else:
-<<<<<<< HEAD
         bertiniVariableGroupString+="\nvariable_group "+",".join(value)+" ;"
 
 if verbose > 0:
@@ -63,9 +64,6 @@ if verbose > 0:
         if c >= depth:
             print("depth > "+str(c)+" satisfy "+ f+" = 0")
 
-=======
-        bertiniVariableGroupString+="variable_group "+",".join(value)+" ;\n"
->>>>>>> 9c7c8ae51e431b45624a6325dd0bf66a10717438
 #####################
 
 # variables = inputFile.variables
@@ -77,6 +75,47 @@ if verbose > 0:
 # startSolution = inputFile.startSolution
 
 # Jose thinks startSolution should be a file name rather than a list of numbers.
+# Check inputFile.py
+for i in range(len(variables)):
+    isHomGroup = i in projectiveVariableGroups
+    n = len(l[i])-isHomGroup
+    if len(l[i])  in [0,n]:
+        print("Ope!: the %s entry of l needs to have length 0 or %s" % (i, n))
+
+
+
+
+
+def defineLinearThroughPoint(i,variables,point):
+    os.chdir(dirName)
+    try:
+        pointFile = open("inputPoint", "r")
+        pointLines = pointFile.readlines() # each line is a number.
+        pointFile.close()
+    except:  # Should this be an error?
+        print("Ope! Error opening file '%s/inputPoint'"%dirName)
+    out = ""
+    for i in range(2, len(pointLines)):
+        out+="\n%s"%pointLines[i]
+    os.chdir("..")
+
+    terms = variables[i]
+    pp =point[i]
+    for x in range(len(terms)+1-isAffGroup):
+        if isAffGroup:
+            terms[x]="(%s+I*%s)*(%s-%s)"%(str(randomNumberGenerator()),
+                str(randomNumberGenerator()),
+                str(terms[x]),
+                str(pp[x]))
+        else:
+            terms[x]="(%s+I*%s)*(1/(%s)%s-%s)"%(str(randomNumberGenerator()),
+                str(randomNumberGenerator()),
+                str(pp[-1])
+                str(terms[x]),
+                str(pp[x]))
+    linearString = ",".join(terms)
+    print(linearString)
+
 
 def isZero(s, logTolerance):
   if all([not str(i) in s for i in range(1, 10)]):
@@ -310,8 +349,8 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
             point, logTolerance):
 
       if depth+1 is len(functions):
-        with open(solutionFileName(depth, useFunction, currentDimension, 
-          regenerationLinearIndex[0], regenerationLinearIndex[1], 
+        with open(solutionFileName(depth, useFunction, currentDimension,
+          regenerationLinearIndex[0], regenerationLinearIndex[1],
           point), "w") as solutionFile:
           solutionFile.write(point)
         return
@@ -363,8 +402,8 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
             [regeneratedPoint])
 
     if depth+1 is len(functions):
-      with open(solutionFileName(depth, useFunction, currentDimension, 
-        regenerationLinearIndex[0], regenerationLinearIndex[1], 
+      with open(solutionFileName(depth, useFunction, currentDimension,
+        regenerationLinearIndex[0], regenerationLinearIndex[1],
         trackedPoint), "w") as solutionFile:
         solutionFile.write(trackedPoint)
       return
@@ -399,14 +438,9 @@ def main():
 
     for i in range(len(variables)):
         for j in range(degrees[0][i]):
-<<<<<<< HEAD
             print([i,j])
             regenerateAndTrack(depth,
                 [False for f in functions], # gens
-=======
-            regenerateAndTrack(0,
-                [False for f in functions],
->>>>>>> 9c7c8ae51e431b45624a6325dd0bf66a10717438
                 [(len(group) - 1 if i in projectiveVariableGroups else len(group)) for group in variables],
                 [i,j], # varGroup and regenLinear
                 startSolution)
