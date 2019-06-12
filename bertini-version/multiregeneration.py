@@ -44,7 +44,7 @@ verbose = 1  # Integer that is larger if we want to print more
 # Level 1 messages we would usually like printed
 # Level 2 for debugginh
 
-#TODO: instead of setting global variables with an eval, read a json 
+#TODO: instead of setting global variables with an eval, read a json
 # file to a python object
 variables = None
 variablesString = None
@@ -188,7 +188,7 @@ def getLinearsThroughPoint(variables):
                     terms[x]="(%s+I*%s)*((%s+I*%s)*%s-(%s+I*%s)*%s)"%(
                         str(randomNumberGenerator()),
                         str(randomNumberGenerator()),
-                        str(spoint[i][-1][0]), #real  part of last 
+                        str(spoint[i][-1][0]), #real  part of last
                         # coordinate of solution
                         str(spoint[i][-1][1]),
                         str(variables[i][x]), # x variable
@@ -231,17 +231,24 @@ def vanishes(dirName, variablesString, functionString, point, logTolerance):
 # TODO: replace variable_group %s with a list of variable groups from variables
 # and indicate if hom_variable_group or variable_group
 # TODO: change the ``f" in the Bertini input file to a nonstandard notation so it doesn't conflict with a user choice.
+    bertiniTextTrackingOptions = ""  #delete this line after we have parseBertiniInputFile
+    bertiniTextVariablesAndConstants = bertiniVariableGroupString # delete this line after we have parseBertiniInputFile
+    bertiniTextPolynomials = ""  #This will be determined by parseBertiniInputFile
     inputText = '''
 CONFIG
+    %s
     TrackType:-4;
 END;
 INPUT
     %s
     function f;
     f = %s;
+    %s
 END;
-        ''' % (bertiniVariableGroupString, # use variable groups
-                functionString)
+        ''' % (bertiniTextTrackingOptions,
+                bertiniTextVariablesAndConstants, # use variable groups
+                functionString,
+                bertiniTextPolynomials)
     inputFile = open("%s/input"%dirName, "w")
     inputFile.write(inputText)
     inputFile.close()
@@ -309,6 +316,7 @@ _%d_regenLinear_%d_pointId_%s"%(depth,
 
 def homotopy(dirName, variablesString, functionNames, functionsList, indexToTrack, targetFunctionString, startSolutionsList):
 # Now write Bertini-input files and call a homotopy.
+    # We have to fix a naming conflic that occurs when we use parseBertiniInputFile
     body = ""
     for i in range(len(functionsList)):
         if i is not indexToTrack:
@@ -324,8 +332,12 @@ def homotopy(dirName, variablesString, functionNames, functionsList, indexToTrac
 
 # Can we have an inputData directory that looks for files a Bertini input file, linears, and start solutions?
 # Write input file.
+    bertiniTextTrackingOptions = ""  # delete this line after we have parseBertiniInputFile
+    bertiniTextVariablesAndConstants = bertiniVariableGroupString # delete this line after we have parseBertiniInputFile
+    bertiniTextPolynomials = ""  # delete this line after we have parseBertiniInputFile
     inputText = '''
 CONFIG
+    %s
     UserHomotopy: 2;
 END;
 INPUT
@@ -336,8 +348,12 @@ INPUT
     s = t;
     %s
 END;
-''' % (bertiniVariableGroupString,
-                ",".join(functionNames),body)
+
+''' % (bertiniTextTrackingOptions,
+        bertiniTextVariablesAndConstants,
+        ",".join(functionNames),
+        body,
+        bertiniTextPolynomials)
     inputFile = open("%s/input"%dirName, "w")
     inputFile.write(inputText)
     inputFile.close()
