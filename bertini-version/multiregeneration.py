@@ -179,6 +179,14 @@ global useBertiniInputStyle
         print("This process will also overwrite startSolution solution")
         (l, startSolution) = getLinearsThroughPoint(variables)
 
+    if not r:
+      print("r is not defined by inputFile.py and will be generated at random")
+      r = []
+      for i in range(len(variables)):
+        r.append([None]) # r_i_0 should be None for all i
+        for d in range(1, max(degrees[i])):
+          r[i].append(getGenericLinearInVariableGroup(i))
+
     for i in range(len(variables)):
         for j in range(degrees[0][i]):
             print([i,j])
@@ -190,6 +198,16 @@ global useBertiniInputStyle
 
     os.chdir("..")
 
+def getGenericLinearInVariableGroup(variableGroup):
+    terms = []
+    for var in variables[variableGroup]:
+      terms.append("(%s + I*%s)*%s"%(str(randomNumberGenerator()),
+        str(randomNumberGenerator()),
+        var))
+    if not variableGroup in projectiveVariableGroups:
+      terms.append("(%s + I*%s)"%(str(randomNumberGenerator()),
+        str(randomNumberGenerator())))
+    return "+".join(terms)
 
 
 
@@ -241,7 +259,8 @@ def getLinearsThroughPoint(variables):
         #    print(linearString)
         #    print(" End Linear")
             ell[i].append(linearString)
-    print(ell)
+    for i in range(len(variables)):
+        print(ell[i][0])
     return (ell, startSolution)
 
 #TODO be able to input the file without a start point or l
