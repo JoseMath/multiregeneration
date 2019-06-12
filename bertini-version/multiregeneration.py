@@ -166,7 +166,7 @@ global useBertiniInputStyle
         print("\nSolutions in a 'linearProduct' directory and :")
         for c, f in enumerate(functionNames): # 0 is the depth we start with
             if c >= depth:
-                print("\ndepth > "+str(c)+" satisfy "+ f+" = 0")
+                print("depth > "+str(c)+" satisfy "+ f+" = 0")
 
     if l:
         for i in range(len(l)):
@@ -184,9 +184,15 @@ global useBertiniInputStyle
       r = []
       for i in range(len(variables)):
         r.append([None]) # r_i_0 should be None for all i
-        for d in range(1, max(degrees[i])):
+        maxdeg= 0
+        for s in range(len(functions)):
+            maxdeg= max(maxdeg,degrees[s][i])
+        print("%s is the maximum degree in variable group %s. "%(maxdeg,i))
+        for d in range(1, maxdeg):
           r[i].append(getGenericLinearInVariableGroup(i))
+        print("This is the last linear polynomial in r[i]: \n%s" % str(r[i][-1]))
 
+# For the first node here are all the outedges
     for i in range(len(variables)):
         for j in range(degrees[0][i]):
             print([i,j])
@@ -330,6 +336,9 @@ END;
         solutionsFile.close()
     except:
         print("Ope! Error opening file 'function'")
+    if not solutionsLines:
+        print("Bertini error")
+        sys.exit(1) # the one is for error and 0 is for everyhting is fine.
     value = solutionsLines[2].split(' ')
 
     isVanishing = isZero(value[0], logTolerance) and isZero(value[1],
