@@ -274,8 +274,7 @@ def homotopy(dirName, variablesString, functionNames, functionsList, indexToTrac
     except:
         print("Ope! Error opening directory '%s'"%dirName)
 
-# TODO: replace variable %s with a list of variable groups from variables
-# and indicate if hom_variable_group or variable_group
+# Can we have an inputData directory that looks for files a Bertini input file, linears, and start solutions?
 # Write input file.
     inputText = '''
 CONFIG
