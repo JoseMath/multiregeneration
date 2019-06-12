@@ -1,7 +1,3 @@
-#TODO: Think about the hypothesis that would
-# ensure the following: if a point gets thrown out along the way,
-# then that point
-
 import shutil
 import sys
 import subprocess
@@ -11,7 +7,6 @@ import random
 
 # variables = [["x1", "x2"], ["y1", "y2"]]
 # len(variables)
-# variablesString = "x1, x2, y1, y2"
 # functions = ["x1^2 + x2^2 - 1", "y1^2 + y2^2 - 1"]
 # degrees = [[2, 0], [0,2]] # degree of the s'th function in the i'th variable group
 # n = [len(l) for l in variables]
@@ -47,7 +42,6 @@ verbose = 1  # Integer that is larger if we want to print more
 #TODO: instead of setting global variables with an eval, read a json
 # file to a python object
 variables = None
-variablesString = None
 functions = None
 degrees = None
 functionNames = None
@@ -77,7 +71,6 @@ def main():
     global logTolerance
     global verbose
     global projectiveVariableGroups
-    global variablesString
     global bertiniVariableGroupString
 
 
@@ -116,13 +109,27 @@ global useBertiniInputStyle
           bertiniEquations = f.read()
       except:
         print("Exiting due to incomplete input. Please include the following files:")
-        requiredInput = ["bertiniVariablesAndConstants",
-            "bertiniTrackingOptions",
-            "bertiniFunctionNames",
-            "bertiniEquations"]
-        for s in requiredInput:
-          print("\tbertiniInput_"+s)
+        print("\t" + "bertiniInput_variablesAndConstants")
+        print("\t" + "bertiniInput_trackingOptions")
+        print("\t" + "bertiniInput_functionNames")
+        print("\t" + "bertiniInput_equations")
         sys.exit(1)
+
+      variables = []
+      lines = bertiniVariablesAndConstants.splitlines()
+      for i in range(len(lines)):
+        variableGroupType = lines[i].split(" ")[0]
+        if not (variableGroupType == "variable_group" or 
+            variableGroupType == "hom_variable_group"):
+          print("Exiting because a variable group other that 'variable_group' or 'hom_variable_group' was declared.")
+          sys.exit(1)
+        if variableGroupType is "hom_variable_group":
+          projectiveVariableGroups.append(i)
+        variables.append(lines[i][lines[i].find(" "):].replace(" ", 
+          "").replace(";", "").split(","))
+
+      functions = bertiniFunctionNames[bertiniFunctionNames.find(" "):].replace(" ", "").split(",")
+
     else:
       requiredInput = ["variables", "functions", "degrees", "functionNames"]
       if not all([eval(s) for s in requiredInput]):
@@ -131,8 +138,6 @@ global useBertiniInputStyle
           print("\t"+s)
         sys.exit(1)
 
-    flatVariablesList = [item for sublist in variables for item in sublist]
-    variablesString = ",".join(flatVariablesList)
     bertiniVariableGroupString = ""
     for c, value in enumerate(variables):
         if c in projectiveVariableGroups:
@@ -245,7 +250,7 @@ def isZero(s, logTolerance):
     return True
   return int(s.split("e")[1]) < logTolerance
 
-def vanishes(dirName, variablesString, functionString, point, logTolerance):
+def vanishes(dirName, functionString, point, logTolerance):
 # a function that returns True if functionString defines a polynomial vanishing at point
 # What is going on with the comments below?
     # currentVariable = 0
@@ -265,17 +270,35 @@ def vanishes(dirName, variablesString, functionString, point, logTolerance):
 # TODO: replace variable_group %s with a list of variable groups from variables
 # and indicate if hom_variable_group or variable_group
 # TODO: change the ``f" in the Bertini input file to a nonstandard notation so it doesn't conflict with a user choice.
-    inputText = '''
-CONFIG
-    TrackType:-4;
-END;
-INPUT
-    %s
-    function f;
-    f = %s;
-END;
-        ''' % (bertiniVariableGroupString, # use variable groups
-                functionString)
+    if not useBertiniInputStyle:
+      inputText = '''
+      CONFIG
+          TrackType:-4;
+      END;
+      INPUT
+          %s
+          function functionToEvaluate;
+          functionToEvaluate = %s;
+      END;
+              ''' % (bertiniVariableGroupString, # use variable groups
+                      functionString)
+    else:
+      inputText = '''
+      CONFIG
+          %s
+          TrackType:-4;
+      END;
+      INPUT
+          %s
+          function functionToEvaluate;
+          %s
+          functionToEvaluate = %s;
+      END;
+              ''' % (bertiniTrackingOptions,
+                      bertiniVariableGroupString, # use variable groups
+                      bertiniEquations,
+                      functionString)
+
     inputFile = open("%s/input"%dirName, "w")
     inputFile.write(inputText)
     inputFile.close()
@@ -341,15 +364,21 @@ _%d_regenLinear_%d_pointId_%s"%(depth,
             (abs(hash(point)) % (10 ** 8)))
     return solutionFileName
 
-def homotopy(dirName, variablesString, functionNames, functionsList, indexToTrack, targetFunctionString, startSolutionsList):
+def homotopy(dirName, functionNames, functionsList, indexToTrack, targetFunctionString, startSolutionsList):
 # Now write Bertini-input files and call a homotopy.
-    body = ""
-    for i in range(len(functionsList)):
-        if i is not indexToTrack:
-            body+="\n %s = %s;"%(functionNames[i], functionsList[i])
-        elif i is indexToTrack:
-            body+="\n %s = s*(%s) + (1-s)*(%s);"%(functionNames[i],
-                    functionsList[i], targetFunctionString)
+    if not useBertiniInputStyle:
+      body = ""
+      for i in range(len(functionsList)):
+          if i is not indexToTrack:
+              body+="\n %s = %s;"%(functionNames[i], functionsList[i])
+          elif i is indexToTrack:
+              body+="\n %s = s*(%s) + (1-s)*(%s);"%(functionNames[i],
+                      functionsList[i], targetFunctionString)
+    else:
+      body = "%s\n%s = s*(%s) + (1-s)*(%s)"%(bertiniEquations,
+          "homotopyFunction",
+          functionsList[indexToTrack],
+          targetFunctionString)
 
     try: # Jose moved this before defining inputText.
         os.mkdir(dirName)
@@ -360,6 +389,7 @@ def homotopy(dirName, variablesString, functionNames, functionsList, indexToTrac
 # Write input file.
     inputText = '''
 CONFIG
+    %s
     UserHomotopy: 2;
 END;
 INPUT
@@ -370,8 +400,10 @@ INPUT
     s = t;
     %s
 END;
-''' % (bertiniVariableGroupString,
-                ",".join(functionNames),body)
+''' % (bertiniTrackingOptions,
+        bertiniVariableGroupString,
+        ",".join(functionNames),
+        body)
     inputFile = open("%s/input"%dirName, "w")
     inputFile.write(inputText)
     inputFile.close()
@@ -447,7 +479,6 @@ def regenerate(depth, useFunction, currentDimension, regenerationLinearIndex, po
         point)
 
     regeneratedPoint = homotopy(dirName,
-            variablesString,
             regenerationSystemFunctionNames,
             regenerationSystem,
             regenerationSystemTargetIndex,
@@ -472,7 +503,7 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
         currentDimension, regenerationLinearIndex[0],
         regenerationLinearIndex[1], "eval", point)
 
-    if vanishes(checkVanishesDirName, variablesString,
+    if vanishes(checkVanishesDirName,
             functions[depth],
             point, logTolerance):
 
@@ -524,7 +555,6 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
                 linearProductHomotopySytemNames.append("l_%d_%d"%(i,j))
 
     trackedPoint = homotopy(dirName,
-            variablesString,
             linearProductHomotopySytemNames,
             linearProductHomotopySytem,
             0,
