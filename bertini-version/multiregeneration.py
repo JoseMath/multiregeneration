@@ -30,11 +30,8 @@ import random
 # where class takes a value in {depth, dim, group, deg, type, prune}
 # and the respective class_index are in  NN, n_\bullet, [k], NN, {smooth, singular, infinity, {0,1}}
 
-
 ### Configuration ###
 # Optional inputs # This can be specified in the inputFile
-startSolution = []
-l = []
 projectiveVariableGroups = []  # This can be specified in the inputFile
 randomNumberGenerator = random.random
 
@@ -46,61 +43,115 @@ verbose = 1  # Integer that is larger if we want to print more
 # Level 0 for nothing except errors
 # Level 1 messages we would usually like printed
 # Level 2 for debugginh
-exec(open("inputFile.py").read())
 
-flatVariablesList = [item for sublist in variables for item in sublist]
-variablesString = ",".join(flatVariablesList)
-bertiniVariableGroupString = ""
-for c, value in enumerate(variables):
-    if c in projectiveVariableGroups:
-        bertiniVariableGroupString+="\nhom_variable_group "+",".join(value)+" ;"
+#TODO: instead of setting global variables with an eval, read a json 
+# file to a python object
+variables = None
+variablesString = None
+functions = None
+degrees = None
+functionNames = None
+l = None
+r = None
+startSolution = None
+workingDirectory = "run"
+logTolerance = -10
+bertiniVariableGroupString = None
+requiredInput = ["variables", "functions", "degrees", "functionNames"]
+
+def main():
+    # Set global configuration variables in the inputFile
+    global variables
+    global functions
+    global degrees
+    global functionNames
+    global l
+    global r
+    global startSolution
+    global workingDirectory
+    global logTolerance
+    global verbose
+    global projectiveVariableGroups
+    global variablesString
+    global bertiniVariableGroupString
+    setVariablesToGlobal = """
+global variables
+global functions
+global degrees
+global functionNames
+global l
+global r
+global startSolution
+global workingDirectory
+global logTolerance
+global verbose
+global projectiveVariableGroups
+"""
+
+    exec(setVariablesToGlobal + open("inputFile.py").read())
+
+    if not all([eval(s) for s in requiredInput]):
+      print("Exiting due to incomplete input. Please include the following in the input file:")
+      for s in requiredInput:
+        print("\t"+s)
+      sys.exit(1)
+
+    flatVariablesList = [item for sublist in variables for item in sublist]
+    variablesString = ",".join(flatVariablesList)
+    bertiniVariableGroupString = ""
+    for c, value in enumerate(variables):
+        if c in projectiveVariableGroups:
+            bertiniVariableGroupString+="\nhom_variable_group "+",".join(value)+" ;"
+        else:
+            bertiniVariableGroupString+="\nvariable_group "+",".join(value)+" ;"
+
+
+    #####################
+
+
+    # Jose thinks startSolution should be a file name rather than a list of numbers.
+    # Check inputFile.py
+    if os.path.isdir(workingDirectory):
+        shutil.rmtree(workingDirectory)
+
+    os.mkdir(workingDirectory)
+    os.chdir(workingDirectory)
+    os.mkdir("all_full_depth_solutions")
+
+    if verbose > 0:
+        print("\n################### Starting multiregeneration ####################")
+        print("\nThese variable groups have been selected:"+bertiniVariableGroupString)
+        print("\nSolutions in a directory with linearProduct in it's name and :")
+        for c, f in enumerate(functions): # 0 is the depth we start with
+            if c >= depth:
+                print("depth > "+str(c)+" satisfy "+ f+" = 0")
+
+    if l:
+        for i in range(len(l)):
+            isHomGroup = i in projectiveVariableGroups
+            n = len(l[i])-isHomGroup
+            if len(l[i]) in [n]:
+                print("Ope!: the %s entry of l needs to have length %s" % (i, n))
     else:
-        bertiniVariableGroupString+="\nvariable_group "+",".join(value)+" ;"
+        print("l is not defined by inputFile.py and will be generated at random")
+        print("This process will also overwrite startSolution solution")
+        (l, startSolution) = getLinearsThroughPoint(variables)
 
-if verbose > 0:
-    print("\n################### Starting multiregeneration ####################")
-    print("\nThese variable groups have been selected:"+bertiniVariableGroupString)
-    print("\nSolutions in a directory with linearProduct in it's name and :")
-    for c, f in enumerate(functions): # 0 is the depth we start with
-        if c >= depth:
-            print("depth > "+str(c)+" satisfy "+ f+" = 0")
+    for i in range(len(variables)):
+        for j in range(degrees[0][i]):
+            print([i,j])
+            regenerateAndTrack(depth,
+                [False for f in functions], # gens
+                [(len(group) - 1 if i in projectiveVariableGroups else len(group)) for group in variables],
+                [i,j], # varGroup and regenLinear
+                startSolution)
 
-#####################
-
-# variables = inputFile.variables
-# functions = inputFile.functions
-# degrees = inputFile.degrees
-# functionNames = inputFile.functionNames
-# l = inputFile.l
-# r = inputFile.r
-# startSolution = inputFile.startSolution
-
-# Jose thinks startSolution should be a file name rather than a list of numbers.
-# Check inputFile.py
-
-if not len(l) == 0:
-    for i in range(len(l)):
-        isHomGroup = i in projectiveVariableGroups
-        n = len(l[i])-isHomGroup
-        if len(l[i]) in [n]:
-            print("Ope!: the %s entry of l needs to have length %s" % (i, n))
-else:
-    print("l is not defined by inputFile.py and will be generated at random")
-    print("This process will also overwrite startSolution solution")
+    os.chdir("..")
 
 
-def defineLinearsThroughPoint(variables):
-    # os.chdir(dirName)
-    # try:
-    #     pointFile = open("inputPoint", "r")
-    #     pointLines = pointFile.readlines() # each line is a number.
-    #     pointFile.close()
-    # except:  # Should this be an error?
-    #     print("Ope! Error opening file '%s/inputPoint'"%dirName)
-    # out = ""
-    # for i in range(2, len(pointLines)):
-    #     out+="\n%s"%pointLines[i]
-    # os.chdir("..")
+
+
+def getLinearsThroughPoint(variables):
     spoint = []
     for i in range(len(variables)):
         spoint += [[]]
@@ -113,20 +164,20 @@ def defineLinearsThroughPoint(variables):
             startSolution+=spoint[i][j][0]+" "+spoint[i][j][1]
             if j<range(len(spoint[i]))[-1]:
                 startSolution+="\n"
-    print startSolution
+    print(startSolution)
     ell = []
     for i in range(len(variables)):
-        ell += [[]]
+        ell.append([])
         isAffGroup=1
         if i in projectiveVariableGroups:
             isAffGroup = 0
-        terms =range(len(variables[i])+isAffGroup-1)
+        terms = [None for x in range(len(variables[i])+isAffGroup-1)]
 #        print(terms)
         for j in range(len(variables[i])+isAffGroup-1):
             linearString=""
             for x in range(len(variables[i])+isAffGroup-1):
                 if isAffGroup:
-                    terms[x]="(%s+I*%s)*(%s-(%s+I*%s)"%(
+                    terms[x]="(%s+I*%s)*(%s-(%s+I*%s))"%(
                         str(randomNumberGenerator()),
                         str(randomNumberGenerator()),
                         str(terms[x]),
@@ -135,28 +186,25 @@ def defineLinearsThroughPoint(variables):
                         )
                 else:
                     terms[x]="(%s+I*%s)*((%s+I*%s)*%s-(%s+I*%s)*%s)"%(
-#                        str(randomNumberGenerator()),
-#                        str(randomNumberGenerator()),
-                        str(1),
-                        str(2),
-                        str(spoint[i][-1][0]),
-                        str(spoint[-1][i][1]),
-                        str(variables[i][x]),
+                        str(randomNumberGenerator()),
+                        str(randomNumberGenerator()),
+                        str(spoint[i][-1][0]), #real  part of last 
+                        # coordinate of solution
+                        str(spoint[i][-1][1]),
+                        str(variables[i][x]), # x variable
                         str(spoint[i][x][0]),
-                        str(spoint[i][x][0]),
-                        str(variables[i][-1]))
+                        str(spoint[i][x][1]),
+                        str(variables[i][-1])) # last variable
             #print(terms)
             linearString = "+".join(terms)
         #    print("Linear")
         #    print(linearString)
         #    print(" ENd Linear")
-            ell[i]+=[linearString]
+            ell[i].append(linearString)
     print(ell)
-    l =str(ell)
+    return (ell, startSolution)
 
 #TODO be able to input the file without a start point or l
-if l==[]:
-    defineLinearsThroughPoint(variables)
 
 def isZero(s, logTolerance):
   if all([not str(i) in s for i in range(1, 10)]):
@@ -480,24 +528,6 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
               sys.exit(0)
 
 
-def main():
-    if os.path.isdir(workingDirectory):
-        shutil.rmtree(workingDirectory)
-
-    os.mkdir(workingDirectory)
-    os.chdir(workingDirectory)
-    os.mkdir("all_full_depth_solutions")
-
-    for i in range(len(variables)):
-        for j in range(degrees[0][i]):
-            print([i,j])
-            regenerateAndTrack(depth,
-                [False for f in functions], # gens
-                [(len(group) - 1 if i in projectiveVariableGroups else len(group)) for group in variables],
-                [i,j], # varGroup and regenLinear
-                startSolution)
-
-    os.chdir("..")
 
 if __name__== "__main__":
   main()
