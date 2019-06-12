@@ -118,7 +118,7 @@ global useBertiniInputStyle
         print("Exiting due to incomplete input. Please include the following files:")
         requiredInput = ["bertiniVariablesAndConstants",
             "bertiniTrackingOptions",
-            "bertiniFunctionNames", 
+            "bertiniFunctionNames",
             "bertiniEquations"]
         for s in requiredInput:
           print("\tbertiniInput_"+s)
