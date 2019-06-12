@@ -44,7 +44,7 @@ verbose = 1  # Integer that is larger if we want to print more
 # Level 1 messages we would usually like printed
 # Level 2 for debugginh
 
-#TODO: instead of setting global variables with an eval, read a json 
+#TODO: instead of setting global variables with an eval, read a json
 # file to a python object
 variables = None
 variablesString = None
@@ -165,7 +165,7 @@ global useBertiniInputStyle
         for i in range(len(l)):
             isHomGroup = i in projectiveVariableGroups
             n = len(l[i])-isHomGroup
-            if len(l[i]) in [n]:
+            if not len(l[i])==n:
                 print("Ope!: the %s entry of l needs to have length %s" % (i, n))
     else:
         print("l is not defined by inputFile.py and will be generated at random")
@@ -222,7 +222,7 @@ def getLinearsThroughPoint(variables):
                     terms[x]="(%s+I*%s)*((%s+I*%s)*%s-(%s+I*%s)*%s)"%(
                         str(randomNumberGenerator()),
                         str(randomNumberGenerator()),
-                        str(spoint[i][-1][0]), #real  part of last 
+                        str(spoint[i][-1][0]), #real  part of last
                         # coordinate of solution
                         str(spoint[i][-1][1]),
                         str(variables[i][x]), # x variable
