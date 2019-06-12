@@ -7,7 +7,7 @@
 # # 'hom_variable group ...;' is one line
 # # function ...;  is one line
 # # Lines after the second CONFIG not defining an equation or constant value
-# # must begin with 'function', 'constant', 'hom_variable_group', 'variable_group',
+# # must begin with 'function', 'constant', 'hom_variable_group', or 'variable_group'
 
 import shutil
 import sys
@@ -163,20 +163,20 @@ global useBertiniInputStyle
     if verbose > 0:
         print("\n################### Starting multiregeneration ####################")
         print("\nThese variable groups have been selected:"+bertiniVariableGroupString)
-        print("\nSolutions in a directory with linearProduct in it's name and :")
-        for c, f in enumerate(functions): # 0 is the depth we start with
+        print("\nSolutions in a 'linearProduct' directory and :")
+        for c, f in enumerate(functionNames): # 0 is the depth we start with
             if c >= depth:
-                print("depth > "+str(c)+" satisfy "+ f+" = 0")
+                print("\ndepth > "+str(c)+" satisfy "+ f+" = 0")
 
     if l:
         for i in range(len(l)):
             isHomGroup = i in projectiveVariableGroups
-            n = len(l[i])-isHomGroup
+            n = len(l[i])
             if not len(l[i])==n:
                 print("Ope!: the %s entry of l needs to have length %s" % (i, n))
     else:
-        print("l is not defined by inputFile.py and will be generated at random")
-        print("This process will also overwrite startSolution solution")
+        print("l is not defined by inputFile.py and is generated at random")
+        print("This process overwrote startSolution with \n")
         (l, startSolution) = getLinearsThroughPoint(variables)
 
     if not r:
@@ -260,6 +260,7 @@ def getLinearsThroughPoint(variables):
         #    print(" End Linear")
             ell[i].append(linearString)
     for i in range(len(variables)):
+        print("\nThis is the first linear polynomial for variable group %s.\n "% i)
         print(ell[i][0])
     return (ell, startSolution)
 
