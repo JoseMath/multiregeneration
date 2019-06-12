@@ -44,7 +44,7 @@ verbose = 1  # Integer that is larger if we want to print more
 # Level 1 messages we would usually like printed
 # Level 2 for debugginh
 
-#TODO: instead of setting global variables with an eval, read a json
+#TODO: instead of setting global variables with an eval, read a json 
 # file to a python object
 variables = None
 variablesString = None
@@ -172,16 +172,9 @@ global useBertiniInputStyle
         print("This process will also overwrite startSolution solution")
         (l, startSolution) = getLinearsThroughPoint(variables)
 
-    if not r:
-      print("r is not defined by inputFile.py and will be generated at random")
-      r = []
-      for i in range(len(variables)):
-        r.append([None]) # r_i_0 should be None for all i
-        for d in range(1, max(degrees[i])):
-          r[i].append(getGenericLinearInVariableGroup(i))
-
     for i in range(len(variables)):
         for j in range(degrees[0][i]):
+            print([i,j])
             regenerateAndTrack(depth,
                 [False for f in functions], # gens
                 [(len(group) - 1 if i in projectiveVariableGroups else len(group)) for group in variables],
@@ -191,18 +184,6 @@ global useBertiniInputStyle
     os.chdir("..")
 
 
-
-
-def getGenericLinearInVariableGroup(variableGroup):
-    terms = []
-    for var in variables[variableGroup]:
-      terms.append("(%s + I*%s)*%s"%(str(randomNumberGenerator()),
-        str(randomNumberGenerator()),
-        var))
-    if not variableGroup in projectiveVariableGroups:
-      terms.append("(%s + I*%s)"%(str(randomNumberGenerator()),
-        str(randomNumberGenerator())))
-    return "+".join(terms)
 
 
 def getLinearsThroughPoint(variables):
@@ -218,6 +199,7 @@ def getLinearsThroughPoint(variables):
             startSolution+=spoint[i][j][0]+" "+spoint[i][j][1]
             if j<range(len(spoint[i]))[-1]:
                 startSolution+="\n"
+    print(startSolution)
     ell = []
     for i in range(len(variables)):
         ell.append([])
@@ -241,7 +223,7 @@ def getLinearsThroughPoint(variables):
                     terms[x]="(%s+I*%s)*((%s+I*%s)*%s-(%s+I*%s)*%s)"%(
                         str(randomNumberGenerator()),
                         str(randomNumberGenerator()),
-                        str(spoint[i][-1][0]), #real  part of last
+                        str(spoint[i][-1][0]), #real  part of last 
                         # coordinate of solution
                         str(spoint[i][-1][1]),
                         str(variables[i][x]), # x variable
@@ -254,6 +236,7 @@ def getLinearsThroughPoint(variables):
         #    print(linearString)
         #    print(" ENd Linear")
             ell[i].append(linearString)
+    print(ell)
     return (ell, startSolution)
 
 #TODO be able to input the file without a start point or l
@@ -283,24 +266,17 @@ def vanishes(dirName, variablesString, functionString, point, logTolerance):
 # TODO: replace variable_group %s with a list of variable groups from variables
 # and indicate if hom_variable_group or variable_group
 # TODO: change the ``f" in the Bertini input file to a nonstandard notation so it doesn't conflict with a user choice.
-    bertiniTextTrackingOptions = ""  #delete this line after we have parseBertiniInputFile
-    bertiniTextVariablesAndConstants = bertiniVariableGroupString # delete this line after we have parseBertiniInputFile
-    bertiniTextPolynomials = ""  #This will be determined by parseBertiniInputFile
     inputText = '''
 CONFIG
-    %s
     TrackType:-4;
 END;
 INPUT
     %s
     function f;
     f = %s;
-    %s
 END;
-        ''' % (bertiniTextTrackingOptions,
-                bertiniTextVariablesAndConstants, # use variable groups
-                functionString,
-                bertiniTextPolynomials)
+        ''' % (bertiniVariableGroupString, # use variable groups
+                functionString)
     inputFile = open("%s/input"%dirName, "w")
     inputFile.write(inputText)
     inputFile.close()
@@ -368,7 +344,6 @@ _%d_regenLinear_%d_pointId_%s"%(depth,
 
 def homotopy(dirName, variablesString, functionNames, functionsList, indexToTrack, targetFunctionString, startSolutionsList):
 # Now write Bertini-input files and call a homotopy.
-    # We have to fix a naming conflic that occurs when we use parseBertiniInputFile
     body = ""
     for i in range(len(functionsList)):
         if i is not indexToTrack:
@@ -384,12 +359,8 @@ def homotopy(dirName, variablesString, functionNames, functionsList, indexToTrac
 
 # Can we have an inputData directory that looks for files a Bertini input file, linears, and start solutions?
 # Write input file.
-    bertiniTextTrackingOptions = ""  # delete this line after we have parseBertiniInputFile
-    bertiniTextVariablesAndConstants = bertiniVariableGroupString # delete this line after we have parseBertiniInputFile
-    bertiniTextPolynomials = ""  # delete this line after we have parseBertiniInputFile
     inputText = '''
 CONFIG
-    %s
     UserHomotopy: 2;
 END;
 INPUT
@@ -399,14 +370,9 @@ INPUT
     parameter s;
     s = t;
     %s
-    %s
 END;
-
-''' % (bertiniTextTrackingOptions,
-        bertiniTextVariablesAndConstants,
-        ",".join(functionNames),
-        body,
-        bertiniTextPolynomials)
+''' % (bertiniVariableGroupString,
+                ",".join(functionNames),body)
     inputFile = open("%s/input"%dirName, "w")
     inputFile.write(inputText)
     inputFile.close()
