@@ -37,7 +37,7 @@ depth = 0  # Begin the computation at a different depth index
 verbose = 1  # Integer that is larger if we want to print more
 # Level 0 for nothing except errors
 # Level 1 messages we would usually like printed
-# Level 2 for debugginh
+# Level 2 for debugging
 
 #TODO: instead of setting global variables with an eval, read a json
 # file to a python object
@@ -129,6 +129,7 @@ global useBertiniInputStyle
           "").replace(";", "").split(","))
 
       functions = bertiniFunctionNames[bertiniFunctionNames.find(" "):].replace(" ", "").split(",")
+      functionNames = [None for s in functionNames]
 
     else:
       requiredInput = ["variables", "functions", "degrees", "functionNames"]
@@ -162,7 +163,7 @@ global useBertiniInputStyle
         print("\n################### Starting multiregeneration ####################")
         print("\nThese variable groups have been selected:"+bertiniVariableGroupString)
         print("\nSolutions in a directory with linearProduct in it's name and :")
-        for c, f in enumerate(functions): # 0 is the depth we start with
+        for c, f in enumerate(functionNames): # 0 is the depth we start with
             if c >= depth:
                 print("depth > "+str(c)+" satisfy "+ f+" = 0")
 
@@ -177,6 +178,14 @@ global useBertiniInputStyle
         print("This process will also overwrite startSolution solution")
         (l, startSolution) = getLinearsThroughPoint(variables)
 
+    if not r:
+      print("r is not defined by inputFile.py and will be generated at random")
+      r = []
+      for i in range(len(variables)):
+        r.append([None]) # r_i_0 should be None for all i
+        for d in range(1, max([degrees[s][i] for s in range(len(functions))])):
+          r[i].append(getGenericLinearInVariableGroup(i))
+
     for i in range(len(variables)):
         for j in range(degrees[0][i]):
             print([i,j])
@@ -188,6 +197,16 @@ global useBertiniInputStyle
 
     os.chdir("..")
 
+def getGenericLinearInVariableGroup(variableGroup):
+    terms = []
+    for var in variables[variableGroup]:
+      terms.append("(%s + I*%s)*%s"%(str(randomNumberGenerator()),
+        str(randomNumberGenerator()),
+        var))
+    if not variableGroup in projectiveVariableGroups:
+      terms.append("(%s + I*%s)"%(str(randomNumberGenerator()),
+        str(randomNumberGenerator())))
+    return "+".join(terms)
 
 
 
@@ -227,20 +246,20 @@ def getLinearsThroughPoint(variables):
                     terms[x]="(%s+I*%s)*((%s+I*%s)*%s-(%s+I*%s)*%s)"%(
                         str(randomNumberGenerator()),
                         str(randomNumberGenerator()),
-                        str(spoint[i][-1][0]), #real  part of last
-                        # coordinate of solution
-                        str(spoint[i][-1][1]),
-                        str(variables[i][x]), # x variable
+                        str(spoint[i][-1][0]), #real  part of last coordinate of spoint
+                        str(spoint[i][-1][1]),  # imaginary part of last coordinate of spoint
+                        str(variables[i][x]), # a variable in group i
                         str(spoint[i][x][0]),
                         str(spoint[i][x][1]),
-                        str(variables[i][-1])) # last variable
+                        str(variables[i][-1])) # last variable in group i
             #print(terms)
             linearString = "+".join(terms)
         #    print("Linear")
         #    print(linearString)
-        #    print(" ENd Linear")
+        #    print(" End Linear")
             ell[i].append(linearString)
-    print(ell)
+    for i in range(len(variables)):
+        print(ell[i][0])
     return (ell, startSolution)
 
 #TODO be able to input the file without a start point or l
@@ -375,10 +394,13 @@ def homotopy(dirName, functionNames, functionsList, indexToTrack, targetFunction
               body+="\n %s = s*(%s) + (1-s)*(%s);"%(functionNames[i],
                       functionsList[i], targetFunctionString)
     else:
-      body = "%s\n%s = s*(%s) + (1-s)*(%s)"%(bertiniEquations,
-          "homotopyFunction",
-          functionsList[indexToTrack],
-          targetFunctionString)
+      body = bertiniEquations + "\n"
+      for i in range(len(functionsList)):
+          if i is not indexToTrack:
+              body+="\n %s = %s;"%(functionNames[i], functionsList[i])
+          elif i is indexToTrack:
+              body+="\n %s = s*(%s) + (1-s)*(%s);"%("homotopyFunction",
+                      functionsList[i], targetFunctionString)
 
     try: # Jose moved this before defining inputText.
         os.mkdir(dirName)
@@ -387,23 +409,43 @@ def homotopy(dirName, functionNames, functionsList, indexToTrack, targetFunction
 
 # Can we have an inputData directory that looks for files a Bertini input file, linears, and start solutions?
 # Write input file.
-    inputText = '''
-CONFIG
-    %s
-    UserHomotopy: 2;
-END;
-INPUT
-    %s
-    function %s;
-    pathvariable t;
-    parameter s;
-    s = t;
-    %s
-END;
-''' % (bertiniTrackingOptions,
-        bertiniVariableGroupString,
-        ",".join(functionNames),
-        body)
+    if not useBertiniInputStyle:
+        inputText = '''
+    CONFIG
+        %s
+        UserHomotopy: 2;
+    END;
+    INPUT
+        %s
+        function %s;
+        pathvariable t;
+        parameter s;
+        s = t;
+        %s
+    END;
+    ''' % (bertiniTrackingOptions,
+            bertiniVariableGroupString,
+            ",".join(functionNames),
+          body)
+    else:
+        inputText = '''
+    CONFIG
+        %s
+        UserHomotopy: 2;
+    END;
+    INPUT
+        %s
+        function homotopyFunction, %s;
+        pathvariable t;
+        parameter s;
+        s = t;
+        %s
+    END;
+    '''%(bertiniTrackingOptions,
+          bertiniVariableGroupString,
+          ",".join(functionNames[:indexToTrack] + 
+            functionNames[indexToTrack+1:]),
+          body)
     inputFile = open("%s/input"%dirName, "w")
     inputFile.write(inputText)
     inputFile.close()
@@ -462,7 +504,6 @@ def regenerate(depth, useFunction, currentDimension, regenerationLinearIndex, po
             regenerationSystemFunctionNames.append(functionNames[i])
             currentIndexInSystem+=1
     for i in range(len(variables)):
-
         for j in range(currentDimension[i]):
             regenerationSystem.append(l[i][j])
             regenerationSystemFunctionNames.append("l_%d_%d"%(i,j))
