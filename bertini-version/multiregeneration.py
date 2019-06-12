@@ -2,6 +2,13 @@
 # ensure the following: if a point gets thrown out along the way,
 # then that point
 
+# Caveat: Bertini input file style assumptions
+# # 'variable group ...;' is one line
+# # 'hom_variable group ...;' is one line
+# # function ...;  is one line
+# # Lines after the second CONFIG not defining an equation or constant value
+# # must begin with 'function', 'constant', 'hom_variable_group', 'variable_group',
+
 import shutil
 import sys
 import subprocess
@@ -42,7 +49,7 @@ depth = 0  # Begin the computation at a different depth index
 verbose = 1  # Integer that is larger if we want to print more
 # Level 0 for nothing except errors
 # Level 1 messages we would usually like printed
-# Level 2 for debugginh
+# Level 2 for debugging
 
 #TODO: instead of setting global variables with an eval, read a json
 # file to a python object
@@ -222,18 +229,17 @@ def getLinearsThroughPoint(variables):
                     terms[x]="(%s+I*%s)*((%s+I*%s)*%s-(%s+I*%s)*%s)"%(
                         str(randomNumberGenerator()),
                         str(randomNumberGenerator()),
-                        str(spoint[i][-1][0]), #real  part of last
-                        # coordinate of solution
-                        str(spoint[i][-1][1]),
-                        str(variables[i][x]), # x variable
+                        str(spoint[i][-1][0]), #real  part of last coordinate of spoint
+                        str(spoint[i][-1][1]),  # imaginary part of last coordinate of spoint
+                        str(variables[i][x]), # a variable in group i
                         str(spoint[i][x][0]),
                         str(spoint[i][x][1]),
-                        str(variables[i][-1])) # last variable
+                        str(variables[i][-1])) # last variable in group i
             #print(terms)
             linearString = "+".join(terms)
         #    print("Linear")
         #    print(linearString)
-        #    print(" ENd Linear")
+        #    print(" End Linear")
             ell[i].append(linearString)
     print(ell)
     return (ell, startSolution)
