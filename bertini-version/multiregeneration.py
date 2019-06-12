@@ -57,7 +57,12 @@ startSolution = None
 workingDirectory = "run"
 logTolerance = -10
 bertiniVariableGroupString = None
-requiredInput = ["variables", "functions", "degrees", "functionNames"]
+
+useBertiniInputStyle = False
+bertiniTrackingOptions = ""
+bertiniVariablesAndConstants = None
+bertiniFunctionNames = None
+bertiniEquations = None
 
 def main():
     # Set global configuration variables in the inputFile
@@ -74,6 +79,14 @@ def main():
     global projectiveVariableGroups
     global variablesString
     global bertiniVariableGroupString
+
+
+    global useBertiniInputStyle
+    global bertiniTrackingOptions
+    global bertiniVariablesAndConstants
+    global bertiniFunctionNames
+    global bertiniEquations
+
     setVariablesToGlobal = """
 global variables
 global functions
@@ -86,15 +99,37 @@ global workingDirectory
 global logTolerance
 global verbose
 global projectiveVariableGroups
+global useBertiniInputStyle
 """
 
     exec(setVariablesToGlobal + open("inputFile.py").read())
 
-    if not all([eval(s) for s in requiredInput]):
-      print("Exiting due to incomplete input. Please include the following in the input file:")
-      for s in requiredInput:
-        print("\t"+s)
-      sys.exit(1)
+    if useBertiniInputStyle:
+      try:
+        with open("bertiniInput_variablesAndConstants", "r") as f:
+          bertiniVariablesAndConstants = f.read()
+        with open("bertiniInput_trackingOptions", "r") as f:
+          bertiniTrackingOptions = f.read()
+        with open("bertiniInput_functionNames", "r") as f:
+          bertiniFunctionNames = f.read()
+        with open("bertiniInput_equations", "r") as f:
+          bertiniEquations = f.read()
+      except:
+        print("Exiting due to incomplete input. Please include the following files:")
+        requiredInput = ["bertiniVariablesAndConstants",
+            "bertiniTrackingOptions",
+            "bertiniFunctionNames", 
+            "bertiniEquations"]
+        for s in requiredInput:
+          print("\tbertiniInput_"+s)
+        sys.exit(1)
+    else:
+      requiredInput = ["variables", "functions", "degrees", "functionNames"]
+      if not all([eval(s) for s in requiredInput]):
+        print("Exiting due to incomplete input. Please include the following in the input file:")
+        for s in requiredInput:
+          print("\t"+s)
+        sys.exit(1)
 
     flatVariablesList = [item for sublist in variables for item in sublist]
     variablesString = ",".join(flatVariablesList)
