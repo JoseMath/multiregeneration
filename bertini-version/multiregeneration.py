@@ -197,8 +197,7 @@ def getLinearsThroughPoint(variables):
     for i in range(len(spoint)):
         for j in range(len(spoint[i])):
             startSolution+=spoint[i][j][0]+" "+spoint[i][j][1]
-            if j<range(len(spoint[i]))[-1]:
-                startSolution+="\n"
+            startSolution+="\n"
     print(startSolution)
     ell = []
     for i in range(len(variables)):
@@ -215,7 +214,7 @@ def getLinearsThroughPoint(variables):
                     terms[x]="(%s+I*%s)*(%s-(%s+I*%s))"%(
                         str(randomNumberGenerator()),
                         str(randomNumberGenerator()),
-                        str(terms[x]),
+                        str(variables[i][x]),
                         spoint[i][x][0],
                         spoint[i][x][1],
                         )
