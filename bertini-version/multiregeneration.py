@@ -364,6 +364,7 @@ INPUT
     parameter s;
     s = t;
     %s
+    %s
 END;
 
 ''' % (bertiniTextTrackingOptions,
