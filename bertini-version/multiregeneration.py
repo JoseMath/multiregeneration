@@ -32,9 +32,6 @@ import random
 # r = [[None, "x1 - 2*x2 + 2.1"], [None, "5*y1 + y2 - 25"]] #So that the
 # # indexing matches the write up, we want the r to start at 1.
 
-# Can we have our file names consist of strings likes _class_index
-# where class takes a value in {depth, dim, group, deg, type, prune}
-# and the respective class_index are in  NN, n_\bullet, [k], NN, {smooth, singular, infinity, {0,1}}
 
 ### Configuration ###
 # Optional inputs # This can be specified in the inputFile
@@ -296,17 +293,17 @@ def isZero(s, logTolerance):
 
 
 # calls Bertini to evaluate a point.
-def vanishes(dirName, functionName, point, logTolerance):
 # a function that returns True if functionString defines a polynomial vanishing at point
+def vanishes(dirName, functionName, point, logTolerance):
     try:  # What is happening here?
         os.mkdir(dirName)
     except:
-        print("Ope! Error opening directory '%s'"%dirName)
+        print("Ope! Error opening directory during vanishes() '%s'"%dirName)
 # Write input file for evaluation.
     print("Vanishes function")
-    print(bertiniTrackingOptionsText)
-    print(variableGroupText)
-    print(revisedEquationsText)
+#    print(bertiniTrackingOptionsText)
+#    print(variableGroupText)
+#    print(revisedEquationsText)
     print(functionName)
     inputText = '''
 CONFIG
@@ -389,7 +386,7 @@ def homotopy(dirName, functionNames, startFunctionString, targetFunctionString, 
     try:
         os.mkdir(dirName)
     except:
-        print("Ope! Error opening directory '%s'"%dirName)
+        print("Ope! Error opening directory during homotopy() '%s'"%dirName)
 # Write input file.
 #    print("Homotopy")
     inputText = '''
@@ -483,6 +480,7 @@ def regenerate(depth, useFunction, currentDimension, regenerationLinearIndex, po
     dirName = directoryName(depth, useFunction, currentDimension,
         regenerationLinearIndex[0], regenerationLinearIndex[1], "regen",
         point)
+    print(dirName)
     startFunctionString="l_%s_%s" %(regenerationLinearIndex[0],currentDimension[regenerationLinearIndex[0]]-1)
     print("startFunctionString")
     print(startFunctionString)
@@ -519,41 +517,38 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
     if any([d < 0 for d in currentDimension]):
       return
 ## Step 1. Check if point is in the next hypersurface.
+    print("Degree %s" % (degrees[depth]))
     checkVanishesDirName = directoryName(depth, useFunction,
         currentDimension, regenerationLinearIndex[0],
         regenerationLinearIndex[1], "eval", point)
+    print(checkVanishesDirName)
     if vanishes(checkVanishesDirName, functionNames[depth], point, logTolerance):
-#        print("Passed: Vanishes--vanished")
-        if depth+1 is len(functionNames):
+        print("A trivial relation occurs")
+        if depth is len(functionNames):
             with open(solutionFileName(depth, useFunction, currentDimension,
                 regenerationLinearIndex[0],
-                 regenerationLinearIndex[1], point), "w") as solutionFile:
+                regenerationLinearIndex[1], point), "w") as solutionFile:
                 solutionFile.write(point)
             return
         regenerateAndTrack(depth + 1, useFunction, currentDimension,
             regenerationLinearIndex, point)
         return
 #    print("Passed: Vanishes--did not vanish")
+    print("Degree %s" % (degrees[depth]))
 ## Step 2: regenerate new point.
     regeneratedPoint = regenerate(depth, useFunction, currentDimension, regenerationLinearIndex, point)
-    print("regeneratedPoint:")
-    print(regeneratedPoint)
+#    print("regeneratedPoint:")
+#    print(regeneratedPoint)
     if regeneratedPoint is "": #if not smooth we assume the string will be empty TODO: check bertini documentation if this is actually true.
       return
-# Step 3: set up linaer product and system
+# Step 3: set up linear product and system
 #    print("STEP 3 ####")
 #    print(currentDimension)
-    dirName = directoryName(depth, useFunction, currentDimension,
-        regenerationLinearIndex[0], regenerationLinearIndex[1],
-        "linearProduct", point)
-#    print("Passed: directoryName in step 3.")
     linearProduct = "(1)"
-    print("Degree %s" % (degrees[depth]))
     for i in range(len(variables)):
         for j in range(degrees[depth][i]):
 #            print("LinearProduct factor %s %s"%(i, j))
             linearProduct += "*(r_%s_%s)"%(i, j)
-    print("LP %s" % linearProduct)
     # make a system of equations to track the linear product to f_D
     linearProductHomotopySytemNames = ["HF"]
     for i in range(0, depth):
@@ -564,8 +559,6 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
 #            print(i,j)
             if not (i == regenerationLinearIndex[0] and j == currentDimension[i]-1):
                 linearProductHomotopySytemNames.append("l_%d_%d"%(i,j))
-    print("linearProductHomotopySytemNames")
-    print(linearProductHomotopySytemNames)
 # Step 4. Now we prepare the linears we wil need in our beritni input file
     ellText = "\n % ellText\n"
     for i in range(len(currentDimension)):
@@ -578,33 +571,41 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
 #            print(j)
             rText += "r_%s_%s" %(i,j)+" = "+r[i][j]+" ; \n"
 #    print("rText\n"+rText)
+    depth = depth+1
+    dirName = directoryName(depth, useFunction, currentDimension,
+        regenerationLinearIndex[0], regenerationLinearIndex[1],
+        "linearProduct", point)
+    print(dirName)
+    print("LP %s" % linearProduct)
+    print("linearProductHomotopySytemNames")
+    print(linearProductHomotopySytemNames)
 # Step 5. now we track
     trackedPoint = homotopy(dirName,
             linearProductHomotopySytemNames,
             linearProduct,
-            functionNames[depth],
+            functionNames[depth-1],
             [regeneratedPoint],ellText,rText)
     if not trackedPoint: # if it's singular the string will be empty
         return
-    if depth+1 is len(functionNames):
+    if depth is len(functionNames):
         with open(solutionFileName(depth, useFunction, currentDimension,
             regenerationLinearIndex[0], regenerationLinearIndex[1],
             trackedPoint), "w") as solutionFile:
             solutionFile.write(trackedPoint)
         return
     for i in range(len(variables)):
-        for j in range(degrees[depth+1][i]):
+        for j in range(degrees[depth-1][i]):
             newUseFunction = []
             for b in useFunction:
                 newUseFunction.append(b)
-            newUseFunction[depth] = True
+            newUseFunction[depth-1] = True
             newCurrentDimension = []
             for d in currentDimension:
                 newCurrentDimension.append(d)
             newCurrentDimension[i] = currentDimension[i]-1
             child_pid = os.fork()
             if child_pid == 0:
-                regenerateAndTrack(depth+1, newUseFunction, newCurrentDimension, [i,j], trackedPoint)
+                regenerateAndTrack(depth, newUseFunction, newCurrentDimension, [i,j], trackedPoint)
                 sys.exit(0)
 
 
