@@ -295,16 +295,16 @@ def isZero(s, logTolerance):
 # calls Bertini to evaluate a point.
 # a function that returns True if functionString defines a polynomial vanishing at point
 def vanishes(dirName, functionName, point, logTolerance):
+    print("evaluating point at %s " % functionName)
     try:  # What is happening here?
         os.mkdir(dirName)
     except:
         print("Ope! Error opening directory during vanishes() '%s'"%dirName)
 # Write input file for evaluation.
-    print("Vanishes function")
+#    print("Vanishes function")
 #    print(bertiniTrackingOptionsText)
 #    print(variableGroupText)
 #    print(revisedEquationsText)
-    print(functionName)
     inputText = '''
 CONFIG
   %s
@@ -347,13 +347,11 @@ END;
         print("Bertini error")
         sys.exit(1) # the one is for error and 0 is for everyhting is fine.
     value = solutionsLines[2].split(' ')
-
+    print(value)
     isVanishing = isZero(value[0], logTolerance) and isZero(value[1],
         logTolerance)
-
     with open("isVanishing", "w") as isVanishingFile:
       isVanishingFile.write(str(isVanishing))
-
     os.chdir(cwd) #Can we move this right after the previous except?
     return isVanishing
 
@@ -371,9 +369,9 @@ def directoryName(depth, useFunction, currentDimension, varGroup,
     return dirName
 
 
-def solutionFileName(depth, useFunction, currentDimension, varGroup, regenLinear, point):
+def solutionFileName(depth, functionZero, currentDimension, varGroup, regenLinear, point):
     solutionFileName = "all_full_depth_solutions/depth_%d_gens_%s_dim_%s_varGroup_%d_regenLinear_%d_pointId_%s"%(depth,
-        "".join(map(lambda b: "1" if b else "0", useFunction)),
+        "".join(map(lambda b: "1" if b else "0", functionZero)),
         "_".join(map(str, currentDimension)),
         varGroup,
         regenLinear,
@@ -461,32 +459,24 @@ def regenerate(depth, useFunction, currentDimension, regenerationLinearIndex, po
     regenerationSystem = []
     regenerationSystemFunctionNames = []
     currentIndexInSystem = -1
-    regenerationSystemTargetIndex = 0
+    regenerationSystemFunctionNames.append("HF")
     for i in range(len(functionNames)):
         if useFunction[i]:
             regenerationSystem.append(functionNames[i])
             regenerationSystemFunctionNames.append(functionNames[i])
             currentIndexInSystem+=1
     for i in range(len(variables)):
-        for j in range(currentDimension[i]):
+        a =(i==regenerationLinearIndex[0])
+        for j in range(currentDimension[i]-a):
             regenerationSystem.append(l[i][j])
             regenerationSystemFunctionNames.append("l_%d_%d"%(i,j))
             currentIndexInSystem += 1
-        if i is regenerationLinearIndex[0]:
-        # If the current variable group is the target one
-            regenerationSystemTargetIndex = currentIndexInSystem
-            # Then the target l to get rid of is the last one in that
-            # variable group
     dirName = directoryName(depth, useFunction, currentDimension,
         regenerationLinearIndex[0], regenerationLinearIndex[1], "regen",
         point)
-    print(dirName)
+    print("\n"+dirName)
     startFunctionString="l_%s_%s" %(regenerationLinearIndex[0],currentDimension[regenerationLinearIndex[0]]-1)
-    print("startFunctionString")
-    print(startFunctionString)
     targetFunctionString="r_%s_%s" %(regenerationLinearIndex[0],regenerationLinearIndex[1])
-    print("targetFunctionString")
-    print(targetFunctionString)
 #    print("before regeneratedPoint")
     ellText = "\n % ellText\n"
     for i in range(len(currentDimension)):
@@ -499,6 +489,9 @@ def regenerate(depth, useFunction, currentDimension, regenerationLinearIndex, po
 #            print(j)
             rText += "r_%s_%s" %(i,j)+" = "+r[i][j]+" ; \n"
 #    print("rText\n"+rText)
+    print("Regenerate System: %s" % regenerationSystemFunctionNames)
+    print("startFunctionString: %s" % startFunctionString)
+    print("targetFunctionString %s" % targetFunctionString)
     regeneratedPoint = homotopy(dirName,
             regenerationSystemFunctionNames,
             startFunctionString,
@@ -514,6 +507,8 @@ def regenerate(depth, useFunction, currentDimension, regenerationLinearIndex, po
 
 
 def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearIndex, point):
+    print("start point")
+    print(point)
     if any([d < 0 for d in currentDimension]):
       return
 ## Step 1. Check if point is in the next hypersurface.
@@ -522,26 +517,23 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
         currentDimension, regenerationLinearIndex[0],
         regenerationLinearIndex[1], "eval", point)
     print(checkVanishesDirName)
-    if depth < len(functionNames):
-        if vanishes(checkVanishesDirName, functionNames[depth], point, logTolerance):
-            print("A trivial relation occurs")
-            depth = depth+1
-            regenerateAndTrack(depth, useFunction, currentDimension,
-                regenerationLinearIndex, point)
+    if vanishes(checkVanishesDirName, functionNames[depth], point, logTolerance):
+        print("A trivial relation occurs")
+        if depth is len(functionNames):
+            with open(solutionFileName(depth, useFunction, currentDimension,
+                regenerationLinearIndex[0],
+                regenerationLinearIndex[1], point), "w") as solutionFile:
+                solutionFile.write(point)
             return
-    else: 
-        with open(solutionFileName(depth, useFunction, currentDimension,
-            regenerationLinearIndex[0],
-            regenerationLinearIndex[1], point), "w") as solutionFile:
-            solutionFile.write(point)
+        regenerateAndTrack(depth + 1, useFunction, currentDimension,
+            regenerationLinearIndex, point)
         return
-
 #    print("Passed: Vanishes--did not vanish")
-    print("Degree %s" % (degrees[depth]))
+#    print("Degree %s" % (degrees[depth]))
 ## Step 2: regenerate new point.
     regeneratedPoint = regenerate(depth, useFunction, currentDimension, regenerationLinearIndex, point)
-#    print("regeneratedPoint:")
-#    print(regeneratedPoint)
+    print("regeneratedPoint:")
+    print(regeneratedPoint)
     if regeneratedPoint is "": #if not smooth we assume the string will be empty TODO: check bertini documentation if this is actually true.
       return
 # Step 3: set up linear product and system
@@ -579,17 +571,23 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
     depth = depth+1
     dirName = directoryName(depth, functionZero, currentDimension,
         regenerationLinearIndex[0], regenerationLinearIndex[1],
-        "linearProduct", point)
+        "linearProduct", regeneratedPoint)
     print(dirName)
-    print("LP %s" % linearProduct)
     print("linearProductHomotopySytemNames")
     print(linearProductHomotopySytemNames)
+    print("LP %s" % linearProduct)
+    startFunctionString=linearProduct
+    targetFunctionString=functionNames[depth-1]
+    print("startFunctionString: %s" % startFunctionString)
+    print("targetFunctionString %s" % targetFunctionString)
 # Step 5. now we track
     trackedPoint = homotopy(dirName,
             linearProductHomotopySytemNames,
-            linearProduct,
-            functionNames[depth-1],
+            startFunctionString,
+            targetFunctionString,
             [regeneratedPoint],ellText,rText)
+    print("trackedPoint")
+    print(trackedPoint)
     if not trackedPoint: # if it's singular the string will be empty
         return
     if depth is len(functionNames):
@@ -598,11 +596,6 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
             trackedPoint), "w") as solutionFile:
             solutionFile.write(trackedPoint)
         return
-    print("Current Degree #######")
-    print(degrees[depth])
-    print("Current Depth ")
-    print(depth)
-    print(dir)
     for i in range(len(variables)):
         for j in range(degrees[depth][i]):
             newUseFunction = []
@@ -614,7 +607,10 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
                 newCurrentDimension.append(d)
             newCurrentDimension[i] = currentDimension[i]-1
             child_pid = os.fork()
+            print("child_pid")
+            print(child_pid)
             if child_pid == 0:
+                print(i,j)
                 regenerateAndTrack(depth, newUseFunction, newCurrentDimension, [i,j], trackedPoint)
                 sys.exit(0)
 
