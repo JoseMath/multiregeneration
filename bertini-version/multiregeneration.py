@@ -181,8 +181,7 @@ global useBertiniInputStyle
                 print("depth > "+str(c)+" satisfy "+ f+" = 0")
 # Determine random linear polynomials l[i][j]
     (l, startSolution) = getLinearsThroughPoint(variables)
-    print(l)
-    print(startSolution)
+#    print(startSolution)
 # Determine random linear polynomials r[i][j]
     r = []
     for i in range(len(variables)):
@@ -193,32 +192,32 @@ global useBertiniInputStyle
         print("%s is the maximum degree in variable group %s. "%(maxdeg,i))
         for d in range(maxdeg):
             r[i].append(getGenericLinearInVariableGroup(i))
-        print("This is the last linear polynomial in r[%s]: \n%s" % (i,str(r[i][-1])))
+#        print("This is the last linear polynomial in r[%s]: \n%s" % (i,str(r[i][-1])))
 # For the first node here are all the outedges
     print("For the first node here are all the outedges")
     for i in range(len(variables)):
         for j in range(degrees[0][i]):
             #TODO understand what is wrong here.
-            print(projectiveVariableGroups)
+#            print(projectiveVariableGroups)
             currentDimension=[(len(group) - 1 if (i in projectiveVariableGroups) else len(group)) for group in variables]
-            print("currentDimension  #A#")
-            print(currentDimension)
+#            print("currentDimension  #A#")
+#            print(currentDimension)
             for k in range(len(variables)):
-                print(k)
+#                print(k)
                 currentDimension[k] = len(variables[k])
                 if k in projectiveVariableGroups:
                     currentDimension[k] = len(variables[k])-1
-            print("currentDimension  #B#")
+            print("currentDimension")
             print(currentDimension)
             useFunction=[False for f in functionNames]
-            print(useFunction)
+#            print("useFunction")
+#            print(useFunction)
             regenerationLinearIndex=[i,j]
             regenerateAndTrack(depth,
                 useFunction, # gens
                 currentDimension,
                 regenerationLinearIndex, # varGroup and regenLinear
                 startSolution)
-
     os.chdir("..")
 
 # used to get generic linears (A)
@@ -247,7 +246,7 @@ def getLinearsThroughPoint(variables):
         for j in range(len(spoint[i])):
             startSolution+=spoint[i][j][0]+" "+spoint[i][j][1]
             startSolution+="\n"
-    print(startSolution)
+#    print(startSolution)
     ell = []
     for i in range(len(variables)):
         ell.append([])
@@ -283,9 +282,9 @@ def getLinearsThroughPoint(variables):
         #    print(linearString)
         #    print(" End Linear")
             ell[i].append(linearString)
-    for i in range(len(variables)):
-        print("\nThis is the first linear polynomial for variable group %s.\n "% i)
-        print(ell[i][0])
+#    for i in range(len(variables)):
+#        print("\nThis is the first linear polynomial for variable group %s.\n "% i)
+#        print(ell[i][0])
     return (ell, startSolution)
 
 
@@ -392,7 +391,7 @@ def homotopy(dirName, functionNames, startFunctionString, targetFunctionString, 
     except:
         print("Ope! Error opening directory '%s'"%dirName)
 # Write input file.
-    print("Homotopy")
+#    print("Homotopy")
     inputText = '''
 CONFIG
     %s
@@ -490,18 +489,18 @@ def regenerate(depth, useFunction, currentDimension, regenerationLinearIndex, po
     targetFunctionString="r_%s_%s" %(regenerationLinearIndex[0],regenerationLinearIndex[1])
     print("targetFunctionString")
     print(targetFunctionString)
-    print("before regeneratedPoint")
+#    print("before regeneratedPoint")
     ellText = "\n % ellText\n"
     for i in range(len(currentDimension)):
         for j in range(currentDimension[i]):
             ellText += "l_%s_%s" %(i,j)+" = "+l[i][j]+" ; \n"
-    print("ellText\n"+ellText)
+#    print("ellText\n"+ellText)
     rText = "\n % rText\n"
     for i in range(len(degrees[0])):
         for j in range(degrees[depth][i]):
-            print(j)
+#            print(j)
             rText += "r_%s_%s" %(i,j)+" = "+r[i][j]+" ; \n"
-    print("rText\n"+rText)
+#    print("rText\n"+rText)
     regeneratedPoint = homotopy(dirName,
             regenerationSystemFunctionNames,
             startFunctionString,
@@ -524,7 +523,7 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
         currentDimension, regenerationLinearIndex[0],
         regenerationLinearIndex[1], "eval", point)
     if vanishes(checkVanishesDirName, functionNames[depth], point, logTolerance):
-        print("Passed: Vanishes--vanished")
+#        print("Passed: Vanishes--vanished")
         if depth+1 is len(functionNames):
             with open(solutionFileName(depth, useFunction, currentDimension,
                 regenerationLinearIndex[0],
@@ -534,25 +533,25 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
         regenerateAndTrack(depth + 1, useFunction, currentDimension,
             regenerationLinearIndex, point)
         return
-    print("Passed: Vanishes--did not vanish")
+#    print("Passed: Vanishes--did not vanish")
 ## Step 2: regenerate new point.
     regeneratedPoint = regenerate(depth, useFunction, currentDimension, regenerationLinearIndex, point)
+    print("regeneratedPoint:")
     print(regeneratedPoint)
-    print("Passed: Regenerate")
     if regeneratedPoint is "": #if not smooth we assume the string will be empty TODO: check bertini documentation if this is actually true.
       return
 # Step 3: set up linaer product and system
-    print("STEP 3 ####")
-    print(currentDimension)
+#    print("STEP 3 ####")
+#    print(currentDimension)
     dirName = directoryName(depth, useFunction, currentDimension,
         regenerationLinearIndex[0], regenerationLinearIndex[1],
         "linearProduct", point)
-    print("Passed: directoryName in step 3.")
+#    print("Passed: directoryName in step 3.")
     linearProduct = "(1)"
-    print("Degrees %s" % (degrees[depth]))
+    print("Degree %s" % (degrees[depth]))
     for i in range(len(variables)):
         for j in range(degrees[depth][i]):
-            print("LinearProduct factor %s %s"%(i, j))
+#            print("LinearProduct factor %s %s"%(i, j))
             linearProduct += "*(r_%s_%s)"%(i, j)
     print("LP %s" % linearProduct)
     # make a system of equations to track the linear product to f_D
@@ -562,7 +561,7 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
             linearProductHomotopySytemNames.append(functionNames[i])
     for i in range(len(variables)):
         for j in range(currentDimension[i]):
-            print(i,j)
+#            print(i,j)
             if not (i == regenerationLinearIndex[0] and j == currentDimension[i]-1):
                 linearProductHomotopySytemNames.append("l_%d_%d"%(i,j))
     print("linearProductHomotopySytemNames")
@@ -572,13 +571,13 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
     for i in range(len(currentDimension)):
         for j in range(currentDimension[i]):
             ellText += "l_%s_%s" %(i,j)+" = "+l[i][j]+" ; \n"
-    print("ellText\n"+ellText)
+#    print("ellText\n"+ellText)
     rText = "\n % rText\n"
     for i in range(len(degrees[0])):
         for j in range(degrees[depth][i]):
-            print(j)
+#            print(j)
             rText += "r_%s_%s" %(i,j)+" = "+r[i][j]+" ; \n"
-    print("rText\n"+rText)
+#    print("rText\n"+rText)
 # Step 5. now we track
     trackedPoint = homotopy(dirName,
             linearProductHomotopySytemNames,
@@ -607,7 +606,6 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
             if child_pid == 0:
                 regenerateAndTrack(depth+1, newUseFunction, newCurrentDimension, [i,j], trackedPoint)
                 sys.exit(0)
-
 
 
 if __name__== "__main__":
