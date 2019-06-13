@@ -522,17 +522,20 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
         currentDimension, regenerationLinearIndex[0],
         regenerationLinearIndex[1], "eval", point)
     print(checkVanishesDirName)
-    if vanishes(checkVanishesDirName, functionNames[depth], point, logTolerance):
-        print("A trivial relation occurs")
-        if depth is len(functionNames):
-            with open(solutionFileName(depth, useFunction, currentDimension,
-                regenerationLinearIndex[0],
-                regenerationLinearIndex[1], point), "w") as solutionFile:
-                solutionFile.write(point)
+    if depth < len(functionNames):
+        if vanishes(checkVanishesDirName, functionNames[depth], point, logTolerance):
+            print("A trivial relation occurs")
+            depth = depth+1
+            regenerateAndTrack(depth, useFunction, currentDimension,
+                regenerationLinearIndex, point)
             return
-        regenerateAndTrack(depth + 1, useFunction, currentDimension,
-            regenerationLinearIndex, point)
+    else: 
+        with open(solutionFileName(depth, useFunction, currentDimension,
+            regenerationLinearIndex[0],
+            regenerationLinearIndex[1], point), "w") as solutionFile:
+            solutionFile.write(point)
         return
+
 #    print("Passed: Vanishes--did not vanish")
     print("Degree %s" % (degrees[depth]))
 ## Step 2: regenerate new point.
@@ -571,8 +574,10 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
 #            print(j)
             rText += "r_%s_%s" %(i,j)+" = "+r[i][j]+" ; \n"
 #    print("rText\n"+rText)
+    functionZero=useFunction
+    functionZero[depth]=[True]
     depth = depth+1
-    dirName = directoryName(depth, useFunction, currentDimension,
+    dirName = directoryName(depth, functionZero, currentDimension,
         regenerationLinearIndex[0], regenerationLinearIndex[1],
         "linearProduct", point)
     print(dirName)
@@ -593,8 +598,13 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
             trackedPoint), "w") as solutionFile:
             solutionFile.write(trackedPoint)
         return
+    print("Current Degree #######")
+    print(degrees[depth])
+    print("Current Depth ")
+    print(depth)
+    print(dir)
     for i in range(len(variables)):
-        for j in range(degrees[depth-1][i]):
+        for j in range(degrees[depth][i]):
             newUseFunction = []
             for b in useFunction:
                 newUseFunction.append(b)
