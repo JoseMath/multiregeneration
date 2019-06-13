@@ -1,3 +1,3 @@
-degrees = [[1,1],[1,2],[1,2]]
+degrees = 
 logTolerance = -10
 workingDirectory = "run"

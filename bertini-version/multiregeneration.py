@@ -217,6 +217,7 @@ global useBertiniInputStyle
                 startSolution)
     os.chdir("..")
 
+
 # used to get generic linears (A)
 def getGenericLinearInVariableGroup(variableGroup):
     terms = []
@@ -279,7 +280,8 @@ def getLinearsThroughPoint(variables):
         #    print(linearString)
         #    print(" End Linear")
             ell[i].append(linearString)
-#    for i in range(len(variables)):
+    for i in range(len(variables)):
+        print("\n The are %s ells in group %s .\n "% (len(ell[i]),i))
 #        print("\nThis is the first linear polynomial for variable group %s.\n "% i)
 #        print(ell[i][0])
     return (ell, startSolution)
@@ -343,8 +345,8 @@ END;
         solutionsFile.close()
     except:
         print("Ope! Error opening file 'function'")
-    if not solutionsLines:
-        print("Bertini error")
+#    if not solutionsFile:
+        print("Bertini error likely: check bertiniInput_...")
         sys.exit(1) # the one is for error and 0 is for everyhting is fine.
     value = solutionsLines[2].split(' ')
     print(value)
@@ -366,6 +368,7 @@ def directoryName(depth, useFunction, currentDimension, varGroup,
         regenLinear,
         homotopyKind,
         (abs(hash(point)) % (10 ** 8)))
+    print((abs(hash(point)) % (10 ** 8)))
     return dirName
 
 
@@ -456,21 +459,23 @@ END;
 
 # Takes P to Q by calling homotopy()
 def regenerate(depth, useFunction, currentDimension, regenerationLinearIndex, point):
+    currentDegree=degrees[depth]
     regenerationSystem = []
     regenerationSystemFunctionNames = []
-    currentIndexInSystem = -1
     regenerationSystemFunctionNames.append("HF")
+    if currentDimension[regenerationLinearIndex[0]]-1<0 :
+        print(currentDimension)
+        print("No point regeneration. ")
+        return ""
     for i in range(len(functionNames)):
         if useFunction[i]:
             regenerationSystem.append(functionNames[i])
             regenerationSystemFunctionNames.append(functionNames[i])
-            currentIndexInSystem+=1
     for i in range(len(variables)):
         a =(i==regenerationLinearIndex[0])
         for j in range(currentDimension[i]-a):
             regenerationSystem.append(l[i][j])
             regenerationSystemFunctionNames.append("l_%d_%d"%(i,j))
-            currentIndexInSystem += 1
     dirName = directoryName(depth, useFunction, currentDimension,
         regenerationLinearIndex[0], regenerationLinearIndex[1], "regen",
         point)
@@ -485,7 +490,7 @@ def regenerate(depth, useFunction, currentDimension, regenerationLinearIndex, po
 #    print("ellText\n"+ellText)
     rText = "\n % rText\n"
     for i in range(len(degrees[0])):
-        for j in range(degrees[depth][i]):
+        for j in range(currentDegree[i]):
 #            print(j)
             rText += "r_%s_%s" %(i,j)+" = "+r[i][j]+" ; \n"
 #    print("rText\n"+rText)
@@ -507,33 +512,39 @@ def regenerate(depth, useFunction, currentDimension, regenerationLinearIndex, po
 
 
 def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearIndex, point):
-    print("start point")
-    print(point)
+    print("currentDimension %s" % currentDimension)
+    print("regenerationLinearIndex %s" % regenerationLinearIndex)
+#    print("start point")
+#    print(point)
     if any([d < 0 for d in currentDimension]):
-      return
+        depth = depth+1
+        return
 ## Step 1. Check if point is in the next hypersurface.
-    print("Degree %s" % (degrees[depth]))
+    currentDegree = degrees[depth]
+    print("Degree %s" % (currentDegree))
     checkVanishesDirName = directoryName(depth, useFunction,
         currentDimension, regenerationLinearIndex[0],
         regenerationLinearIndex[1], "eval", point)
     print(checkVanishesDirName)
     if vanishes(checkVanishesDirName, functionNames[depth], point, logTolerance):
         print("A trivial relation occurs")
-        if depth is len(functionNames):
+        if depth+1 is len(functionNames):
             with open(solutionFileName(depth, useFunction, currentDimension,
                 regenerationLinearIndex[0],
                 regenerationLinearIndex[1], point), "w") as solutionFile:
                 solutionFile.write(point)
+                depth = depth+1
             return
-        regenerateAndTrack(depth + 1, useFunction, currentDimension,
+        depth = depth+1
+        regenerateAndTrack(depth , useFunction, currentDimension,
             regenerationLinearIndex, point)
         return
 #    print("Passed: Vanishes--did not vanish")
 #    print("Degree %s" % (degrees[depth]))
 ## Step 2: regenerate new point.
     regeneratedPoint = regenerate(depth, useFunction, currentDimension, regenerationLinearIndex, point)
-    print("regeneratedPoint:")
-    print(regeneratedPoint)
+#    print("regeneratedPoint:")
+#    print(regeneratedPoint)
     if regeneratedPoint is "": #if not smooth we assume the string will be empty TODO: check bertini documentation if this is actually true.
       return
 # Step 3: set up linear product and system
@@ -562,7 +573,7 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
 #    print("ellText\n"+ellText)
     rText = "\n % rText\n"
     for i in range(len(degrees[0])):
-        for j in range(degrees[depth][i]):
+        for j in range(currentDegree[i]):
 #            print(j)
             rText += "r_%s_%s" %(i,j)+" = "+r[i][j]+" ; \n"
 #    print("rText\n"+rText)
@@ -586,8 +597,8 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
             startFunctionString,
             targetFunctionString,
             [regeneratedPoint],ellText,rText)
-    print("trackedPoint")
-    print(trackedPoint)
+#    print("trackedPoint")
+#    print(trackedPoint)
     if not trackedPoint: # if it's singular the string will be empty
         return
     if depth is len(functionNames):
@@ -597,7 +608,7 @@ def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearI
             solutionFile.write(trackedPoint)
         return
     for i in range(len(variables)):
-        for j in range(degrees[depth][i]):
+        for j in range(currentDegree[i]):
             newUseFunction = []
             for b in useFunction:
                 newUseFunction.append(b)
