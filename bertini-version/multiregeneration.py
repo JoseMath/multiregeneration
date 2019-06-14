@@ -170,7 +170,7 @@ global useBertiniInputStyle
 
 # print to screen system summary.
     if verbose > 0:
-        print("\n################### Starting multiregeneration ####################\n")
+        print("\n################### Setup multiregeneration ####################\n")
         print("These variable groups have been selected:\n"+variableGroupText)
         print("Solutions in a 'linearProduct' directory and :")
         for c, f in enumerate(functionNames): # 0 is the depth we start with
@@ -189,8 +189,12 @@ global useBertiniInputStyle
         print("%s is the maximum degree in variable group %s. "%(maxdeg,i))
         for d in range(maxdeg):
             r[i].append(getGenericLinearInVariableGroup(i))
+    if verbose > 0:
+        print("\n################### Starting multiregeneration ####################\n")
+
 #        print("This is the last linear polynomial in r[%s]: \n%s" % (i,str(r[i][-1])))
 # For the first node here are all the outedges
+# TODO Don't we need to check if it vanishes before splitting?
     print("For the first node here are all the outedges")
     for i in range(len(variables)):
         for j in range(degrees[0][i]):
@@ -280,8 +284,8 @@ def getLinearsThroughPoint(variables):
         #    print(linearString)
         #    print(" End Linear")
             ell[i].append(linearString)
-    for i in range(len(variables)):
-        print("\n The are %s ells in group %s .\n "% (len(ell[i]),i))
+#    for i in range(len(variables)):
+#        print("\n The are %s ells in group %s .\n "% (len(ell[i]),i))
 #        print("\nThis is the first linear polynomial for variable group %s.\n "% i)
 #        print(ell[i][0])
     return (ell, startSolution)
