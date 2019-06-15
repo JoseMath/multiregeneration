@@ -200,6 +200,7 @@ global useBertiniInputStyle
             r[i].append(getGenericLinearInVariableGroup(i))
     if B== None:
         B=len(fNames)  # TODO: check that this is not off by one.
+        print("B is set to %d" % B)
     if verbose > 0:
         print("\n################### Starting multiregeneration ####################\n")
     regenerateSolving(depth, G, B, bfe, startSolution,"smooth")
@@ -281,8 +282,8 @@ def isZero(s, logTolerance):
 
 # Makes the directory for each process.
 def directoryName(depth, G, bfe, varGroup, regenLinear, homotopyKind, point):
-    print("This is G: %s",str(G))
-    useFunction = "_".join(map(lambda b: "1" if b else "0", G+[depth]));
+    print("This is G: %s" % G)
+    useFunction = "_".join(map(lambda b: "1" if b else "0", G+[1]))
     print(useFunction)
     dirName = "depth_%d_gens_%s_dim_%s_varGroup_%d_regenLinear_%d_homotopy_%s_pointId_%s"%(depth,
         useFunction,
@@ -319,8 +320,10 @@ def directoryName(depth, G, bfe, varGroup, regenLinear, homotopyKind, point):
 
 # A parent homotopy takes a point P to  pPrime
 def parentHomotopy(depth, G, bfe, vg, m, fTarget, dirName,point):
+    vg=str(vg)
     M = degrees[depth]
-    print("bfe %s" % bfe)
+    print("bfe:  %s" % bfe)
+    print("G at start of parentHomotopy: %s " % G)
 ## Step 1. Check if point is in the next hypersurface.
     label = "Missing"
     print("evaluating point at %s " % fNames[depth])
@@ -390,11 +393,11 @@ END;
     print("isVanishing is %s"  % isVanishing)
     if isVanishing:
         label = "smooth"
-        print("1. Label %s" % label)
+#        print("1. Label %s" % label)
     else:
         if max(bfe) < 1: # if bfe is the zero vector.
             label = "nonsolution"
-            print("2. Label %s" % label)
+#            print("2. Label %s" % label)
         else:
             ###  set up Homotopy P to Q
             # write start parameters
@@ -406,28 +409,34 @@ END;
             startFile.write("1\n0 0")
             startFile.close()
         # set up system
-            regenerationSystemFunctionNames = G
-            regenerationSystemFunctionNames.append("HF")
-#            for vg in range(len(variables)):
-#                for j in range(bfe[vg]):
-#                    regenerationSystemFunctionNames.append("l_%d_%d"%(vg,j))
-#            dirName = directoryName(depth, useFunction, bfe, vg, m, "regen", point)
             print("\n"+dirName)
-            startFunctionString="l_%s_%s" %(vg,bfe[vg])
-            targetFunctionString="r_%s_%s" %(vg,m)
+            HG = []
+            for i in range(len(G)):
+                if G[i]:
+                    HG.append(fNames[i])
+#            print("1. HG is %s" % HG)
+#            print("1. G is %s" % G)
+            for i in range(len(bfe)):
+                for j in range(bfe[i]):
+                    print("l_%d_%d"%(i,j))
+                    HG.append("l_%d_%d"%(i,j))
+#            print("2. HG is %s" % HG)
+#            print("2. G is %s" % G)
+            startFunctionString="l_%s_%d" %(vg,bfe[eval(vg)])
+            targetFunctionString="r_%s_%d" %(vg,m)
         #    print("before regeneratedPoint")
             ellText = "\n % ellText\n"
             rText = "\n % rText\n"
             for i in range(len(bfe)):
                 for j in range(bfe[i]):
-                    ellText += "l_%s_%s" % (i, j)+" = "+l[i][j]+" ; \n"
-                    regenerationSystemFunctionNames.append("l_%d_%d"%(i,j))
+                    ellText += "l_%d_%d" % (i,j)+" = "+l[i][j]+" ; \n"
+#                    regenerationSystemFunctionNames.append("l_%s_%s"%(str(i),str(j)))
                 for j in range(M[i]):
                     rText += "r_%s_%s" %(i,j)+" = "+r[i][j]+" ; \n"
-            ellText += "l_%s_%s" % (vg, bfe[vg]) +" = "+l[vg][bfe[vg]]+" ; \n"
-            print(ellText)
+            ellText += "l_%s_%d" % (vg, bfe[eval(vg)]) +" = "+l[eval(vg)][bfe[eval(vg)]]+" ; \n"
+            # print(ellText)
         #    print("rText\n"+rText)
-            print("Regenerate System: %s" % regenerationSystemFunctionNames)
+            print(" HG is %s" % ",".join(HG))
             print("startFunctionString: %s" % startFunctionString)
             print("targetFunctionString %s" % targetFunctionString)
 ###  write bertini-input file for Homotopy P to Q
@@ -439,6 +448,7 @@ END;
 INPUT
     %s
     parameter Tpath ;
+    function HF;
     function %s;
     %s
     %s
@@ -448,13 +458,13 @@ END;
 Homotopy from P to Q
             '''%(bertiniTrackingOptionsText,
                   variableGroupText,
-                  ",".join(regenerationSystemFunctionNames),
+                  ",".join(HG),
                   revisedEquationsText,
                   ellText,
                   rText,
                   startFunctionString,
                   targetFunctionString)
-            print("\nTry to write inputPQ")
+#            print("\nTry to write inputPQ")
             inputFile = open("%s/inputPQ"%dirName, "w")
             inputFile.write(inputText)
             inputFile.close()
@@ -463,8 +473,8 @@ Homotopy from P to Q
             for i in range(len(bfe)):
                 for j in range(M[i]):
             # print("LinearProduct factor %s %s"%(i, j))
-                    linearProduct += "*(r_%s_%s)"%(i, j)
-            print("LP %s" % linearProduct)
+                    linearProduct += "*(r_%s_%s)"%(str(i), str(j))
+            # print("LP %s" % linearProduct)
             startFunctionString=linearProduct
             targetFunctionString=fNames[depth]
             print("startFunctionString: %s" % startFunctionString)
@@ -478,6 +488,7 @@ END;
 INPUT
     %s
     parameter Tpath ;
+    function HF ;
     function %s;
     %s
     %s
@@ -487,13 +498,13 @@ END;
 Homotopy from Q to P.
             '''%(bertiniTrackingOptionsText,
                   variableGroupText,
-                  ",".join(regenerationSystemFunctionNames),
+                  ",".join(HG),
                   revisedEquationsText,
                   ellText,
                   rText,
                   startFunctionString,
                   targetFunctionString)
-            print("\nTry to write inputQP")
+            # print("\nTry to write inputQP")
             inputFile = open("%s/inputQP" % dirName, "w")
             inputFile.write(inputText)
             inputFile.close()
@@ -531,7 +542,7 @@ Homotopy from Q to P.
             print(dirName)
             os.rename("nonsingular_solutions", 'start')
             print("..Success likely")
-            print("Try to call bertini inputQP")
+#            print("Try to call bertini inputQP")
             try:
                 bertiniCommand = "bertini inputQP"
                 process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)  #What is going on here?
@@ -566,43 +577,47 @@ Homotopy from Q to P.
                             P=[]
                             label="infinity"
             os.chdir("..")
-            return (P, label)
+            return (isVanishing, P, label)
 
 
 
 
 def regenerateSolving(depth, G, B, bfe, point,label):
+    print("###### start a regenerateSolving")
     print("bfe %s" % bfe)
-    if depth>B:
+    if depth>B or depth+1>len(fNames) :
+        print("complete")
         label=label+"complete"
     else:
-        fTarget = fNames[depth]
+        print(fNames)
+        print(depth)
+        print(len(fNames))
+        fTarget = fNames[depth-1]
         M = degrees[depth]
         print("Degree M %s" % (M))
         for i in range(len(M)):
             print(M[i])
-            if bfe[i]>0 and M[i]>0:
-    #         child_pid = os.fork()
-    #         print("child_pid")
-    #         print(child_pid)
-    #         if child_pid == 0:
-    #             print(i,j)
-    #             regenerateAndTrack(depth, newUseFunction, newCurrentDimension, [i,j], pPrime)
-    #             sys.exit(0)
-                bfe[i]=bfe[i]-1
+            if bfe[i]-1>0 and M[i]>0:
                 for j in range(M[i]):
-                    P = point
-#TODO: remove the reduant argument in directory name
-                    print("###Mystery###")
-                    print(depth, G,bfe,i,j,)
-                    print(fTarget,P)
-                    print(depth, G, bfe, i, j, "delete", P)
-                    dirName = directoryName(depth, G, bfe, i, j, "delete", P)
-                    (P,label) = parentHomotopy(depth, G,bfe,i,j,fTarget,dirName,P)
-                    G.append(depth)
-                    regenerateSolving(depth+1,G,B,bfe,P,label)
+                    child_pid = os.fork()
+                    print("child_pid")
+                    print(child_pid)
+                    if child_pid == 0:
+                        print(depth,bfe,i,j)
+                        P = point
+                        #TODO: remove the reduant argument in directory name
+                        bfePrime=bfe
+                        bfePrime[i]=bfePrime[i]-1
+                        dirName = directoryName(depth, G, bfePrime, i, j, "delete", P)
+                        print("directory name before parentHomotopy %s" %dirName)
+                        print("G before parentHomotopy %s" %G)
+                        (isVanishing,P,label) = parentHomotopy(depth, G, bfePrime, i, j, fNames[depth], dirName, P)
+                        print("  #####    leaving to start another")
+                        regenerateSolving(depth+1,G+[not(isVanishing)],B,bfePrime,P,label)
+#                        regenerateAndTrack(depth, newUseFunction, newCurrentDimension, [i,j], pPrime)
+                        sys.exit(0)
 
-    print("123124")
+
 
 
 if __name__== "__main__":
