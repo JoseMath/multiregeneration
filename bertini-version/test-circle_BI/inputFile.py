@@ -1,3 +1,3 @@
-degrees = [[2], [1]]
+degrees = [[2]]
 logTolerance = -10
 workingDirectory = "run"
