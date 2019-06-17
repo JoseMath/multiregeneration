@@ -540,16 +540,13 @@ Homotopy from Q to P.
                 solutionsLines = solutionsFile.readlines()
                 solutionsFile.close()
                 label = "foundQ"
+                print()
+                os.rename("nonsingular_solutions", 'start')
             else:
-                print("Exiting because could  not find 'nonsingular_solutions'. Bertini gave the following output.\n\n")
-                print(repr(output))
-                sys.exit(1)  #TODO: figure out what this does.
+                print("ERROR Bertini lost a solution.\n") #TODO double check this.
+#                print(repr(output))
+#                sys.exit(1)  #TODO: figure out what this does.
         ### Now we go from Q to p.
-            # print("Move nonsingular solutions to start solutions and call bertini..")
-        #  Call Bertini.
-            # print(dirName)
-            os.rename("nonsingular_solutions", 'start')
-#            print("Try to call bertini inputQP")
             try:
                 bertiniCommand = "bertini inputQP"
                 process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)  #What is going on here?
@@ -599,74 +596,133 @@ def regenerateSolving(depth, G, B, bfe, point,label):
     print(depth,B,len(fNames))
     if depth>B or depth+1>len(fNames):
         print("complete (depth too large)")
-        # isCompleteFile = open("%s/isComplete"%dirName, "w")
-        # isCompleteFile.write("complete")
-        # isCompleteFile.close()
-        # label=label
-        # os.chdir(workingDirectory)
-        # csDir = "_completed_smooth_solutions/gens_%s_dim_%s_varGroup_%d_regenLinear_%d_pointId_%s"%(
-        #     "".join(map(lambda b: "1" if b else "0", G)),
-        #     "_".join(map(str, bfe)),
-        #     varGroup,
-        #     regenLinear,
-        #     (abs(hash(point)) % (10 ** 8)))
     else:
         print("Going to track...")
         fTarget = fNames[depth]
         M = list(degrees[depth])
-        for i in range(len(M)):
-            print("Prior to inner loop: depth %s , bfe %s, vg %s" % (depth,bfe,i))
-            if bfe[i]>0:
-                for j in range(M[i]):
-                    P = list(point)
-                    print("Prior parent: depth %s , bfe %s, vg %s, degree %s" % (depth,bfe,i,j))
-# parallel
-                    # child_pid = os.fork()
-                    # print("child_pid")
-                    # print(child_pid)
-                    # if child_pid == 0:
-                    #     bfePrime=bfe
-                    #     bfePrime[i]=bfePrime[i]-1
-                    #     print(fNames,depth,bfePrime,i,j)
-                    #     P = point
-                    #     #TODO: remove the reduant argument in directory name
-                    #     print("bfePrime %s " % bfePrime)
-                    #     dirName = directoryName(depth, G, bfePrime, i, j, "delete", P)
-                    #     print("directory name before parentHomotopy %s" %dirName)
-                    #     print("G before parentHomotopy %s" %G)
-                    #     print(depth, G, bfePrime, i, j, fNames[depth], dirName, P)
-                    #     (isVanishing,P,label) = parentHomotopy(depth, G, bfePrime, i, j, fNames, dirName, P)
-                    #     print("  #####    leaving to start another")
-                    #     if depth< len(fNames) and depth < B:
-                    #         regenerateSolving(depth+1,G+[not(isVanishing)],B,bfePrime,P,label)
-# end parallel part
-# serial
-                    #TODO: remove the reduant argument in directory name
-                    bfePrime = list(bfe)
-                    print(bfe)
-                    bfePrime[i]=bfePrime[i]-1
-                    print(bfe,bfePrime)
-                    dirName = directoryName(depth, G, bfePrime, i, j, "delete", P)
-#                    print("directory name before parentHomotopy %s" %dirName)
-#                    print("G before parentHomotopy %s" %G)
-#                    print(depth, G, bfePrime, i, j, fNames[depth], dirName, P)
-                    (isVanishing,P,label) = parentHomotopy(depth, G, bfePrime, i, j, fNames, dirName, P)
-                    if label=="smooth":
-#                        os.mkdir("_completed_smooth_solutions/depth_%s"% i)
-                        startText = "1\n\n"
-                        for line in P:
-                            startText += line+"\n"
-                        startFile = open("_completed_smooth_solutions/depth_%s/%s" %(depth,dirName), "w")
-                        startFile.write(startText)
-                        startFile.close()
-                    print("  #####    leaving to start another % s" %bfePrime)
-                    if depth< len(fNames) and depth < B:
-                        print("depth is small %s" % depth)
-                        regenerateSolving(depth+1, list(G)+[not(isVanishing)], B, bfePrime, P, label)
-            else:
-                print("bfe %s is too small in variable group %s" %(bfe,i))
-# end serial part
-        #   sys.exit(0)
+        # directory to see if the polynomial vanishes at P
+        P = list(point)
+        dirName = directoryName(depth, G, bfe, 1000, 10000, "delete", P)
+        try:
+            os.mkdir(dirName)
+        except:
+            print("Ope! Error opening directory during vanishes() '%s'"%dirName)
+        inputText = '''
+CONFIG
+%s
+TrackType:-4;
+END;
+INPUT
+%s
+function evalF;
+%s
+evalF = %s;
+END;
+      ''' % (bertiniTrackingOptionsText, variableGroupText, revisedEquationsText, fTarget)
+        inputFile = open("%s/inputEval"%dirName, "w")
+        inputFile.write(inputText)
+        inputFile.close()
+    # Write start file for evaluation.
+        startText = "1\n\n"
+        for line in point:
+            startText += line+"\n"
+        startFile = open("%s/start"%dirName, "w")
+        startFile.write(startText)
+        startFile.close()
+    # Get current working directory to run Bertini.
+        cwd = os.getcwd()
+        os.chdir(dirName)
+        # print("Try bertini inputEval..")
+        try:
+            bertiniCommand = "bertini inputEval"
+            process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)
+            output, error = process.communicate()
+            # print("..success likely")
+        except:
+            print("Ope! could not evaulate %s using Bertini." % fTarget)
+# Open the Bertini output file named 'function' and determine if this is zero.
+    # print("Try loading bertini output file 'function'...")
+        try:
+            solutionsFile = open("function", "r")
+            solutionsLines = solutionsFile.readlines()
+            solutionsFile.close()
+            # print("..success likely")
+        except:
+            print("Ope! Error opening file 'function'")
+    #    if not solutionsFile:
+            print("Bertini error likely: check bertiniInput_...")
+            sys.exit(1) # the one is for error and 0 is for everyhting is fine.
+        value = solutionsLines[2].split(' ')
+        # print("Value of the function at the point: %s" % value)
+        isVanishing = isZero(value[0], logTolerance) and isZero(value[1], logTolerance)
+        with open("isVanishing", "w") as isVanishingFile:
+            isVanishingFile.write(str(isVanishing))
+        os.chdir(cwd)
+        # print("isVanishing is %s"  % isVanishing)
+        if isVanishing:
+            label = "smooth"
+            nsFile = open("%s/nonsingular_solutions"%dirName, "w")
+            nsFile.write(startText)
+            nsFile.close()
+            startFile = open("_completed_smooth_solutions/depth_%s/%s" %(depth,dirName), "w")
+            startFile.write(startText)
+            startFile.close()
+            if depth< len(fNames) and depth < B:
+                print("depth is small %s" % depth)
+                print("Vanished")
+                regenerateSolving(depth+1, list(G)+[False], B, bfe, P, label)
+        else:
+            for i in range(len(M)):
+                print("Prior to inner loop: depth %s , bfe %s, vg %s" % (depth,bfe,i))
+                if bfe[i]>0:
+                    for j in range(M[i]):
+                        P = list(point)
+                        bfePrime = list(bfe)
+                        bfePrime[i]=bfePrime[i]-1
+                        print(bfe,bfePrime)
+                        if max(bfe) < 1: # if bfe is the zero vector.
+                            # print("nonsolution")
+                            label = "nonsolution"
+                #            print("2. Label %s" % label)
+                        else:
+                            print("Prior parent: depth %s , bfe %s, vg %s, degree %s" % (depth,bfe,i,j))
+    # parallel
+                        # child_pid = os.fork()
+                        # print("child_pid")
+                        # print(child_pid)
+                        # if child_pid == 0:
+                        #     bfePrime=bfe
+                        #     bfePrime[i]=bfePrime[i]-1
+                        #     print(fNames,depth,bfePrime,i,j)
+                        #     P = point
+                        #     #TODO: remove the reduant argument in directory name
+                        #     print("bfePrime %s " % bfePrime)
+                        #     dirName = directoryName(depth, G, bfePrime, i, j, "delete", P)
+                        #     print("directory name before parentHomotopy %s" %dirName)
+                        #     print("G before parentHomotopy %s" %G)
+                        #     print(depth, G, bfePrime, i, j, fNames[depth], dirName, P)
+                        #     (isVanishing,P,label) = parentHomotopy(depth, G, bfePrime, i, j, fNames, dirName, P)
+                        #     print("  #####    leaving to start another")
+                        #     if depth< len(fNames) and depth < B:
+                        #         regenerateSolving(depth+1,G+[not(isVanishing)],B,bfePrime,P,label)
+    # end parallel part
+    # serial
+                        #TODO: remove the reduant argument in directory name
+                            dirName = directoryName(depth, G, bfePrime, i, j, "delete", P)
+                            (isVanishing,P,label) = parentHomotopy(depth, G, bfePrime, i, j, fNames, dirName, P)
+                        if label=="smooth":
+                            startText = "1\n\n"
+                            for line in P:
+                                startText += line+"\n"
+                            startFile = open("_completed_smooth_solutions/depth_%s/%s" %(depth,dirName), "w")
+                            startFile.write(startText)
+                            startFile.close()
+                        if depth< len(fNames) and depth < B:
+                            print("depth is small %s" % depth)
+                            print(i,j)
+                            regenerateSolving(depth+1, list(G)+[not(isVanishing)], B, bfePrime, P, label)
+                        else:
+                            print("bfe %s is too small in variable group %s" %(bfe,i))
 
 
 
