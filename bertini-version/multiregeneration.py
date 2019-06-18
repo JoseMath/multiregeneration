@@ -215,37 +215,49 @@ global useBertiniInputStyle
     for i in range(depth, depth+len(fNames)):
         os.mkdir("_completed_smooth_solutions/depth_%s"% i)
 # branch node outline
-    print(depth)
+    print(depth,bfe)
+    print("bfe %s" %bfe)
     outlineRegenerate(depth, G, B, bfe, startSolution)
 
 def outlineRegenerate(depth,G,B,bfe,P):
+    print("bfe %s" %bfe)
     print(depth,G,B,bfe)
     print(degrees)
+    print("bfe %s" %bfe)
     label = "unknown"
-    isVanishes = "unknown"
-    # test vanishes
+    isVanishes="unknown"
     if depth<B and depth < len(fNames):
+        print("bfe %s" %bfe)
         M = degrees[depth]
-        isVanishes = True # or false
+        # test vanishes
+        isVanishes = False # or false
         if not(isVanishes):
-            for i in len(bfe):
+            print("Branch out")
+            print("bfe %s" %bfe)
+            for i in range(len(bfe)):
                 if bfe[i]>0:
                     bfePrime = list(bfe)
-                    bfePrime = bfe[i]-1
+                    bfePrime[i] = bfe[i]-1
                     for j in range(M[i]):
-                        print("We parentHomotopy at depth $s variable group %s degree % and point %s" %(depth,i,j,P))
+                        print("We parentHomotopy at depth %s variable group %s degree %s and point %s" %(depth,i,j,(abs(hash("_".join(P))) % (10 ** 8))))
                         label = "smooth"# or label is fail
                         P=P
                         if label=="smooth":
                             outlineRegenerate(depth+1,G+[True],B,bfePrime,P)
+                        elif label=="singular":
+                            print(" We prune because the endpoint is singular")
+                        elif label=="infinity":
+                            print(" We prune because the endpoint is at infinity")
                         else:
-                            print(" We prune because the endpoint is singular or at infinity")
+                            print(" Unknown reason why we prune")
                     else:
                         print("We prune at depth %s variable group %s" %(depth,i))
                         label="prune"
-        else: # isVanishes is true
+        elif isVanishes: # isVanishes is true
             print("We  oneEdgeHomotopy at depth %s" %depth)
             outlineRegenerate(depth+1,G+[False],B,bfe,P)
+        else:
+            print("isVaniesh should be True or False and not %s" %isVanishes)
     else:
         print("We prune at depth %s" %depth)
 #    return("success2")
