@@ -1,0 +1,4 @@
+function h1, h2;
+
+h1=x*y-3;
+h2=2*x*y+y+3*x+2;
