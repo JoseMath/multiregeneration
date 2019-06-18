@@ -1,4 +1,1 @@
-variable_group z2x,z2y,z2z;
-variable_group z3x,z3y,z3z;
-variable_group z4x,z4y,z4z;
-variable_group z5x,z5y,z5z;
+variable_group z2x,z2y,z2z, z4x,z4y,z4z, z3x,z3y,z3z, z5x,z5y,z5z;

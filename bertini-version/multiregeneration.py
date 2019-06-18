@@ -295,14 +295,14 @@ def isZero(s, logTolerance):
 # Makes the directory for each process.
 def directoryName(depth, G, bfe, varGroup, regenLinear, homotopyKind, point):
 #    print("This is G: %s" % G)
-    useFunction = "_".join(map(lambda b: "1" if b else "0", G))
+    useFunction = "_".join(map(lambda b: "1" if b else "0", G+[1]))
 #    print(useFunction)
     dirName = "depth_%d_gens_%s_dim_%s_varGroup_%d_regenLinear_%d_homotopy_%s_pointId_%s"%(depth,
         useFunction,
         "_".join(map(str, bfe)),
         varGroup,
         regenLinear,
-        homotopyKind,
+        "all", # formerly homotopyKind. Now we keep it all in one directory
         (abs(hash("_".join(point))) % (10 ** 8))
         #(abs(hash(point)) % (10 ** 8))
         )
@@ -324,195 +324,267 @@ def directoryName(depth, G, bfe, varGroup, regenLinear, homotopyKind, point):
 
 # A parent homotopy takes a point P to  pPrime
 def parentHomotopy(depth, G, bfePrime, vg, m, fNames, dirName,point):
-    P=list(point)
     vg=str(vg)
     fTarget=fNames[depth]
     M = list(degrees[depth])
-    ###  set up Homotopy P to Q
-    # write start parameters
-    startFile = open("%s/start_parameters"%dirName, "w")
-    startFile.write("1\n1 0")
-    startFile.close()
-# write target parameters
-    startFile = open("%s/final_parameters"%dirName, "w")
-    startFile.write("1\n0 0")
-    startFile.close()
-# set up system
-    # print("\n"+dirName)
-    HG = []
-    for i in range(len(G)):
-        if G[i]:
-            HG.append(fNames[i])
-#            print("1. HG is %s" % HG)
-#            print("1. G is %s" % G)
-    for i in range(len(bfePrime)):
-        for j in range(bfePrime[i]):
-            print("l_%d_%d"%(i,j))
-            HG.append("l_%d_%d"%(i,j))
-#            print("2. HG is %s" % HG)
-#            print("2. G is %s" % G)
-    startFunctionString="l_%s_%d" %(vg,bfePrime[eval(vg)])
-    targetFunctionString="r_%s_%d" %(vg,m)
-#    print("before regeneratedPoint")
-    ellText = "\n % ellText\n"
-    rText = "\n % rText\n"
-    for i in range(len(bfePrime)):
-        for j in range(bfePrime[i]):
-            ellText += "l_%d_%d" % (i,j)+" = "+l[i][j]+" ; \n"
-        for j in range(M[i]):
-            rText += "r_%s_%s" %(i,j)+" = "+r[i][j]+" ; \n"
-    ellText += "l_%s_%d" % (vg, bfePrime[eval(vg)]) +" = "+l[eval(vg)][bfePrime[eval(vg)]]+" ; \n"
-    # print(ellText)
-#    print("rText\n"+rText)
-    # print(" HG is %s" % ",".join(HG))
-    # print("startFunctionString: %s" % startFunctionString)
-    # print("targetFunctionString %s" % targetFunctionString)
-###  write bertini-input file for Homotopy P to Q
+    # print("bfe:  %s" % bfe)
+    # print("G at start of parentHomotopy: %s " % G)
+    try:  # What is happening here?
+#        print("Try opening directory: %s" % dirName)
+        os.mkdir(dirName)
+#        print("Succesful!")
+    except:
+        print("Ope! Error opening directory during vanishes() '%s'"%dirName)
+## Step 1. Check if point is in the next hypersurface.
+    label = "Missing"
+#    print("evaluating point at %s " % fNames[depth])
+# Write input file for evaluation.
+#    print("Vanishes function")
+#    print(bertiniTrackingOptionsText)
+#    print(variableGroupText)
+#    print(revisedEquationsText)
     inputText = '''
 CONFIG
-%s
-ParameterHomotopy : 2;
+  %s
+  TrackType:-4;
 END;
 INPUT
-%s
-parameter Tpath ;
-function HF;
-function %s;
-%s
-%s
-%s
-HF = Tpath*(%s)+(1-Tpath)*(%s);
+  %s
+  function evalF;
+  %s
+  evalF = %s;
 END;
-Homotopy from P to Q
-    '''%(bertiniTrackingOptionsText,
-          variableGroupText,
-          ",".join(HG),
-          revisedEquationsText,
-          ellText,
-          rText,
-          startFunctionString,
-          targetFunctionString)
-#            print("\nTry to write inputPQ")
-    inputFile = open("%s/inputPQ"%dirName, "w")
+      ''' % (bertiniTrackingOptionsText, variableGroupText, revisedEquationsText, fTarget)
+    inputFile = open("%s/inputEval"%dirName, "w")
     inputFile.write(inputText)
     inputFile.close()
-#  write bertini-input file for Homotopy Q to P
-    linearProduct = "(1)"
-    for i in range(len(bfePrime)):
-        for j in range(M[i]):
-    # print("LinearProduct factor %s %s"%(i, j))
-            linearProduct += "*(r_%s_%s)"%(str(i), str(j))
-    # print("LP %s" % linearProduct)
-    startFunctionString=linearProduct
-    targetFunctionString=fNames[depth]
-    # print("LP startFunctionString: %s" % startFunctionString)
-    # print("LP targetFunctionString %s" % targetFunctionString)
-# Step 5. now we track from Q to P.
-    inputText = '''
-CONFIG
-%s
-ParameterHomotopy : 2;
-END;
-INPUT
-%s
-parameter Tpath ;
-function HF ;
-function %s;
-%s
-%s
-%s
-HF = Tpath*(%s)+(1-Tpath)*(%s);
-END;
-Homotopy from Q to P.
-    '''%(bertiniTrackingOptionsText,
-          variableGroupText,
-          ",".join(HG),
-          revisedEquationsText,
-          ellText,
-          rText,
-          startFunctionString,
-          targetFunctionString)
-    # print("\nTry to write inputQP")
-    inputFile = open("%s/inputQP" % dirName, "w")
-    inputFile.write(inputText)
-    inputFile.close()
+# Write start file for evaluation.
     startText = "1\n\n"
     for line in point:
         startText += line+"\n"
     startFile = open("%s/start"%dirName, "w")
     startFile.write(startText)
     startFile.close()
+# Get current working directory to run Bertini.
+    cwd = os.getcwd()
+    os.chdir(dirName)
+    # print("Try bertini inputEval..")
     try:
-        bertiniCommand = "bertini inputPQ"
+        bertiniCommand = "bertini inputEval"
         process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)
         output, error = process.communicate()
-        # print("..likely successful. ")
+        # print("..success likely")
     except:
-        print("There the command `bertini input` exited with the\
-            following' error. Make sure you have bertini installed.")
-        print(error)
-        label="fail"
-# Check to see if there are nonsingular_solutions
-# https://stackoverflow.com/questions/1904394/read-only-the-first-line-of-a-file
-    #https://www.guru99.com/python-check-if-file-exists.html
-    # https://stackoverflow.com/questions/28737292/how-to-check-text-file-exists-and-is-not-empty-in-python
-    # print("Try to understand solutions")
-    os.chdir(dirName)
-    with open('nonsingular_solutions') as f:
-    	foundQ = eval(f.readline()) # first line is number of solutions and should be one or zero.
-    if foundQ==1:
-        solutionsFile = open("nonsingular_solutions", "r")
+        print("Ope! could not evaulate %s using Bertini." % fTarget)
+# Open the Bertini output file named 'function' and determine if this is zero.
+    # print("Try loading bertini output file 'function'...")
+    try:
+        solutionsFile = open("function", "r")
         solutionsLines = solutionsFile.readlines()
         solutionsFile.close()
-        label = "foundQ"
-        print()
-        os.rename("nonsingular_solutions", 'start')
+        # print("..success likely")
+    except:
+        print("Ope! Error opening file 'function'")
+#    if not solutionsFile:
+        print("Bertini error likely: check bertiniInput_...")
+        sys.exit(1) # the one is for error and 0 is for everyhting is fine.
+    value = solutionsLines[2].split(' ')
+    # print("Value of the function at the point: %s" % value)
+    isVanishing = isZero(value[0], logTolerance) and isZero(value[1], logTolerance)
+    with open("isVanishing", "w") as isVanishingFile:
+      isVanishingFile.write(str(isVanishing))
+    os.chdir(cwd)
+    # print("isVanishing is %s"  % isVanishing)
+    if isVanishing:
+        label = "smooth"
+#        print("1. Label %s" % label)
+        nsFile = open("%s/nonsingular_solutions"%dirName, "w")
+        nsFile.write(startText)
+        nsFile.close()
+        P=list(point)
     else:
-        print("ERROR Bertini lost a solution.\n") #TODO double check this.
-        label-"fail"
+        if max(bfePrime) < 1: # if bfe is the zero vector.
+            # print("nonsolution")
+            label = "nonsolution"
+#            print("2. Label %s" % label)
+        else:
+            ###  set up Homotopy P to Q
+            # write start parameters
+            startFile = open("%s/start_parameters"%dirName, "w")
+            startFile.write("1\n1 0")
+            startFile.close()
+        # write target parameters
+            startFile = open("%s/final_parameters"%dirName, "w")
+            startFile.write("1\n0 0")
+            startFile.close()
+        # set up system
+            # print("\n"+dirName)
+            HG = []
+            for i in range(len(G)):
+                if G[i]:
+                    HG.append(fNames[i])
+#            print("1. HG is %s" % HG)
+#            print("1. G is %s" % G)
+            for i in range(len(bfePrime)):
+                for j in range(bfePrime[i]):
+                    print("l_%d_%d"%(i,j))
+                    HG.append("l_%d_%d"%(i,j))
+#            print("2. HG is %s" % HG)
+#            print("2. G is %s" % G)
+            startFunctionString="l_%s_%d" %(vg,bfePrime[eval(vg)])
+            targetFunctionString="r_%s_%d" %(vg,m)
+        #    print("before regeneratedPoint")
+            ellText = "\n % ellText\n"
+            rText = "\n % rText\n"
+            for i in range(len(bfePrime)):
+                for j in range(bfePrime[i]):
+                    ellText += "l_%d_%d" % (i,j)+" = "+l[i][j]+" ; \n"
+                for j in range(M[i]):
+                    rText += "r_%s_%s" %(i,j)+" = "+r[i][j]+" ; \n"
+            ellText += "l_%s_%d" % (vg, bfePrime[eval(vg)]) +" = "+l[eval(vg)][bfePrime[eval(vg)]]+" ; \n"
+            # print(ellText)
+        #    print("rText\n"+rText)
+            # print(" HG is %s" % ",".join(HG))
+            # print("startFunctionString: %s" % startFunctionString)
+            # print("targetFunctionString %s" % targetFunctionString)
+###  write bertini-input file for Homotopy P to Q
+            inputText = '''
+CONFIG
+    %s
+    ParameterHomotopy : 2;
+END;
+INPUT
+    %s
+    parameter Tpath ;
+    function HF;
+    function %s;
+    %s
+    %s
+    %s
+    HF = Tpath*(%s)+(1-Tpath)*(%s);
+END;
+Homotopy from P to Q
+            '''%(bertiniTrackingOptionsText,
+                  variableGroupText,
+                  ",".join(HG),
+                  revisedEquationsText,
+                  ellText,
+                  rText,
+                  startFunctionString,
+                  targetFunctionString)
+#            print("\nTry to write inputPQ")
+            inputFile = open("%s/inputPQ"%dirName, "w")
+            inputFile.write(inputText)
+            inputFile.close()
+        #  write bertini-input file for Homotopy Q to P
+            linearProduct = "(1)"
+            for i in range(len(bfePrime)):
+                for j in range(M[i]):
+            # print("LinearProduct factor %s %s"%(i, j))
+                    linearProduct += "*(r_%s_%s)"%(str(i), str(j))
+            # print("LP %s" % linearProduct)
+            startFunctionString=linearProduct
+            targetFunctionString=fNames[depth]
+            # print("LP startFunctionString: %s" % startFunctionString)
+            # print("LP targetFunctionString %s" % targetFunctionString)
+# Step 5. now we track from Q to P.
+            inputText = '''
+CONFIG
+    %s
+    ParameterHomotopy : 2;
+END;
+INPUT
+    %s
+    parameter Tpath ;
+    function HF ;
+    function %s;
+    %s
+    %s
+    %s
+    HF = Tpath*(%s)+(1-Tpath)*(%s);
+END;
+Homotopy from Q to P.
+            '''%(bertiniTrackingOptionsText,
+                  variableGroupText,
+                  ",".join(HG),
+                  revisedEquationsText,
+                  ellText,
+                  rText,
+                  startFunctionString,
+                  targetFunctionString)
+            # print("\nTry to write inputQP")
+            inputFile = open("%s/inputQP" % dirName, "w")
+            inputFile.write(inputText)
+            inputFile.close()
+        # Change directory to call Bertini.
+            os.chdir(dirName)
+            # print("Try to call bertini inputPQ .. ")
+            try:
+                bertiniCommand = "bertini inputPQ"
+                process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)
+                output, error = process.communicate()
+                # print("..likely successful. ")
+            except:
+                print("There the command `bertini input` exited with the\
+                    following' error. Make sure you have bertini installed.")
+                print(error)
+        # Check to see if there are nonsingular_solutions
+# https://stackoverflow.com/questions/1904394/read-only-the-first-line-of-a-file
+            #https://www.guru99.com/python-check-if-file-exists.html
+            # https://stackoverflow.com/questions/28737292/how-to-check-text-file-exists-and-is-not-empty-in-python
+            # print("Try to understand solutions")
+            with open('nonsingular_solutions') as f:
+            	foundQ = eval(f.readline()) # first line is number of solutions and should be one or zero.
+            if foundQ==1:
+                solutionsFile = open("nonsingular_solutions", "r")
+                solutionsLines = solutionsFile.readlines()
+                solutionsFile.close()
+                label = "foundQ"
+                print()
+                os.rename("nonsingular_solutions", 'start')
+            else:
+                print("ERROR Bertini lost a solution.\n") #TODO double check this.
 #                print(repr(output))
 #                sys.exit(1)  #TODO: figure out what this does.
-### Now we go from Q to p.
-    if foundQ==1:
-        try:
-            bertiniCommand = "bertini inputQP"
-            process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)  #What is going on here?
+        ### Now we go from Q to p.
+            try:
+                bertiniCommand = "bertini inputQP"
+                process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)  #What is going on here?
 #                process = subprocess.Popen(bertiniCommand, stdout=subprocess.PIPE)  #What is going on here?
-            output, error = process.communicate()
-            # print("..likely successful")
-        except:
-            print("There the command `bertini input` exited with the\
-                following' error. Make sure you have bertini installed.")
-            print(error)
-            label="fail"
-# Check to see if there are nonsingular_solutions
-    # print("Try to open nonsingular_solutions..")
-        with open('nonsingular_solutions') as f:
-            P = list(f.read().splitlines(True))
-            smoothP = eval(P[0]) # first line is number of solutions and should be one or zero.
-            # print("smoothP is %s" % smoothP)
-            if smoothP==1:
-                label="smooth"
-                del P[:2]
+                output, error = process.communicate()
+                # print("..likely successful")
+            except:
+                print("There the command `bertini input` exited with the\
+                    following' error. Make sure you have bertini installed.")
+                print(error)
+        # Check to see if there are nonsingular_solutions
+            # print("Try to open nonsingular_solutions..")
+            with open('nonsingular_solutions') as f:
+                P=f.read().splitlines(True)
+            	smoothP = eval(P[0]) # first line is number of solutions and should be one or zero.
+                # print("smoothP is %s" % smoothP)
+                if smoothP==1:
+                    label="smooth"
+                    del P[:2]
 #                    print(P)
-            else:
-                # print("..try to open singular_solutions instead..")
-                with open('singular_solutions') as sf:
-                    P=list(sf.read().splitlines(True))
-                    singularP = eval(P[0]) # first line is number of solutions and should be one or zero.
-                    # print(3)
-                    if singularP==1:
-                        label="singular"
-                        del P[:2]
-                    else:
-                        # print("..labeled as infinity.")
-                        P=[]
-                        label="infinity"
-    os.chdir("..")
-    # isVanishing = isZero(value[0], logTolerance) and isZero(value[1], logTolerance)
-    # with open("isVanishing", "w") as isVanishingFile:
-    #   isVanishingFile.write(str(isVanishing))
-    os.chdir(cwd)
+                else:
+                    # print("..try to open singular_solutions instead..")
+                    with open('singular_solutions') as sf:
+                        P=sf.read().splitlines(True)
+            	        singularP = eval(P[0]) # first line is number of solutions and should be one or zero.
+                        # print(3)
+                        if singularP==1:
+                            label="singular"
+                            del P[:2]
+                        else:
+                            # print("..labeled as infinity.")
+                            P=[]
+                            label="infinity"
+            os.chdir("..")
+            # isVanishing = isZero(value[0], logTolerance) and isZero(value[1], logTolerance)
+            # with open("isVanishing", "w") as isVanishingFile:
+            #   isVanishingFile.write(str(isVanishing))
+            os.chdir(cwd)
     return (isVanishing, P, label)
 
 
@@ -525,16 +597,16 @@ def regenerateSolving(depth, G, B, bfe, point,label):
     if depth>B or depth+1>len(fNames):
         print("complete (depth too large)")
     else:
-        label="fail"
+        print("Going to track...")
         fTarget = fNames[depth]
         M = list(degrees[depth])
         # directory to see if the polynomial vanishes at P
         P = list(point)
-        dirEval = directoryName(depth, G, bfe, 1000, 10000, "evaluate", P)
+        dirName = directoryName(depth, G, bfe, 1000, 10000, "delete", P)
         try:
-            os.mkdir(dirEval)
+            os.mkdir(dirName)
         except:
-            print("Ope! Error opening directory during vanishes() '%s'"%dirEval)
+            print("Ope! Error opening directory during vanishes() '%s'"%dirName)
         inputText = '''
 CONFIG
 %s
@@ -547,19 +619,19 @@ function evalF;
 evalF = %s;
 END;
       ''' % (bertiniTrackingOptionsText, variableGroupText, revisedEquationsText, fTarget)
-        inputFile = open("%s/inputEval"%dirEval, "w")
+        inputFile = open("%s/inputEval"%dirName, "w")
         inputFile.write(inputText)
         inputFile.close()
     # Write start file for evaluation.
         startText = "1\n\n"
         for line in point:
             startText += line+"\n"
-        startFile = open("%s/start"%dirEval, "w")
+        startFile = open("%s/start"%dirName, "w")
         startFile.write(startText)
         startFile.close()
     # Get current working directory to run Bertini.
         cwd = os.getcwd()
-        os.chdir(dirEval)
+        os.chdir(dirName)
         # print("Try bertini inputEval..")
         try:
             bertiniCommand = "bertini inputEval"
@@ -588,7 +660,6 @@ END;
         os.chdir(cwd)
         # print("isVanishing is %s"  % isVanishing)
         if isVanishing:
-            dirName = directoryName(depth, G, bfe, 1000, 10000, "vanished", P)
             label = "smooth"
             nsFile = open("%s/nonsingular_solutions"%dirName, "w")
             nsFile.write(startText)
@@ -637,8 +708,7 @@ END;
     # end parallel part
     # serial
                         #TODO: remove the reduant argument in directory name
-                            dirName = directoryName(depth, G, bfePrime, i, j, "track", P)
-                            os.mkdir(dirName)
+                            dirName = directoryName(depth, G, bfePrime, i, j, "delete", P)
                             (isVanishing,P,label) = parentHomotopy(depth, G, bfePrime, i, j, fNames, dirName, P)
                         if label=="smooth":
                             startText = "1\n\n"
