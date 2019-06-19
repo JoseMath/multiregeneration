@@ -526,13 +526,17 @@ def branchHomotopy(dirTracking,depth, G, bfePrime, vg, rg, M, P):
             print("error (branch QP): %s" %dirTracking)
             label = "error"
         if label != "error" and path.exists("nonsingular_solutions"):
-            with open('nonsingular_solutions') as f:
-                P = f.read().splitlines(True)
-        	smoothP = eval(P[0]) # first line is number of solutions and should be one or zero.
+            with open("nonsingular_solutions") as f_in:
+                P = (line.rstrip() for line in f_in)
+                P = list(line for line in P if line)
+            # with open('nonsingular_solutions') as f:
+            #     P = f.read().splitlines(True)
+#        	smoothP = eval(P[0]) # first line is number of solutions and should be one or zero.
             # print("smoothP is %s" % smoothP)
-            if smoothP == 1:
+            if len(P)>1:
                 label = "smooth"
-                del P[:2]
+                del P[:1]
+#                print(len(P))
             else:
                 label = "error"
         else:
