@@ -1,0 +1,4 @@
+FinalTol : 1e-8;
+MPType: 2;
+SecurityLevel :1;
+MaxNorm: 1e10 ;

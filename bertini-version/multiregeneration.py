@@ -15,7 +15,8 @@ import subprocess
 import hashlib
 import os
 import random
-
+import os.path
+from os import path
 # variables = [["x1", "x2"], ["y1", "y2"]]
 # len(variables)
 # degrees = [[2, 0], [0,2]] # degree of the s'th function in the i'th variable group
@@ -35,7 +36,10 @@ import random
 ### Configuration ###
 # Optional inputs # This can be specified in the inputFile
 projectiveVariableGroups = []  # This can be specified in the inputFile
-randomNumberGenerator = random.random
+#randomNumberGenerator = random.random
+def randomNumberGenerator():
+    rho = random.uniform(-1,1)
+    return rho
 # TODO: Restart mode.
 depth = 0  # Begin the computation at a different depth index
 bfe = []
@@ -122,6 +126,7 @@ global useBertiniInputStyle
 #            bertiniDegrees = f.read()
         with open("bertiniInput_equations", "r") as f:
             bertiniEquations = f.read()
+            print("found bertiniInput_equations")
     except:
         print("Exiting due to incomplete input. Please include the following files:")
         print("\t" + "bertiniInput_variablesAndConstants")
@@ -224,20 +229,20 @@ def outlineRegenerate(depth,G,B,bfe,P):
     if len(degrees)!=len(fNames):
         print("Error: length of degree list does not coincide with the number of polynomials in the system. ")
     print("We begin: depth %s G %s B %s bfe %s P %s" %(depth,G,B,bfe,hashPoint(P)))
-    print("Degrees %s" % degrees)
+#    print("Degrees %s" % degrees)
     label = "unknown"
     if depth<B and depth < len(fNames):
         # determine isVanishes value.
-        print("bfe %s" %bfe)
+#        print("bfe %s" %bfe)
         dirVanish = directoryNameIsVanishing(depth, P)
         M = degrees[depth]
         try:
             os.mkdir(dirVanish)
         except:
-            print("Warning (directoryNameIsVanishing): opening %s failed because it might already exist. '"%dirVanish) # TODO: distinguish these cases
+            pass
         isVanishes="unknown"
         isVanishes=isEvaluateZero(dirVanish,depth,P)
-        print(isVanishes)
+#        print(isVanishes)
         if not(isVanishes):
             print("Branch out")
             for i in range(len(bfe)):
@@ -249,16 +254,9 @@ def outlineRegenerate(depth,G,B,bfe,P):
 #                        print("We parentHomotopy at depth %s variable group %s degree %s and point %s" %(depth,i,j,hashPoint(P)))
                         dirTracking = directoryNameTracking(depth, G, bfePrime, i, j, P)
 #                        print(dirTracking)
-                        try:
-                            os.mkdir(dirTracking)
-                        except:
-                            print("Warning (directoryNameTracking): opening %s failed because it might already exist. '"%dirVanish) # TODO: distinguish these cases
-                            label="fail"
-                        # Need to call parentHomotopy
-#                        print(bfe,bfePrime)
-                        if label != "fail":
-                            (P,label) = branchHomotopy(dirTracking, depth, G, bfePrime, i, j,M, P)
-                        # label="smooth"
+                        if not os.path.exists(dirTracking):
+                                os.makedirs(dirTracking)
+                        (P,label) = branchHomotopy(dirTracking, depth, G, bfePrime, i, j,M, P)
                         if label=="smooth":
                             completedSmoothSolutions = "_completed_smooth_solutions"
                             solText = "\n"
@@ -269,12 +267,12 @@ def outlineRegenerate(depth,G,B,bfe,P):
                             startFile.write(solText)
                             startFile.close()
                             outlineRegenerate(depth+1,G+[True],B,bfePrime,P)
-                        elif label=="singular":
-                            print(" We prune because the endpoint is singular")
-                        elif label=="infinity":
-                            print(" We prune because the endpoint is at infinity")
+                        # elif label=="singular":
+                        #     print(" We prune because the endpoint is singular")
+                        # elif label=="infinity":
+                        #     print(" We prune because the endpoint is at infinity")
                         else:
-                            print(" Unknown reason why we prune")
+                            print(" label is %s at directory %s" % (label,dirTracking))
                     else:
                         print("We prune at depth %s variable group %s" %(depth,i))
                         label="prune"
@@ -295,7 +293,7 @@ def outlineRegenerate(depth,G,B,bfe,P):
         else:
             print("isVanishes should be True or False and not %s" %isVanishes)
     else:
-        print("We prune at depth %s" %depth)
+        print("We reached depth %s" %depth)
 #    return("success2")
 
 
@@ -321,7 +319,7 @@ END;
     inputFile = open("%s/inputEval" % dirVanish, "w")
     inputFile.write(inputText)
     inputFile.close()
-# Write start file for evaluation.
+# Write start file for evaluation.inputPQ
     startText = "1\n\n"
     for line in P:
         startText += line+"\n"
@@ -419,21 +417,23 @@ def branchHomotopy(dirTracking,depth, G, bfePrime, vg, rg, M, P):
         for j in range(M[i]):
             # print("r_%s_%s" %(i,j))
             rText += "r_%s_%s" %(i,j)+" = "+r[i][j]+" ; \n"
-# Write start file for evaluation.
     startText = "1\n\n"
     for line in P:
         startText += line+"\n"
     startFile = open("start", "w")
     startFile.write(startText)
     startFile.close()
+    startFile = open("P", "w") #
+    startFile.write(startText)#
+    startFile.close()#
     # write start parameters
-    startFile = open("start_parameters", "w")
-    startFile.write("1\n1 0")
-    startFile.close()
+    startParametersFile = open("start_parameters", "w")
+    startParametersFile.write("1\n1 0")
+    startParametersFile.close()
     # write target parameters
-    startFile = open("final_parameters", "w")
-    startFile.write("1\n0 0")
-    startFile.close()
+    finalParametersFile = open("final_parameters", "w")
+    finalParametersFile.write("1\n0 0")
+    finalParametersFile.close()
     ## Now we do PQ
     sfPQ="l_%s_%d" %(vg,bfePrime[eval(vg)])
     tfPQ="r_%s_%s" %(vg,rg)
@@ -450,45 +450,42 @@ def branchHomotopy(dirTracking,depth, G, bfePrime, vg, rg, M, P):
     inputPQFile.close()
     # print("Try to call bertini inputPQ .. ")
     # print("label %s", label)
-    if label != "error":
-        try:
-            bertiniCommand = "bertini inputPQ"
-            process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)
-            output, error = process.communicate()
-        except:
-            print("There the command `bertini input` exited with the\
-                following' error. Make sure you have bertini installed.")
-            print(error)
-            label = "error"
+    try:
+        bertiniCommand = "bertini inputPQ"
+        process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)
+        output, error = process.communicate()
+    except:
+        print("There the command `bertini input` exited with the\
+            following' error. Make sure you have bertini installed.")
+        print("error (branch PQ): %s" %dirTracking)
+        label = "error"
 # Check to see if there are nonsingular_solutions
 # https://stackoverflow.com/questions/1904394/read-only-the-first-line-of-a-file
     #https://www.guru99.com/python-check-if-file-exists.html
     # https://stackoverflow.com/questions/28737292/how-to-check-text-file-exists-and-is-not-empty-in-python
     # print("Try to understand solutions")
-    if label != "error":
+    if label != "error" and path.exists("nonsingular_solutions"):
         with open('nonsingular_solutions') as f:
         	foundQ = eval(f.readline()) # first line is number of solutions and should be one or zero.
         if foundQ==1:
-            solutionsFile = open("nonsingular_solutions", "r")
-            solutionsLines = solutionsFile.readlines()
-            solutionsFile.close()
+            # solutionsFile = open("nonsingular_solutions", "r")
+            # solutionsLines = solutionsFile.readlines()
+            # solutionsFile.close()
             label = "foundQ"
         else:
-            print("Exiting because could  not find 'nonsingular_solutions'. Bertini gave the following output.\n\n")
-            # print(repr(output))
-            label = "error"
-#            sys.exit(1)  #TODO: figure out what this does.
+            label="didNotFindQ"
+    else:
+        label="error"
+        print("error (Branch) nonsingular_solutions does not exist in %s" %dirTracking)
 ### Now we go from Q to p.
     # print("Rename")
 #  write bertini-input file for Homotopy Q to P
-    if label == "foundQ" and label!="error":
+    if label == "foundQ":
         os.rename("nonsingular_solutions", 'start')
         linearProduct = "(1)"
         for i in range(len(bfePrime)):
             for j in range(M[i]):
-        # print("LinearProduct factor %s %s"%(i, j))
                 linearProduct += "*(r_%s_%s)"%(str(i), str(j))
-        # print("LP %s" % linearProduct)
         inputTextQP = bertiniParameterHomotopyTwoTemplate % (bertiniTrackingOptionsText,
                   variableGroupText,
                   ",".join(HG),
@@ -500,42 +497,27 @@ def branchHomotopy(dirTracking,depth, G, bfePrime, vg, rg, M, P):
         inputQP = open("inputQP", "w")
         inputQP.write(inputTextQP)
         inputQP.close()
-        if label != "error":
-            try:
-                bertiniCommand = "bertini inputQP"
-                process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)  #What is going on here?
-    #                process = subprocess.Popen(bertiniCommand, stdout=subprocess.PIPE)  #What is going on here?
-                output, error = process.communicate()
-            except:
-                print("There the command `bertini input` exited with the\
-                    following' error. Make sure you have bertini installed.")
-                print(error)
+        try:
+            bertiniCommand = "bertini inputQP"
+            process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)  #What is going on here?
+#                process = subprocess.Popen(bertiniCommand, stdout=subprocess.PIPE)  #What is going on here?
+            output, errors = process.communicate()
+        except:
+            print("error (branch QP): %s" %dirTracking)
+            label = "error"
+        if label != "error" and path.exists("nonsingular_solutions"):
+            with open('nonsingular_solutions') as f:
+                P = f.read().splitlines(True)
+        	smoothP = eval(P[0]) # first line is number of solutions and should be one or zero.
+            # print("smoothP is %s" % smoothP)
+            if smoothP == 1:
+                label = "smooth"
+                del P[:2]
+            else:
                 label = "error"
-            # print("Try to open nonsingular_solutions..")
-            if label != "error":
-                with open('nonsingular_solutions') as f:
-                    P = f.read().splitlines(True)
-            	smoothP = eval(P[0]) # first line is number of solutions and should be one or zero.
-                # print("smoothP is %s" % smoothP)
-                if smoothP == 1:
-                    label="smooth"
-                    del P[:2]
-    #                    print(P)
-                else:
-                    label="error"
-
-                    # print("..try to open singular_solutions instead..")
-                    # with open('singular_solutions') as sf:
-                    #     P = sf.read().splitlines(True)
-                    #     singularP = eval(P[0]) # first line is number of solutions and should be one or zero.
-                    #     # print(3)
-                    #     if singularP == 1:
-                    #         label="singular"
-                    #         del P[:2]
-                    #     else:
-                    #         # print("..labeled as infinity.")
-                    #         P=[]
-                    #         label="infinity"
+        else:
+            label = "error"
+            print("error (Branch) nonsingular_solutions does not exist in %s or label=error" %dirTracking)
     os.chdir("..")
     #os.chdir(cwd)
     return (P, label)

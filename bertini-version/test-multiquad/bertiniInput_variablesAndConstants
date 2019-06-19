@@ -1,0 +1,3 @@
+hom_variable_group X0v0,X0v1,X0v2 ;
+hom_variable_group X1v0,X1v1,X1v2,X1v3 ;
+hom_variable_group X2v0,X2v1,X2v2,X2v3,X2v4 ;
