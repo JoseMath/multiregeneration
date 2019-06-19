@@ -385,7 +385,30 @@ HF = Tpath*(%s)+(1-Tpath)*(%s);
 END;
         '''
 
+
+def writePStart(P,fn):
+    startText = "1\n\n"
+    for line in P:
+        startText += line+"\n"
+    startFile = open(fn, "w")
+    startFile.write(startText)
+    startFile.close()
+    return()
+
+def writeParameters():
+    parametersFile = open("start_parameters", "w")
+    parametersFile.write("1\n1 0")
+    parametersFile.close()
+    parametersFile = open("final_parameters", "w")
+    parametersFile.write("1\n0 0")
+    parametersFile.close()
+    return()
+
+
+
+
 def branchHomotopy(dirTracking,depth, G, bfePrime, vg, rg, M, P):
+    label="unknown"
     os.chdir(dirTracking)
     label = "Missing"
     m=M[vg]
@@ -393,18 +416,13 @@ def branchHomotopy(dirTracking,depth, G, bfePrime, vg, rg, M, P):
     rg=str(rg)
     fTarget=fNames[depth]
     HG = []
-    for i in range(len(G)):
+    for i in range(len(G)): # Change to enumerate
         if G[i]:
             HG.append(fNames[i])
-    #            print("1. HG is %s" % HG)
-    #            print("1. G is %s" % G)
     for i in range(len(bfePrime)):
         for j in range(bfePrime[i]):
 #            print("l_%d_%d"%(i,j))
             HG.append("l_%d_%d"%(i,j))
-    #            print("2. HG is %s" % HG)
-    #            print("2. G is %s" % G)
-    #    print("before regeneratedPoint")
     ellText = "\n % ellText\n"
     for i in range(len(bfe)):
         for j in range(bfe[i]):
@@ -417,23 +435,26 @@ def branchHomotopy(dirTracking,depth, G, bfePrime, vg, rg, M, P):
         for j in range(M[i]):
             # print("r_%s_%s" %(i,j))
             rText += "r_%s_%s" %(i,j)+" = "+r[i][j]+" ; \n"
-    startText = "1\n\n"
-    for line in P:
-        startText += line+"\n"
-    startFile = open("start", "w")
-    startFile.write(startText)
-    startFile.close()
-    startFile = open("P", "w") #
-    startFile.write(startText)#
-    startFile.close()#
+    # startText = "1\n\n"
+    # for line in P:
+    #     startText += line+"\n"
+    # startFile = open("start", "w")
+    # startFile.write(startText)
+    # startFile.close()
+    # startFile = open("P", "w") #
+    # startFile.write(startText)#
+    # startFile.close()#
     # write start parameters
-    startParametersFile = open("start_parameters", "w")
-    startParametersFile.write("1\n1 0")
-    startParametersFile.close()
-    # write target parameters
-    finalParametersFile = open("final_parameters", "w")
-    finalParametersFile.write("1\n0 0")
-    finalParametersFile.close()
+    # startParametersFile = open("start_parameters", "w")
+    # startParametersFile.write("1\n1 0")
+    # startParametersFile.close()
+    # # write target parameters
+    # finalParametersFile = open("final_parameters", "w")
+    # finalParametersFile.write("1\n0 0")
+    # finalParametersFile.close()
+    writePStart(P,"start")
+    writePStart(P,"P")
+    writeParameters()
     ## Now we do PQ
     sfPQ="l_%s_%d" %(vg,bfePrime[eval(vg)])
     tfPQ="r_%s_%s" %(vg,rg)
@@ -450,33 +471,32 @@ def branchHomotopy(dirTracking,depth, G, bfePrime, vg, rg, M, P):
     inputPQFile.close()
     # print("Try to call bertini inputPQ .. ")
     # print("label %s", label)
-    try:
-        bertiniCommand = "bertini inputPQ"
-        process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)
-        output, error = process.communicate()
-    except:
-        print("There the command `bertini input` exited with the\
-            following' error. Make sure you have bertini installed.")
-        print("error (branch PQ): %s" %dirTracking)
-        label = "error"
-# Check to see if there are nonsingular_solutions
-# https://stackoverflow.com/questions/1904394/read-only-the-first-line-of-a-file
-    #https://www.guru99.com/python-check-if-file-exists.html
-    # https://stackoverflow.com/questions/28737292/how-to-check-text-file-exists-and-is-not-empty-in-python
-    # print("Try to understand solutions")
-    if label != "error" and path.exists("nonsingular_solutions"):
-        with open('nonsingular_solutions') as f:
-        	foundQ = eval(f.readline()) # first line is number of solutions and should be one or zero.
-        if foundQ==1:
-            # solutionsFile = open("nonsingular_solutions", "r")
-            # solutionsLines = solutionsFile.readlines()
-            # solutionsFile.close()
-            label = "foundQ"
+    successPQ=False
+    errorCountPQ=0
+    while not(errorCountPQ>3 or (successPQ==True)):
+        label="unknown"
+        try:
+            bertiniCommand = "bertini inputPQ"
+            process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)
+            output, error = process.communicate()
+        except:
+            errorCountPQ=errorCountPQ+1
+            print("There the command `bertini input` exited with the\
+                following' error. Make sure you have bertini installed.")
+            print("error (branch PQ): %s" %dirTracking)
+            label = "error"
+        if label != "error" and path.exists("nonsingular_solutions"):
+            with open('nonsingular_solutions') as f:
+            	foundQ = eval(f.readline()) # first line is number of solutions and should be one or zero.
+            if foundQ==1:
+                label = "foundQ"
+                successPQ=True
+            else:
+                errorCountPQ+=1
         else:
-            label="didNotFindQ"
-    else:
-        label="error"
-        print("error (Branch) nonsingular_solutions does not exist in %s" %dirTracking)
+            errorCountPQ += 1
+            label="error"
+            print("error (Count %d) (Branch) nonsingular_solutions does not exist in %s" %(errorCountPQ,dirTracking))
 ### Now we go from Q to p.
     # print("Rename")
 #  write bertini-input file for Homotopy Q to P
