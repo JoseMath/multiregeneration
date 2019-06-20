@@ -542,6 +542,9 @@ def branchHomotopy(dirTracking,depth, G, bfePrime, vg, rg, M, P):
         else:
             label = "error"
             print("error (Branch) nonsingular_solutions does not exist in %s or label=error" %dirTracking)
+    else:
+        print(" could not find Q.")
+        label="error"
     os.chdir("..")
     #os.chdir(cwd)
     return (P, label)
