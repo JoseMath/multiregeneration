@@ -260,9 +260,9 @@ def outlineRegenerate(depth,G,B,bfe,P):
                         if label=="smooth":
                             completedSmoothSolutions = "_completed_smooth_solutions"
                             solText = "\n"
-                            solName = directoryNameTrackingSolution(depth, G, bfePrime, i, j, P)
                             for line in P:
                                 solText += line+"\n"
+                            solName = directoryNameTrackingSolution(depth, G, bfePrime, i, j, P)
                             startFile = open(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName), "w")
                             startFile.write(solText)
                             startFile.close()
@@ -536,8 +536,9 @@ def branchHomotopy(dirTracking,depth, G, bfePrime, vg, rg, M, P):
             if len(P)>1:
                 label = "smooth"
                 del P[:1]
-#                print(len(P))
+                print(len(P))
             else:
+                print(P)
                 label = "error"
         else:
             label = "error"
