@@ -9,6 +9,7 @@
 # # Lines after the second CONFIG not defining an equation or constant value
 # # must begin with 'function', 'constant', 'hom_variable_group', or 'variable_group'
 
+
 import shutil
 import sys
 import subprocess
@@ -17,6 +18,8 @@ import os
 import random
 import os.path
 from os import path
+# pip install networkx
+#import networkx as nx # TODO
 # variables = [["x1", "x2"], ["y1", "y2"]]
 # len(variables)
 # degrees = [[2, 0], [0,2]] # degree of the s'th function in the i'th variable group
@@ -256,17 +259,17 @@ def outlineRegenerate(depth,G,B,bfe,P):
 #                        print(dirTracking)
                         if not os.path.exists(dirTracking):
                                 os.makedirs(dirTracking)
-                        (P,label) = branchHomotopy(dirTracking, depth, G, bfePrime, i, j,M, P)
-                        if label=="smooth":
+                        (PPrime,label) = branchHomotopy(dirTracking, depth, G, bfePrime, i, j,M, P)
+                        if label=="smooth" and len(PPrime)>1:
                             completedSmoothSolutions = "_completed_smooth_solutions"
                             solText = "\n"
                             for line in P:
                                 solText += line+"\n"
-                            solName = directoryNameTrackingSolution(depth, G, bfePrime, i, j, P)
+                            solName = directoryNameTrackingSolution(depth, G, bfePrime, i, j, PPrime)
                             startFile = open(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName), "w")
                             startFile.write(solText)
                             startFile.close()
-                            outlineRegenerate(depth+1,G+[True],B,bfePrime,P)
+                            outlineRegenerate(depth+1,G+[True],B,bfePrime,PPrime)
                         # elif label=="singular":
                         #     print(" We prune because the endpoint is singular")
                         # elif label=="infinity":
@@ -452,6 +455,8 @@ def branchHomotopy(dirTracking,depth, G, bfePrime, vg, rg, M, P):
     # finalParametersFile = open("final_parameters", "w")
     # finalParametersFile.write("1\n0 0")
     # finalParametersFile.close()
+    if len(P)<2:
+        print(" ##### error %s" %dirTracking)
     writePStart(P,"start")
     writePStart(P,"P")
     writeParameters()
@@ -473,6 +478,7 @@ def branchHomotopy(dirTracking,depth, G, bfePrime, vg, rg, M, P):
     # print("label %s", label)
     successPQ=False
     errorCountPQ=0
+    foundQ =0
     while not(errorCountPQ>3 or (successPQ==True)):
         label="unknown"
         try:
@@ -527,28 +533,30 @@ def branchHomotopy(dirTracking,depth, G, bfePrime, vg, rg, M, P):
             label = "error"
         if label != "error" and path.exists("nonsingular_solutions"):
             with open("nonsingular_solutions") as f_in:
-                P = (line.rstrip() for line in f_in)
-                P = list(line for line in P if line)
+                PPrime = (line.rstrip() for line in f_in)
+                PPrime = list(line for line in PPrime if line)
             # with open('nonsingular_solutions') as f:
             #     P = f.read().splitlines(True)
 #        	smoothP = eval(P[0]) # first line is number of solutions and should be one or zero.
             # print("smoothP is %s" % smoothP)
-            if len(P)>1:
+            if len(PPrime)>1:
                 label = "smooth"
-                del P[:1]
-                print(len(P))
+                print(len(PPrime))
+                del PPrime[:1]
             else:
-                print(P)
+                print(PPrime)
                 label = "error"
         else:
             label = "error"
+            PPrime =[]
             print("error (Branch) nonsingular_solutions does not exist in %s or label=error" %dirTracking)
     else:
         print(" could not find Q.")
+        PPrime =[]
         label="error"
     os.chdir("..")
     #os.chdir(cwd)
-    return (P, label)
+    return (PPrime, label)
 
 
 

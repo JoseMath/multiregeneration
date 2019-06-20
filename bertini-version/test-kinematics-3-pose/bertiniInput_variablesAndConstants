@@ -1,0 +1,4 @@
+hom_variable_group z1,z1bar, a1;
+hom_variable_group z2,z2bar, a2;
+hom_variable_group g1, g1bar, b1;
+hom_variable_group g2, g2bar, b2;
