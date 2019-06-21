@@ -259,7 +259,7 @@ def outlineRegenerate(depth,G,B,bfe,P):
 #                        print(dirTracking)
                         if not os.path.exists(dirTracking):
                                 os.makedirs(dirTracking)
-                        (PPrime,label) = branchHomotopy(dirTracking, depth, G, bfePrime, i, j,M, P)
+                        (PPrime,label) = branchHomotopy(dirTracking, depth, G, bfePrime,bfe, i, j, M, P)
                         if label=="smooth" and len(PPrime)>1:
                             completedSmoothSolutions = "_completed_smooth_solutions"
                             solText = "\n"
@@ -531,11 +531,12 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
         PPrime =[]
         label="error"
     if len(PPrime)>1:
+        # print(PPrime)
         print(dirTracking)
-        print("Node (Depth %d, %s, dim %s, vg %s, %deg %s % point --\n--)Node (Depth %d, %s, dim %s, vg %s, %deg %s % point)" %
-            (depth, bfePrime, str(vg), str(rg), str(P),
-            depth, bfePrime, str(vg), str(rg), str(P))
-            )
+        print("Node (Depth %d, dim %s, vg %s, deg %s, point %s)--\n--Node (Depth %d, dim %s, vg %s, deg %s. point %s)" %
+            (depth, bfe, str(vg), str(rg), str(hashPoint(P)),
+            depth, bfePrime, str(vg), str(rg), str(hashPoint(PPrime))
+            ))
     os.chdir("..")
     #os.chdir(cwd)
     return (PPrime, label)
