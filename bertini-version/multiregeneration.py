@@ -231,7 +231,7 @@ global useBertiniInputStyle
 def outlineRegenerate(depth,G,B,bfe,P):
     if len(degrees)!=len(fNames):
         print("Error: length of degree list does not coincide with the number of polynomials in the system. ")
-    print("We begin: depth %s G %s B %s bfe %s P %s" %(depth,G,B,bfe,hashPoint(P)))
+#    print("We begin: depth %s G %s B %s bfe %s P %s" %(depth,G,B,bfe,hashPoint(P)))
 #    print("Degrees %s" % degrees)
     label = "unknown"
     if depth<B and depth < len(fNames):
@@ -263,7 +263,7 @@ def outlineRegenerate(depth,G,B,bfe,P):
                         if label=="smooth" and len(PPrime)>1:
                             completedSmoothSolutions = "_completed_smooth_solutions"
                             solText = "\n"
-                            for line in P:
+                            for line in PPrime:
                                 solText += line+"\n"
                             solName = directoryNameTrackingSolution(depth, G, bfePrime, i, j, PPrime)
                             startFile = open(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName), "w")
@@ -402,7 +402,7 @@ def writeParameters():
 
 
 
-def branchHomotopy(dirTracking,depth, G, bfePrime, vg, rg, M, P):
+def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
     label="unknown"
     os.chdir(dirTracking)
     label = "Missing"
@@ -519,6 +519,7 @@ def branchHomotopy(dirTracking,depth, G, bfePrime, vg, rg, M, P):
                 print(len(PPrime))
                 del PPrime[:1]
             else:
+                PPrime=[]
                 print(PPrime)
                 label = "error"
         else:
@@ -529,6 +530,12 @@ def branchHomotopy(dirTracking,depth, G, bfePrime, vg, rg, M, P):
         print(" could not find Q.")
         PPrime =[]
         label="error"
+    if len(PPrime)>1:
+        print(dirTracking)
+        print("Node (Depth %d, %s, dim %s, vg %s, %deg %s % point --\n--)Node (Depth %d, %s, dim %s, vg %s, %deg %s % point)" %
+            (depth, bfePrime, str(vg), str(rg), str(P),
+            depth, bfePrime, str(vg), str(rg), str(P))
+            )
     os.chdir("..")
     #os.chdir(cwd)
     return (PPrime, label)
