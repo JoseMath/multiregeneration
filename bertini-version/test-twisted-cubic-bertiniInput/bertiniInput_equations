@@ -1,3 +1,5 @@
-f1 = x*z - y^2;
-f2 = y*w - z^2;
-f3 = x*w - y*z;
+function f1, f2, f3;
+f1 = x*z - a*y^2;
+f2 = y*w*a - z^2;
+g=x;
+f3 = g*w - y*z;

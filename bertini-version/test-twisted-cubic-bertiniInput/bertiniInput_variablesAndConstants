@@ -1,1 +1,2 @@
-variable_group x,y,z,w;
+variable_group x,y;
+hom_variable_group z,w,a;

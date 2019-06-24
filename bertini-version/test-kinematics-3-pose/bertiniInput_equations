@@ -1,0 +1,35 @@
+function l12, l13, l22, l23;
+
+
+constant theta1,theta1bar,theta2,theta2bar,theta3,theta3bar,d1,d2,d3,d1bar,d2bar,d3bar;
+
+theta1 = exp(0.7*I);
+theta1bar = exp(-0.7*I);
+theta2 = exp(1.2*I);
+theta2bar = exp(-1.2*I);
+theta3 = exp(0.3*I);
+theta3bar = exp(-0.3*I);
+d1 = 1 + 2*I;
+d2 = 2 - I;
+d3 = -3*I;
+d1bar = 1 - 2*I;
+d2bar = 2 + I;
+d3bar = 3*I;
+
+
+L11 = b1*theta1*z1 + a1*b1*d1 - a1*g1;
+L12 = b1*theta2*z1 + a1*b1*d2 - a1*g1;
+L13 = b1*theta3*z1 + a1*b1*d3 - a1*g1;
+L11bar = b1*theta1bar*z1bar + a1*b1*d1bar - a1*g1bar;
+L12bar = b1*theta2bar*z1bar + a1*b1*d2bar - a1*g1bar;
+L13bar = b1*theta3bar*z1bar + a1*b1*d3bar - a1*g1bar;
+L21 = b2*theta1*z2 + a2*b2*d1 - a2*g2;
+L22 = b2*theta2*z2 + a2*b2*d2 - a2*g2;
+L23 = b2*theta3*z2 + a2*b2*d3 - a2*g2;
+L21bar = b2*theta1bar*z2bar + a2*b2*d1bar - a2*g2bar;
+L22bar = b2*theta2bar*z2bar + a2*b2*d2bar - a2*g2bar;
+L23bar = b2*theta3bar*z2bar + a2*b2*d3bar - a2*g2bar;
+l12 = L12*L12bar - L11*L11bar;
+l13 = L13*L13bar - L11*L11bar;
+l22 = L22*L22bar - L21*L21bar;
+l23 = L23*L23bar - L21*L21bar;

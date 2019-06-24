@@ -9,20 +9,23 @@
 # # Lines after the second CONFIG not defining an equation or constant value
 # # must begin with 'function', 'constant', 'hom_variable_group', or 'variable_group'
 
+
 import shutil
 import sys
 import subprocess
 import hashlib
 import os
 import random
-
+import os.path
+from os import path
+# pip install networkx
+#import networkx as nx # TODO
 # variables = [["x1", "x2"], ["y1", "y2"]]
 # len(variables)
-# functions = ["x1^2 + x2^2 - 1", "y1^2 + y2^2 - 1"]
 # degrees = [[2, 0], [0,2]] # degree of the s'th function in the i'th variable group
 # n = [len(l) for l in variables]
 # maxDegree = [2, 2] # the largest degree of any function in the ith variable group
-# functionNames = ["f1", "f2"]
+# G = ["f1", "f2"]
 # tolerance = 1e-10
 # # The l_i,j  are the dimention linears in the variables i the i'th group
 # l = [["234*x2 - x1 - 234.2341", "x2 + 2*x1 - 1231"], ["19*y2 - y1 - 1123.235",
@@ -32,19 +35,17 @@ import random
 # r = [[None, "x1 - 2*x2 + 2.1"], [None, "5*y1 + y2 - 25"]] #So that the
 # # indexing matches the write up, we want the r to start at 1.
 
-# Can we have our file names consist of strings likes _class_index
-# where class takes a value in {depth, dim, group, deg, type, prune}
-# and the respective class_index are in  NN, n_\bullet, [k], NN, {smooth, singular, infinity, {0,1}}
 
 ### Configuration ###
 # Optional inputs # This can be specified in the inputFile
 projectiveVariableGroups = []  # This can be specified in the inputFile
-randomNumberGenerator = random.random
-
+#randomNumberGenerator = random.random
+def randomNumberGenerator():
+    rho = random.uniform(-1,1)
+    return rho
 # TODO: Restart mode.
 depth = 0  # Begin the computation at a different depth index
-
-
+bfe = []
 verbose = 1  # Integer that is larger if we want to print more
 # Level 0 for nothing except errors
 # Level 1 messages we would usually like printed
@@ -53,28 +54,33 @@ verbose = 1  # Integer that is larger if we want to print more
 #TODO: instead of setting global variables with an eval, read a json
 # file to a python object
 variables = None
-functions = None
+fNames = None
 degrees = None
-functionNames = None
+G = []
 l = None
 r = None
+B= None
 startSolution = None
 workingDirectory = "run"
 logTolerance = -10
 bertiniVariableGroupString = None
 
 useBertiniInputStyle = False
-bertiniTrackingOptions = ""
+bertiniTrackingOptionsText = ""
 bertiniVariablesAndConstants = None
 bertiniFunctionNames = None
 bertiniEquations = None
-
+revisedEquationsText = None
+variableGroupText = None
 def main():
     # Set global configuration variables in the inputFile
     global variables
-    global functions
+    global depth
+    global bfe
+    global fNames
     global degrees
-    global functionNames
+    global B
+    global G
     global l
     global r
     global startSolution
@@ -86,16 +92,19 @@ def main():
 
 
     global useBertiniInputStyle
-    global bertiniTrackingOptions
     global bertiniVariablesAndConstants
     global bertiniFunctionNames
-    global bertiniEquations
-
+    global revisedEquationsText
+    global variableGroupText
+    global bertiniTrackingOptionsText
     setVariablesToGlobal = """
 global variables
-global functions
+global depth
+global bfe
+global fNames
 global degrees
-global functionNames
+global B
+global G
 global l
 global r
 global startSolution
@@ -106,114 +115,441 @@ global projectiveVariableGroups
 global useBertiniInputStyle
 """
 
-    exec(setVariablesToGlobal + open("inputFile.py").read())
-
-    if useBertiniInputStyle:
-      try:
+    # exec(setVariablesToGlobal + open("inputFile.py").read())
+# Our input will consist of four text files and a main input file.
+# bertiniInput_variablesAndConstants
+# bertiniInput_trackingOptions
+# bertiniInput_equations
+    try:
         with open("bertiniInput_variablesAndConstants", "r") as f:
-          bertiniVariablesAndConstants = f.read()
+            bertiniVariablesAndConstants = f.read()
         with open("bertiniInput_trackingOptions", "r") as f:
-          bertiniTrackingOptions = f.read()
-        with open("bertiniInput_functionNames", "r") as f:
-          bertiniFunctionNames = f.read()
+            bertiniTrackingOptionsText = f.read()
+# TODO:       with open("bertiniInput_degrees", "r") as f:
+#            bertiniDegrees = f.read()
         with open("bertiniInput_equations", "r") as f:
-          bertiniEquations = f.read()
-      except:
+            bertiniEquations = f.read()
+            print("found bertiniInput_equations")
+    except:
         print("Exiting due to incomplete input. Please include the following files:")
         print("\t" + "bertiniInput_variablesAndConstants")
         print("\t" + "bertiniInput_trackingOptions")
-        print("\t" + "bertiniInput_functionNames")
+#            print("\t" + "bertiniInput_G")
         print("\t" + "bertiniInput_equations")
-        sys.exit(1)
-
-      variables = []
-      lines = bertiniVariablesAndConstants.splitlines()
-      for i in range(len(lines)):
+        # sys.exit(1)
+# Set up variables
+    variableGroupText = ""
+    variables = []
+    lines = bertiniVariablesAndConstants.splitlines()
+    for i in range(len(lines)):
         variableGroupType = lines[i].split(" ")[0]
-        if not (variableGroupType == "variable_group" or
-            variableGroupType == "hom_variable_group"):
-          print("Exiting because a variable group other that 'variable_group' or 'hom_variable_group' was declared.")
-          sys.exit(1)
-        if variableGroupType is "hom_variable_group":
-          projectiveVariableGroups.append(i)
-        variables.append(lines[i][lines[i].find(" "):].replace(" ",
-          "").replace(";", "").split(","))
-
-      functions = bertiniFunctionNames[bertiniFunctionNames.find(" "):].replace(" ", "").split(",")
-      functionNames = [None for s in functionNames]
-
-    else:
-      requiredInput = ["variables", "functions", "degrees", "functionNames"]
-      if not all([eval(s) for s in requiredInput]):
-        print("Exiting due to incomplete input. Please include the following in the input file:")
-        for s in requiredInput:
-          print("\t"+s)
-        sys.exit(1)
-
-    bertiniVariableGroupString = ""
-    for c, value in enumerate(variables):
-        if c in projectiveVariableGroups:
-            bertiniVariableGroupString+="\nhom_variable_group "+",".join(value)+" ;"
+        if not (variableGroupType == "variable_group" or variableGroupType == "hom_variable_group"):
+            print("Exiting because a variable group other that 'variable_group' or 'hom_variable_group' was declared.")
+            # sys.exit(1)
+        if variableGroupType == "hom_variable_group":
+            projectiveVariableGroups.append(i)
+        variableGroupText+=lines[i]+"\n"
+        variables.append(lines[i][lines[i].find(" "):].replace(" ","").replace(";", "").split(","))
+    bfe=[]
+    for i in range(len(variables)):
+        isProjectiveGroup = 0
+        if i in projectiveVariableGroups:
+            isProjectiveGroup = 1
+        bfe.append(len(variables[i])-isProjectiveGroup)
+    print("Ambient space dimension ")
+    print(bfe)
+    print("variables")
+    print(variables)
+    print("projectiveVariableGroups")
+    print(projectiveVariableGroups)
+    print("variableGroupText")
+    print(variableGroupText)
+# set up function names and revisedEquationsText
+    revisedEquationsText = ""
+    lines = bertiniEquations.splitlines()
+    fNames=[]
+    for i in range(len(lines)):
+        functionLine = lines[i].split(" ")[0]
+        if functionLine == "function":
+            fNames += lines[i][lines[i].find(" "):].replace(" ","").replace(";", "").split(",")
         else:
-            bertiniVariableGroupString+="\nvariable_group "+",".join(value)+" ;"
+            revisedEquationsText += lines[i]+"\n"
+    print("G")
+    print(G)
+    print("revisedEquationsText")
+    print(revisedEquationsText)
+    exec(setVariablesToGlobal + open("inputFile.py").read())
+# set degrees TODO
 
 
     #####################
-
-
-    # Jose thinks startSolution should be a file name rather than a list of numbers.
-    # Check inputFile.py
+# Make directory to store final solutions
     if os.path.isdir(workingDirectory):
         shutil.rmtree(workingDirectory)
-
     os.mkdir(workingDirectory)
     os.chdir(workingDirectory)
     os.mkdir("all_full_depth_solutions")
+    os.mkdir("_truncated_singular_solutions")
+    os.mkdir("_saturated_solutions")
 
+
+# print to screen system summary.
     if verbose > 0:
-        print("\n################### Starting multiregeneration ####################")
-        print("\nThese variable groups have been selected:"+bertiniVariableGroupString)
-        print("\nSolutions in a 'linearProduct' directory and :")
-        for c, f in enumerate(functionNames): # 0 is the depth we start with
+        print("\n################### Setup multiregeneration ####################\n")
+        print("These variable groups have been selected:\n"+variableGroupText)
+        print("Solutions in a 'linearProduct' directory and :")
+        for c, f in enumerate(fNames): # 0 is the depth we start with
             if c >= depth:
                 print("depth > "+str(c)+" satisfy "+ f+" = 0")
-
-    if l:
-        for i in range(len(l)):
-            isHomGroup = i in projectiveVariableGroups
-            n = len(l[i])
-            if not len(l[i])==n:
-                print("Ope!: the %s entry of l needs to have length %s" % (i, n))
-    else:
-        print("l is not defined by inputFile.py and is generated at random")
-        print("This process overwrote startSolution with \n")
-        (l, startSolution) = getLinearsThroughPoint(variables)
-
-    if not r:
-      print("r is not defined by inputFile.py and will be generated at random")
-      r = []
-      for i in range(len(variables)):
-        r.append([None]) # r_i_0 should be None for all i
+# Determine random linear polynomials l[i][j]
+    (l, startSolution) = getLinearsThroughPoint(variables)
+    print(startSolution)
+# Determine random linear polynomials r[i][j]
+    r = []
+    for i in range(len(variables)):
+        r.append([])
         maxdeg= 0
-        for s in range(len(functions)):
+        for s in range(len(fNames)):
             maxdeg= max(maxdeg,degrees[s][i])
         print("%s is the maximum degree in variable group %s. "%(maxdeg,i))
-        for d in range(1, maxdeg):
-          r[i].append(getGenericLinearInVariableGroup(i))
-        print("This is the last linear polynomial in r[i]: \n%s" % str(r[i][-1]))
+        for d in range(maxdeg):
+            r[i].append(getGenericLinearInVariableGroup(i))
+    if B== None:
+        B=len(fNames)  # TODO: check that this is not off by one.
+        print("B is set to %d" % B)
+    if verbose > 0:
+        print("\n################### Starting multiregeneration ####################\n")
+    completedSmoothSolutions="_completed_smooth_solutions"
+    os.mkdir(completedSmoothSolutions)
+    for i in range(depth, depth+len(fNames)):
+        os.mkdir(completedSmoothSolutions+"/depth_%s"% i)
+# branch node outline
+    print(depth,bfe)
+    print("bfe %s" %bfe)
+    outlineRegenerate(depth, G, B, bfe, startSolution)
 
-# For the first node here are all the outedges
-    for i in range(len(variables)):
-        for j in range(degrees[0][i]):
-            print([i,j])
-            regenerateAndTrack(depth,
-                [False for f in functions], # gens
-                [(len(group) - 1 if i in projectiveVariableGroups else len(group)) for group in variables],
-                [i,j], # varGroup and regenLinear
-                startSolution)
+def outlineRegenerate(depth,G,B,bfe,P):
+    if len(degrees)!=len(fNames):
+        print("Error: length of degree list does not coincide with the number of polynomials in the system. ")
+#    print("We begin: depth %s G %s B %s bfe %s P %s" %(depth,G,B,bfe,hashPoint(P)))
+#    print("Degrees %s" % degrees)
+    label = "unknown"
+    if depth<B and depth < len(fNames):
+        # determine isVanishes value.
+#        print("bfe %s" %bfe)
+        dirVanish = directoryNameIsVanishing(depth, P)
+        M = degrees[depth]
+        try:
+            os.mkdir(dirVanish)
+        except:
+            pass
+        isVanishes="unknown"
+        isVanishes=isEvaluateZero(dirVanish,depth,P)
+#        print(isVanishes)
+        if not(isVanishes):
+            print("Branch out")
+            for i in range(len(bfe)):
+                if bfe[i]>0:
+                    bfePrime = list(bfe)
+                    bfePrime[i] = bfe[i]-1
+                    for j in range(M[i]):
+                        label="unknown"
+#                        print("We parentHomotopy at depth %s variable group %s degree %s and point %s" %(depth,i,j,hashPoint(P)))
+                        dirTracking = directoryNameTracking(depth, G, bfePrime, i, j, P)
+#                        print(dirTracking)
+                        if not os.path.exists(dirTracking):
+                                os.makedirs(dirTracking)
+                        (PPrime,label) = branchHomotopy(dirTracking, depth, G, bfePrime,bfe, i, j, M, P)
+                        if label=="smooth" and len(PPrime)>1:
+                            completedSmoothSolutions = "_completed_smooth_solutions"
+                            solText = "\n"
+                            for line in PPrime:
+                                solText += line+"\n"
+                            solName = directoryNameTrackingSolution(depth, G, bfePrime, i, j, PPrime)
+                            startFile = open(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName), "w")
+                            startFile.write(solText)
+                            startFile.close()
+                            outlineRegenerate(depth+1,G+[True],B,bfePrime,PPrime)
+                        # elif label=="singular":
+                        #     print(" We prune because the endpoint is singular")
+                        # elif label=="infinity":
+                        #     print(" We prune because the endpoint is at infinity")
+                        else:
+                            print(" label is %s at directory %s" % (label,dirTracking))
+                    else:
+                        print("We prune at depth %s variable group %s" %(depth,i))
+                        label="prune"
+        elif isVanishes: # isVanishes is true
+            print("We  oneEdgeHomotopy at depth %s" %depth)
+            if label!="error":
+                completedSmoothSolutions = "_completed_smooth_solutions"
+                print("vanishes!")
+                solName = directoryNameImmediateSolution(depth, P)
+                solText = "\n"
+                for line in P:
+                    solText += line+"\n"
+                print(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName))
+                startFile = open(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName), "w")
+                startFile.write(solText)
+                startFile.close()
+            outlineRegenerate(depth+1,G+[False],B,bfe,P)
+        else:
+            print("isVanishes should be True or False and not %s" %isVanishes)
+    else:
+        print("We reached depth %s" %depth)
+#    return("success2")
 
+
+def hashPoint(P):
+    return(abs(hash("_".join(P))) % (10 ** 8))
+#    return(random.randint(1,1000000)+abs(hash("_".join(P))) % (10 ** 8))
+
+
+def isEvaluateZero(dirVanish,depth,P):
+    fTarget = fNames[depth]
+    inputText = '''
+CONFIG
+  %s
+  TrackType:-4;
+END;
+INPUT
+  %s
+  function evalF;
+  %s
+  evalF = %s;
+END;
+      ''' % (bertiniTrackingOptionsText, variableGroupText, revisedEquationsText, fTarget)
+    inputFile = open("%s/inputEval" % dirVanish, "w")
+    inputFile.write(inputText)
+    inputFile.close()
+# Write start file for evaluation.inputPQ
+    startText = "1\n\n"
+    for line in P:
+        startText += line+"\n"
+    startFile = open("%s/start" % dirVanish, "w")
+    startFile.write(startText)
+    startFile.close()
+# Get current working directory to run Bertini.
+    cwd = os.getcwd()
+    os.chdir(dirVanish)
+    # print("Try bertini inputEval..")
+    try:
+        bertiniCommand = "bertini inputEval"
+        process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)
+        output, error = process.communicate()
+        # print("..success likely")
+    except:
+        print("Error: could not evaulate %s using Bertini." % fTarget)
+        isVanishing="error"
+# Open the Bertini output file named 'function' and determine if this is zero.
+    # print("Try loading bertini output file 'function'...")
+    try:
+        solutionsFile = open("function", "r")
+        solutionsLines = solutionsFile.readlines()
+        solutionsFile.close()
+        # print("..success likely")
+    except:
+        print("Ope! Error opening file 'function'")
+#    if not solutionsFile:
+        print("Bertini error likely: check bertiniInput_...")
+#        sys.exit(1) # the one is for error and 0 is for everyhting is fine.
+        isVanishing="error"
+    value = solutionsLines[2].split(' ')
+    # print("Value of the function at the point: %s" % value)
+    isVanishing = isZero(value[0], logTolerance) and isZero(value[1], logTolerance)
+    with open("isVanishing", "w") as isVanishingFile:
+      isVanishingFile.write(str(isVanishing))
     os.chdir("..")
+    return(isVanishing)
 
+
+bertiniParameterHomotopyTwoTemplate='''
+CONFIG
+%s
+ParameterHomotopy : 2;
+END;
+INPUT
+%s
+parameter Tpath ;
+function HF;
+function %s;
+%s
+%s
+%s
+HF = Tpath*(%s)+(1-Tpath)*(%s);
+END;
+        '''
+
+
+def writePStart(P,fn):
+    startText = "1\n\n"
+    for line in P:
+        startText += line+"\n"
+    startFile = open(fn, "w")
+    startFile.write(startText)
+    startFile.close()
+    return()
+
+def writeParameters():
+    parametersFile = open("start_parameters", "w")
+    parametersFile.write("1\n1 0")
+    parametersFile.close()
+    parametersFile = open("final_parameters", "w")
+    parametersFile.write("1\n0 0")
+    parametersFile.close()
+    return()
+
+
+
+
+def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
+    label="unknown"
+    os.chdir(dirTracking)
+    label = "Missing"
+    m=M[vg]
+    vg=str(vg)
+    rg=str(rg)
+    fTarget=fNames[depth]
+    HG = []
+    for i in range(len(G)): # Change to enumerate
+        if G[i]:
+            HG.append(fNames[i])
+    for i in range(len(bfePrime)):
+        for j in range(bfePrime[i]):
+#            print("l_%d_%d"%(i,j))
+            HG.append("l_%d_%d"%(i,j))
+    ellText = "\n % ellText\n"
+    for i in range(len(bfe)):
+        for j in range(bfe[i]):
+            # print("l_%d_%d" % (i,j))
+            ellText += "l_%d_%d" % (i,j)+" = "+l[i][j]+" ; \n"
+#    ellText += "l_%s_%d" % (vg, bfePrime[eval(vg)]) +" = "+l[eval(vg)][bfePrime[eval(vg)]]+" ; \n"
+#    print(bfePrime,ellText)
+    rText = "\n % rText\n"
+    for i in range(len(bfe)):
+        for j in range(M[i]):
+            # print("r_%s_%s" %(i,j))
+            rText += "r_%s_%s" %(i,j)+" = "+r[i][j]+" ; \n"
+    if len(P)<2:
+        print(" ##### error %s" %dirTracking)
+    writePStart(P,"start")
+    writePStart(P,"P")
+    writeParameters()
+    ## Now we do PQ
+    sfPQ="l_%s_%d" %(vg,bfePrime[eval(vg)])
+    tfPQ="r_%s_%s" %(vg,rg)
+    inputTextPQ = bertiniParameterHomotopyTwoTemplate %(bertiniTrackingOptionsText,
+                  variableGroupText,
+                  ",".join(HG),
+                  revisedEquationsText,
+                  ellText,
+                  rText,
+                  sfPQ,
+                  tfPQ)
+    inputPQFile = open("inputPQ", "w")
+    inputPQFile.write(inputTextPQ)
+    inputPQFile.close()
+    # print("Try to call bertini inputPQ .. ")
+    # print("label %s", label)
+    successPQ=False
+    errorCountPQ=0
+    foundQ =0
+    while not(errorCountPQ>3 or (successPQ==True)):
+        label="unknown"
+        try:
+            bertiniCommand = "bertini inputPQ"
+            process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)
+            output, error = process.communicate()
+        except:
+            errorCountPQ=errorCountPQ+1
+            print("There the command `bertini input` exited with the\
+                following' error. Make sure you have bertini installed.")
+            print("error (branch PQ): %s" %dirTracking)
+            label = "error"
+        if label != "error" and path.exists("nonsingular_solutions"):
+            with open('nonsingular_solutions') as f:
+            	foundQ = eval(f.readline()) # first line is number of solutions and should be one or zero.
+            if foundQ==1:
+                label = "foundQ"
+                successPQ=True
+            else:
+                errorCountPQ+=1
+        else:
+            errorCountPQ += 1
+            label="error"
+            print("error (Count %d) (Branch) nonsingular_solutions does not exist in %s" %(errorCountPQ,dirTracking))
+### Now we go from Q to p.
+    # print("Rename")
+#  write bertini-input file for Homotopy Q to P
+    if label == "foundQ":
+        os.rename("nonsingular_solutions", 'start')
+        linearProduct = "(1)"
+        for i in range(len(bfePrime)):
+            for j in range(M[i]):
+                linearProduct += "*(r_%s_%s)"%(str(i), str(j))
+        inputTextQP = bertiniParameterHomotopyTwoTemplate % (bertiniTrackingOptionsText,
+                  variableGroupText,
+                  ",".join(HG),
+                  revisedEquationsText,
+                  ellText,
+                  rText,
+                  linearProduct,  #start function
+                  fNames[depth])  # target function
+        inputQP = open("inputQP", "w")
+        inputQP.write(inputTextQP)
+        inputQP.close()
+        try:
+            bertiniCommand = "bertini inputQP"
+            process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)  #What is going on here?
+#                process = subprocess.Popen(bertiniCommand, stdout=subprocess.PIPE)  #What is going on here?
+            output, errors = process.communicate()
+        except:
+            print("error (branch QP): %s" %dirTracking)
+            label = "error"
+        if label != "error" and path.exists("nonsingular_solutions"):
+            with open("nonsingular_solutions") as f_in:
+                PPrime = (line.rstrip() for line in f_in)
+                PPrime = list(line for line in PPrime if line)
+            # with open('nonsingular_solutions') as f:
+            #     P = f.read().splitlines(True)
+#        	smoothP = eval(P[0]) # first line is number of solutions and should be one or zero.
+            # print("smoothP is %s" % smoothP)
+            if len(PPrime)>1:
+                label = "smooth"
+                print(len(PPrime))
+                del PPrime[:1]
+            else:
+                PPrime=[]
+                print(PPrime)
+                label = "error"
+        else:
+            label = "error"
+            PPrime =[]
+            print("error (Branch) nonsingular_solutions does not exist in %s or label=error" %dirTracking)
+    else:
+        print(" could not find Q.")
+        PPrime =[]
+        label="error"
+    if len(PPrime)>1:
+        # print(PPrime)
+        print(dirTracking)
+        print("Node (Depth %d, dim %s, vg %s, deg %s, point %s)--\n--Node (Depth %d, dim %s, vg %s, deg %s. point %s)" %
+            (depth, bfe, str(vg), str(rg), str(hashPoint(P)),
+            depth, bfePrime, str(vg), str(rg), str(hashPoint(PPrime))
+            ))
+    os.chdir("..")
+    #os.chdir(cwd)
+    return (PPrime, label)
+
+
+
+
+
+
+#    regenerateSolving(depth, G, B, bfe, startSolution,"smooth")
+
+
+# used to get generic linears (A)
 def getGenericLinearInVariableGroup(variableGroup):
     terms = []
     for var in variables[variableGroup]:
@@ -225,8 +561,7 @@ def getGenericLinearInVariableGroup(variableGroup):
         str(randomNumberGenerator())))
     return "+".join(terms)
 
-
-
+# used to get generic linears (B)
 def getLinearsThroughPoint(variables):
     spoint = []
     for i in range(len(variables)):
@@ -234,12 +569,11 @@ def getLinearsThroughPoint(variables):
         for j in range(len(variables[i])):
             spoint[i]+=[[str(randomNumberGenerator()),str(randomNumberGenerator())]]
 #    print(spoint)
-    startSolution = ""
+    startSolution = []
     for i in range(len(spoint)):
         for j in range(len(spoint[i])):
-            startSolution+=spoint[i][j][0]+" "+spoint[i][j][1]
-            startSolution+="\n"
-    print(startSolution)
+            startSolution+=[spoint[i][j][0]+" "+spoint[i][j][1]]
+#    print(startSolution)
     ell = []
     for i in range(len(variables)):
         ell.append([])
@@ -275,384 +609,77 @@ def getLinearsThroughPoint(variables):
         #    print(linearString)
         #    print(" End Linear")
             ell[i].append(linearString)
-    for i in range(len(variables)):
-        print("\nThis is the first linear polynomial for variable group %s.\n "% i)
-        print(ell[i][0])
+#    for i in range(len(variables)):
+#        print("\n The are %s ells in group %s .\n "% (len(ell[i]),i))
+#        print("\nThis is the first linear polynomial for variable group %s.\n "% i)
+#        print(ell[i][0])
     return (ell, startSolution)
 
-#TODO be able to input the file without a start point or l
 
+# helper function to determine if a value is zero.
 def isZero(s, logTolerance):
   if all([not str(i) in s for i in range(1, 10)]):
     return True
   return int(s.split("e")[1]) < logTolerance
 
-def vanishes(dirName, functionString, point, logTolerance):
-# a function that returns True if functionString defines a polynomial vanishing at point
-# What is going on with the comments below?
-    # currentVariable = 0
-    # evalString = function
-    # for z in point.splitlines():
-    #     if len(z) > 1:
-    #         evalString = evalString.replace(variablesList[currentVariable],
-    #                 "(%sj)"%(z.replace(" ", " + ")))
-    # evalString = evalString.replace("^", "**")
-    # return eval(evalString)
 
-    try:  # What is happening here?
-        os.mkdir(dirName)
-    except:
-        print("Ope! Error opening directory '%s'"%dirName)
-# Write input file for evaluation.
-# TODO: replace variable_group %s with a list of variable groups from variables
-# and indicate if hom_variable_group or variable_group
-# TODO: change the ``f" in the Bertini input file to a nonstandard notation so it doesn't conflict with a user choice.
-    if not useBertiniInputStyle:
-      inputText = '''
-      CONFIG
-          TrackType:-4;
-      END;
-      INPUT
-          %s
-          function functionToEvaluate;
-          functionToEvaluate = %s;
-      END;
-              ''' % (bertiniVariableGroupString, # use variable groups
-                      functionString)
-    else:
-      inputText = '''
-      CONFIG
-          %s
-          TrackType:-4;
-      END;
-      INPUT
-          %s
-          function functionToEvaluate;
-          %s
-          functionToEvaluate = %s;
-      END;
-              ''' % (bertiniTrackingOptions,
-                      bertiniVariableGroupString, # use variable groups
-                      bertiniEquations,
-                      functionString)
 
-    inputFile = open("%s/input"%dirName, "w")
-    inputFile.write(inputText)
-    inputFile.close()
-
-# Write start file for evaluation.
-# Why don't we copy this file from nonsingular_solutions?
-# I don't think we should be writing start files. We should be copying them around directories.
-    startText = "1\n\n"+point # The first one is because we always track one solution per process.
-    startFile = open("%s/start"%dirName, "w")
-    startFile.write(startText)
-    startFile.close()
-
-# Get current working directory to run Bertini.
-    cwd = os.getcwd()
-    os.chdir(dirName)
-    try:
-        bertiniCommand = "bertini input"
-        process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)
-        output, error = process.communicate()
-    except:
-        print(error) # Need a description of this error.
-# Open the Bertini output file named 'function' and determine if this is zero.
-    try:
-        solutionsFile = open("function", "r")
-        solutionsLines = solutionsFile.readlines()
-        solutionsFile.close()
-    except:
-        print("Ope! Error opening file 'function'")
-    if not solutionsLines:
-        print("Bertini error")
-        sys.exit(1) # the one is for error and 0 is for everyhting is fine.
-    value = solutionsLines[2].split(' ')
-
-    isVanishing = isZero(value[0], logTolerance) and isZero(value[1],
-        logTolerance)
-
-    with open("isVanishing", "w") as isVanishingFile:
-      isVanishingFile.write(str(isVanishing))
-
-    os.chdir(cwd) #Can we move this right after the previous except?
-    return isVanishing
-
-def directoryName(depth, useFunction, currentDimension, varGroup,
-    regenLinear, homotopyKind, point):
-# Makes the directory for each process.
-    dirName = "depth_%d_gens_%s_dim_%s_varGroup\
-_%d_regenLinear_%d_homotopy_%s\
-_pointId_%s"%(depth,
-            "".join(map(lambda b: "1" if b else "0", useFunction)),
-            "_".join(map(str, currentDimension)),
-            varGroup,
-            regenLinear,
-            homotopyKind,
-            (abs(hash(point)) % (10 ** 8)))
+def directoryNameIsVanishing(depth, P):
+#    print(useFunction)
+    dirName = "homotopy_vanishing_depth_%s_pointId_%s"%(depth,hashPoint(P))
     return dirName
 
-def solutionFileName(depth, useFunction, currentDimension, varGroup,
-    regenLinear, point):
+
+def directoryNameImmediateSolution(depth, P):
+#    print(useFunction)
+    dirName = "solution_vanishing_depth_%s_pointId_%s"%(depth,hashPoint(P))
+    return dirName
+
+
 # Makes the directory for each process.
-    solutionFileName = "all_full_depth_solutions/depth_%d_gens_%s_dim_%s_varGroup\
-_%d_regenLinear_%d_pointId_%s"%(depth,
-            "".join(map(lambda b: "1" if b else "0", useFunction)),
-            "_".join(map(str, currentDimension)),
-            varGroup,
-            regenLinear,
-            (abs(hash(point)) % (10 ** 8)))
-    return solutionFileName
-
-def homotopy(dirName, functionNames, functionsList, indexToTrack, targetFunctionString, startSolutionsList):
-# Now write Bertini-input files and call a homotopy.
-    if not useBertiniInputStyle:
-      body = ""
-      for i in range(len(functionsList)):
-          if i is not indexToTrack:
-              body+="\n %s = %s;"%(functionNames[i], functionsList[i])
-          elif i is indexToTrack:
-              body+="\n %s = s*(%s) + (1-s)*(%s);"%(functionNames[i],
-                      functionsList[i], targetFunctionString)
-    else:
-      body = bertiniEquations + "\n"
-      for i in range(len(functionsList)):
-          if i is not indexToTrack:
-              body+="\n %s = %s;"%(functionNames[i], functionsList[i])
-          elif i is indexToTrack:
-              body+="\n %s = s*(%s) + (1-s)*(%s);"%("homotopyFunction",
-                      functionsList[i], targetFunctionString)
-
-    try: # Jose moved this before defining inputText.
-        os.mkdir(dirName)
-    except:
-        print("Ope! Error opening directory '%s'"%dirName)
-
-# Can we have an inputData directory that looks for files a Bertini input file, linears, and start solutions?
-# Write input file.
-    if not useBertiniInputStyle:
-        inputText = '''
-    CONFIG
-        %s
-        UserHomotopy: 2;
-    END;
-    INPUT
-        %s
-        function %s;
-        pathvariable t;
-        parameter s;
-        s = t;
-        %s
-    END;
-    ''' % (bertiniTrackingOptions,
-            bertiniVariableGroupString,
-            ",".join(functionNames),
-          body)
-    else:
-        inputText = '''
-    CONFIG
-        %s
-        UserHomotopy: 2;
-    END;
-    INPUT
-        %s
-        function homotopyFunction, %s;
-        pathvariable t;
-        parameter s;
-        s = t;
-        %s
-    END;
-    '''%(bertiniTrackingOptions,
-          bertiniVariableGroupString,
-          ",".join(functionNames[:indexToTrack] +
-            functionNames[indexToTrack+1:]),
-          body)
-    inputFile = open("%s/input"%dirName, "w")
-    inputFile.write(inputText)
-    inputFile.close()
-
-# Write start file.
-    startBody = ""
-    for sol in startSolutionsList:
-        startBody += "\n\n%s"%(sol)
-    startText = "%d%s"%(len(startSolutionsList), startBody)
-
-    startFile = open("%s/start"%dirName, "w")
-    startFile.write(startText)
-    startFile.close()
-
-# Change directory to call Bertini? What is happening here?
-    os.chdir(dirName)
-    try:
-        bertiniCommand = "bertini input"
-        process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)
-        output, error = process.communicate()
-    except:
-        print("There the command `bertini input` exited with the\
-            following' error. Make sure you have bertini installed.")
-        print(error)
+def directoryNameTracking(depth, G, bfe, varGroup, regenLinear, P):
+#    print("This is G: %s" % G)
+    useFunction = "_".join(map(lambda b: "1" if b else "0", G+[1]))
+#    print(useFunction)
+    dirName = "homotopy_tracking_depth_%d_gens_%s_dim_%s_varGroup_%d_regenLinear_%d_pointId_%s"%(depth,
+        useFunction,
+        "_".join(map(str, bfe)),
+        varGroup,
+        regenLinear,
+        hashPoint(P)
+        )
+    return dirName
 
 
-# Check to see if there are nonsingular_solutions
-    if not os.path.isfile("nonsingular_solutions"):
-      print("Exiting because could  not find 'nonsingular_solutions'.\
-          Bertini gave the following output.\n\n")
-      print(repr(output))
-      sys.exit(1)
-
-    solutionsFile = open("nonsingular_solutions", "r")
-    solutionsLines = solutionsFile.readlines()
-    solutionsFile.close()
-
-    out = ""
-    for i in range(2, len(solutionsLines)):
-        out+="\n%s"%solutionsLines[i]
-
-    os.chdir("..")
-
-    return out
+def directoryNameTrackingSolution(depth, G, bfe, varGroup, regenLinear, P):
+#    print("This is G: %s" % G)
+    useFunction = "_".join(map(lambda b: "1" if b else "0", G+[1]))
+#    print(useFunction)
+    dirName = "solution_tracking_depth_%d_gens_%s_dim_%s_varGroup_%d_regenLinear_%d_pointId_%s"%(depth,
+        useFunction,
+        "_".join(map(str, bfe)),
+        varGroup,
+        regenLinear,
+        hashPoint(P)
+        )
+    return dirName
 
 
-def regenerate(depth, useFunction, currentDimension, regenerationLinearIndex, point):
-    # Performs the regeneration homotopy.
-    regenerationSystem = []
-    regenerationSystemFunctionNames = []
-    currentIndexInSystem = -1
-    regenerationSystemTargetIndex = 0
-    for i in range(len(functions)):
-        if useFunction[i]:
-            regenerationSystem.append(functions[i])
-            regenerationSystemFunctionNames.append(functionNames[i])
-            currentIndexInSystem+=1
-    for i in range(len(variables)):
-        for j in range(currentDimension[i]):
-            regenerationSystem.append(l[i][j])
-            regenerationSystemFunctionNames.append("l_%d_%d"%(i,j))
-            currentIndexInSystem += 1
 
-        if i is regenerationLinearIndex[0]:
-        # If the current variable group is the target one
-            regenerationSystemTargetIndex = currentIndexInSystem
-            # Then the target l to get rid of is the last one in that
-            # variable group
+def directoryNameTracking(depth, G, bfe, varGroup, regenLinear, P):
+#    print("This is G: %s" % G)
+    useFunction = "_".join(map(lambda b: "1" if b else "0", G+[1]))
+#    print(useFunction)
+    dirName = "homotopy_tracking_depth_%d_gens_%s_dim_%s_varGroup_%d_regenLinear_%d_pointId_%s"%(depth,
+        useFunction,
+        "_".join(map(str, bfe)),
+        varGroup,
+        regenLinear,
+        hashPoint(P)
+        )
+    return dirName
 
-    dirName = directoryName(depth, useFunction, currentDimension,
-        regenerationLinearIndex[0], regenerationLinearIndex[1], "regen",
-        point)
-
-    regeneratedPoint = homotopy(dirName,
-            regenerationSystemFunctionNames,
-            regenerationSystem,
-            regenerationSystemTargetIndex,
-            r[regenerationLinearIndex[0]][regenerationLinearIndex[1]],
-            [point])
-
-    return regeneratedPoint
-
-# print(regenerate([False, False], [2,2], [0,0], "0\n\n0 0\n1 0\n0 0\n1 0"))
-
-# 0,1,0,1
-
-#NOTE: You can keep track of the codimension in each factor, and give up
-# on a solution if you can tell that the codimension will already be too
-# small.
-
-def regenerateAndTrack(depth, useFunction, currentDimension, regenerationLinearIndex, point):
-    if any([d < 0 for d in currentDimension]):
-      return
-
-    checkVanishesDirName = directoryName(depth, useFunction,
-        currentDimension, regenerationLinearIndex[0],
-        regenerationLinearIndex[1], "eval", point)
-
-    if vanishes(checkVanishesDirName,
-            functions[depth],
-            point, logTolerance):
-
-      if depth+1 is len(functions):
-        with open(solutionFileName(depth, useFunction, currentDimension,
-          regenerationLinearIndex[0], regenerationLinearIndex[1],
-          point), "w") as solutionFile:
-          solutionFile.write(point)
-        return
-
-      regenerateAndTrack(depth + 1, useFunction, currentDimension,
-              regenerationLinearIndex, point)
-
-      return
-
-    if regenerationLinearIndex[1] is not 0:
-        regeneratedPoint = regenerate(depth, useFunction, currentDimension, regenerationLinearIndex, point)
-    else:
-        regeneratedPoint = point
-
-    if regeneratedPoint is "": #if not smooth the string will be empty
-      return
-
-
-    #track the regenerated point to the target function
-    dirName = directoryName(depth, useFunction, currentDimension,
-        regenerationLinearIndex[0], regenerationLinearIndex[1],
-        "linearProduct", point)
-
-    i = regenerationLinearIndex[0]
-    linearProduct = "(%s)"%l[i][currentDimension[i]-1]
-    for j in range(1, degrees[depth][i]):
-        linearProduct += "*(%s)"%r[i][j]
-
-    # make a system of equations to track the linear product to f_D
-    linearProductHomotopySytem = [linearProduct]
-    linearProductHomotopySytemNames = [functionNames[depth]]
-
-    for i in range(0, depth):
-        if useFunction[i]:
-            linearProductHomotopySytem.append(functions[i])
-            linearProductHomotopySytemNames.append(functionNames[i])
-    for i in range(len(variables)):
-        for j in range(currentDimension[i]): #exclude the last one
-            # because we are using the linear product instead
-            if not (i is regenerationLinearIndex[0] and j is
-                    currentDimension[i]-1):
-                linearProductHomotopySytem.append(l[i][j])
-                linearProductHomotopySytemNames.append("l_%d_%d"%(i,j))
-
-    trackedPoint = homotopy(dirName,
-            linearProductHomotopySytemNames,
-            linearProductHomotopySytem,
-            0,
-            functions[depth],
-            [regeneratedPoint])
-
-
-    if not trackedPoint: # if it's singular the string will be empty
-      return
-
-    if depth+1 is len(functions):
-      with open(solutionFileName(depth, useFunction, currentDimension,
-        regenerationLinearIndex[0], regenerationLinearIndex[1],
-        trackedPoint), "w") as solutionFile:
-        solutionFile.write(trackedPoint)
-      return
-
-    for i in range(len(variables)):
-      for j in range(degrees[depth+1][i]):
-
-          newUseFunction = []
-          for b in useFunction:
-              newUseFunction.append(b)
-          newUseFunction[depth] = True
-
-          newCurrentDimension = []
-          for d in currentDimension:
-              newCurrentDimension.append(d)
-          newCurrentDimension[i] = currentDimension[i]-1
-
-          child_pid = os.fork()
-          if child_pid == 0:
-              regenerateAndTrack(depth+1, newUseFunction,
-                      newCurrentDimension, [i,j], trackedPoint)
-              sys.exit(0)
-
+# TODO: directory to store completed solutions, singular solutions, saturated saturated solutions, etc.
 
 
 if __name__== "__main__":

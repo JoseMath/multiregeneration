@@ -1,0 +1,9 @@
+variable_group p111,p211,p311;
+variable_group p112,p212,p312;
+variable_group p113,p213,p313;
+variable_group p121,p221,p321;
+variable_group p122,p222,p322;
+variable_group p123,p223,p323;
+variable_group p131,p231,p331;
+variable_group p132,p232,p332;
+variable_group p133,p233,p333;
