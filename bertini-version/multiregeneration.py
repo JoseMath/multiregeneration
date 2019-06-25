@@ -10,6 +10,7 @@
 # # must begin with 'function', 'constant', 'hom_variable_group', or 'variable_group'
 
 
+import traceback
 import shutil
 import sys
 import subprocess
@@ -83,7 +84,12 @@ queue = mp.Queue()
 def decCurrentProcesses(out):
   global currentProcesses
   with currentProcesses.get_lock():
+      if verbose > 1:
+        print("attempting to decrement currentProcesse =", 
+            currentProcesses.value)
       currentProcesses.value-=1
+      if verbose > 1:
+        print("new vaule is currentProcesses = ", currentProcesses.value)
 
 def main():
     # Set global configuration variables in the inputFile
@@ -202,11 +208,11 @@ global maxProcesses
 # Make directory to store final solutions
     if os.path.isdir(workingDirectory):
         shutil.rmtree(workingDirectory)
-    os.mkdir(workingDirectory)
+    os.makedirs(workingDirectory)
     os.chdir(workingDirectory)
-    os.mkdir("all_full_depth_solutions")
-    os.mkdir("_truncated_singular_solutions")
-    os.mkdir("_saturated_solutions")
+    os.makedirs("all_full_depth_solutions")
+    os.makedirs("_truncated_singular_solutions")
+    os.makedirs("_saturated_solutions")
 
 
 # print to screen system summary.
@@ -236,30 +242,43 @@ global maxProcesses
     if verbose > 0:
         print("\n################### Starting multiregeneration ####################\n")
     completedSmoothSolutions="_completed_smooth_solutions"
-    os.mkdir(completedSmoothSolutions)
+    os.makedirs(completedSmoothSolutions)
     for i in range(depth, depth+len(fNames)):
-        os.mkdir(completedSmoothSolutions+"/depth_%s"% i)
+        os.makedirs(completedSmoothSolutions+"/depth_%s"% i)
 # branch node outline
-    print(depth,bfe)
-    print("bfe %s" %bfe)
 
     queue.put([depth, G, B, bfe, startSolution])
 
     pool = mp.Pool(maxProcesses)
 
+    with currentProcesses.get_lock():
+      currentProcesses.value = 0
+
     while not queue.empty() or currentProcesses.value > 0:
         if not queue.empty():
             with currentProcesses.get_lock():
+                if verbose > 1:
+                  print("queue size =", queue.qsize(), "currentProcesses =", 
+                      currentProcesses.value)
                 currentProcesses.value+=1
                 args = queue.get()
-                pool.apply_async(outlineRegenerate, (args[0], args[1], 
-                  args[2], args[3], args[4],), callback=decCurrentProcesses)
+                pool.apply_async(processNode, (args,), callback=decCurrentProcesses)
+                if verbose > 1:
+                  print("queue size =", queue.qsize(), "currentProcesses =", 
+                      currentProcesses.value)
 
     pool.close()
     print("Done.")
 
 
-
+def processNode(args): # a wrapper funcion to catch error. This is 
+#                           stupid, but it's a way to see when there is 
+#                           an error in one of the child processes.
+  try:
+    outlineRegenerate(args[0], args[1], args[2], args[3], args[4])
+  except Exception as e:
+    print("There was an error in a child process.")
+    print(e)
 
 def outlineRegenerate(depth,G,B,bfe,P):
     if len(degrees)!=len(fNames):
@@ -271,11 +290,15 @@ def outlineRegenerate(depth,G,B,bfe,P):
         dirVanish = directoryNameIsVanishing(depth, P)
         M = degrees[depth]
         try:
-            os.mkdir(dirVanish)
+            os.makedirs(dirVanish)
         except:
             pass
         isVanishes="unknown"
+        if verbose > 1:
+          print("directory before isEvaluateZero is", os.getcwd())
         isVanishes=isEvaluateZero(dirVanish,depth,P)
+        if verbose > 1:
+          print("directory after isEvaluateZero is", os.getcwd())
         if not(isVanishes):
             if verbose > 1:
               print("Branch out")
@@ -290,16 +313,28 @@ def outlineRegenerate(depth,G,B,bfe,P):
 #                        print(dirTracking)
                         if not os.path.exists(dirTracking):
                                 os.makedirs(dirTracking)
+                        if verbose > 1:
+                          print("directory before branchHomotopy is", os.getcwd())
                         (PPrime,label) = branchHomotopy(dirTracking, depth, G, bfePrime,bfe, i, j, M, P)
+                        if verbose > 1:
+                          print("directory after branchHomotopy is", os.getcwd())
                         if label=="smooth" and len(PPrime)>1:
                             completedSmoothSolutions = "_completed_smooth_solutions"
                             solText = "\n"
                             for line in PPrime:
                                 solText += line+"\n"
                             solName = directoryNameTrackingSolution(depth, G, bfePrime, i, j, PPrime)
-                            startFile = open(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName), "w")
-                            startFile.write(solText)
-                            startFile.close()
+                            try:
+                              startFile = open(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName), "w")
+                              startFile.write(solText)
+                              startFile.close()
+                            except:
+                              print("error writing file", 
+                                  completedSmoothSolutions+"/depth_%s/%s" 
+                                  %(depth,solName))
+                            if verbose > 1:
+                              print("queueing node", 
+                                  [depth+1,G+[True],B,bfePrime,PPrime])
                             queue.put([depth+1,G+[True],B,bfePrime,PPrime]) 
                         # elif label=="singular":
                         #     print(" We prune because the endpoint is singular")
@@ -325,9 +360,17 @@ def outlineRegenerate(depth,G,B,bfe,P):
                     solText += line+"\n"
                 if verbose > 1:
                   print(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName))
-                startFile = open(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName), "w")
-                startFile.write(solText)
-                startFile.close()
+                try:
+                  startFile = open(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName), "w")
+                  startFile.write(solText)
+                  startFile.close()
+                  if verbose > 1:
+                    print("wrote file", completedSmoothSolutions+"/depth_%s/%s" 
+                        %(depth,solName))
+                except:
+                  print("error writing file", 
+                      completedSmoothSolutions+"/depth_%s/%s" 
+                      %(depth,solName))
             queue.put([depth+1,G+[False],B,bfe,P])
         else:
           if verbose > 1:
@@ -397,7 +440,7 @@ END;
     isVanishing = isZero(value[0], logTolerance) and isZero(value[1], logTolerance)
     with open("isVanishing", "w") as isVanishingFile:
       isVanishingFile.write(str(isVanishing))
-    os.chdir("..")
+    os.chdir(cwd)
     return(isVanishing)
 
 
@@ -441,7 +484,13 @@ def writeParameters():
 
 
 def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
+    if verbose > 1:
+      print("function 'branchHomotopy' starting in directory", 
+          os.getcwd())
     label="unknown"
+    cwd = os.getcwd()
+    if verbose > 1:
+      print("changing to directory", dirTracking)
     os.chdir(dirTracking)
     label = "Missing"
     m=M[vg]
@@ -572,8 +621,9 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
             (depth, bfe, str(vg), str(rg), str(hashPoint(P)),
             depth, bfePrime, str(vg), str(rg), str(hashPoint(PPrime))
             ))
-    os.chdir("..")
-    #os.chdir(cwd)
+    if verbose > 1:
+      print("changing back to", cwd)
+    os.chdir(cwd)
     return (PPrime, label)
 
 
@@ -650,7 +700,7 @@ def isZero(s, logTolerance):
 
 def directoryNameIsVanishing(depth, P):
 #    print(useFunction)
-    dirName = "homotopy_vanishing_depth_%s_pointId_%s"%(depth,hashPoint(P))
+    dirName = "homotopy_vanishing/depth_%s/pointId_%s"%(depth,hashPoint(P))
     return dirName
 
 
@@ -665,7 +715,7 @@ def directoryNameTracking(depth, G, bfe, varGroup, regenLinear, P):
 #    print("This is G: %s" % G)
     useFunction = "_".join(map(lambda b: "1" if b else "0", G+[1]))
 #    print(useFunction)
-    dirName = "homotopy_tracking_depth_%d_gens_%s_dim_%s_varGroup_%d_regenLinear_%d_pointId_%s"%(depth,
+    dirName = "homotopy_tracking/depth_%d/gens_%s/dim_%s/varGroup_%d/regenLinear_%d/pointId_%s"%(depth,
         useFunction,
         "_".join(map(str, bfe)),
         varGroup,
@@ -694,7 +744,7 @@ def directoryNameTracking(depth, G, bfe, varGroup, regenLinear, P):
 #    print("This is G: %s" % G)
     useFunction = "_".join(map(lambda b: "1" if b else "0", G+[1]))
 #    print(useFunction)
-    dirName = "homotopy_tracking_depth_%d_gens_%s_dim_%s_varGroup_%d_regenLinear_%d_pointId_%s"%(depth,
+    dirName = "homotopy_tracking/depth_%d/gens_%s/dim_%s/varGroup_%d/regenLinear_%d/pointId_%s"%(depth,
         useFunction,
         "_".join(map(str, bfe)),
         varGroup,
