@@ -1,3 +1,4 @@
+maxProcesses = 3
 degrees = [[2,0,2,0],[2,0,2,0],[0,2,0,2],[0,2,0,2]]
 logTolerance = -10
 workingDirectory = "run"

@@ -17,6 +17,8 @@ import hashlib
 import os
 import random
 import os.path
+import multiprocessing as mp
+from multiprocessing.sharedctypes import Value
 from os import path
 # pip install networkx
 #import networkx as nx # TODO
@@ -72,6 +74,17 @@ bertiniFunctionNames = None
 bertiniEquations = None
 revisedEquationsText = None
 variableGroupText = None
+
+pool = None
+currentProcesses = Value('i', 0)
+maxProcesses = mp.cpu_count()
+queue = mp.Queue()
+ 
+def decCurrentProcesses(out):
+  global currentProcesses
+  with currentProcesses.get_lock():
+      currentProcesses.value-=1
+
 def main():
     # Set global configuration variables in the inputFile
     global variables
@@ -97,6 +110,8 @@ def main():
     global revisedEquationsText
     global variableGroupText
     global bertiniTrackingOptionsText
+
+    global maxProcesses
     setVariablesToGlobal = """
 global variables
 global depth
@@ -113,6 +128,7 @@ global logTolerance
 global verbose
 global projectiveVariableGroups
 global useBertiniInputStyle
+global maxProcesses
 """
 
     # exec(setVariablesToGlobal + open("inputFile.py").read())
@@ -226,7 +242,22 @@ global useBertiniInputStyle
 # branch node outline
     print(depth,bfe)
     print("bfe %s" %bfe)
-    outlineRegenerate(depth, G, B, bfe, startSolution)
+
+    queue.put([depth, G, B, bfe, startSolution])
+
+    pool = mp.Pool(maxProcesses)
+
+    while not queue.empty() or currentProcesses.value > 0:
+        if not queue.empty():
+            with currentProcesses.get_lock():
+                currentProcesses.value+=1
+                pool.apply_async(outlineRegenerate, (*queue.get(),), callback=decCurrentProcesses)
+
+    pool.close()
+    print("Done.")
+
+
+
 
 def outlineRegenerate(depth,G,B,bfe,P):
     if len(degrees)!=len(fNames):
@@ -269,7 +300,7 @@ def outlineRegenerate(depth,G,B,bfe,P):
                             startFile = open(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName), "w")
                             startFile.write(solText)
                             startFile.close()
-                            outlineRegenerate(depth+1,G+[True],B,bfePrime,PPrime)
+                            queue.put([depth+1,G+[True],B,bfePrime,PPrime]) 
                         # elif label=="singular":
                         #     print(" We prune because the endpoint is singular")
                         # elif label=="infinity":
@@ -292,7 +323,7 @@ def outlineRegenerate(depth,G,B,bfe,P):
                 startFile = open(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName), "w")
                 startFile.write(solText)
                 startFile.close()
-            outlineRegenerate(depth+1,G+[False],B,bfe,P)
+            queue.put([depth+1,G+[False],B,bfe,P])
         else:
             print("isVanishes should be True or False and not %s" %isVanishes)
     else:
