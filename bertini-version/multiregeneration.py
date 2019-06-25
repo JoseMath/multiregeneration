@@ -264,8 +264,6 @@ global maxProcesses
 def outlineRegenerate(depth,G,B,bfe,P):
     if len(degrees)!=len(fNames):
         print("Error: length of degree list does not coincide with the number of polynomials in the system. ")
-#    print("We begin: depth %s G %s B %s bfe %s P %s" %(depth,G,B,bfe,hashPoint(P)))
-#    print("Degrees %s" % degrees)
     label = "unknown"
     if depth<B and depth < len(fNames):
         # determine isVanishes value.
@@ -278,9 +276,9 @@ def outlineRegenerate(depth,G,B,bfe,P):
             pass
         isVanishes="unknown"
         isVanishes=isEvaluateZero(dirVanish,depth,P)
-#        print(isVanishes)
         if not(isVanishes):
-            print("Branch out")
+            if verbose > 1:
+              print("Branch out")
             for i in range(len(bfe)):
                 if bfe[i]>0:
                     bfePrime = list(bfe)
@@ -308,28 +306,35 @@ def outlineRegenerate(depth,G,B,bfe,P):
                         # elif label=="infinity":
                         #     print(" We prune because the endpoint is at infinity")
                         else:
+                          if verbose > 1:
                             print(" label is %s at directory %s" % (label,dirTracking))
                     else:
+                      if verbose > 1:
                         print("We prune at depth %s variable group %s" %(depth,i))
-                        label="prune"
+                      label="prune"
         elif isVanishes: # isVanishes is true
-            print("We  oneEdgeHomotopy at depth %s" %depth)
+            if verbose > 1:
+              print("We  oneEdgeHomotopy at depth %s" %depth)
             if label!="error":
                 completedSmoothSolutions = "_completed_smooth_solutions"
-                print("vanishes!")
+                if verbose > 1:
+                  print("vanishes!")
                 solName = directoryNameImmediateSolution(depth, P)
                 solText = "\n"
                 for line in P:
                     solText += line+"\n"
-                print(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName))
+                if verbose > 1:
+                  print(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName))
                 startFile = open(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName), "w")
                 startFile.write(solText)
                 startFile.close()
             queue.put([depth+1,G+[False],B,bfe,P])
         else:
-            print("isVanishes should be True or False and not %s" %isVanishes)
+          if verbose > 1:
+              print("isVanishes should be True or False and not %s" %isVanishes)
     else:
-        print("We reached depth %s" %depth)
+      if verbose > 1:
+          print("We reached depth %s" %depth)
 #    return("success2")
 
 
@@ -449,19 +454,15 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
             HG.append(fNames[i])
     for i in range(len(bfePrime)):
         for j in range(bfePrime[i]):
-#            print("l_%d_%d"%(i,j))
             HG.append("l_%d_%d"%(i,j))
     ellText = "\n % ellText\n"
     for i in range(len(bfe)):
         for j in range(bfe[i]):
-            # print("l_%d_%d" % (i,j))
             ellText += "l_%d_%d" % (i,j)+" = "+l[i][j]+" ; \n"
 #    ellText += "l_%s_%d" % (vg, bfePrime[eval(vg)]) +" = "+l[eval(vg)][bfePrime[eval(vg)]]+" ; \n"
-#    print(bfePrime,ellText)
     rText = "\n % rText\n"
     for i in range(len(bfe)):
         for j in range(M[i]):
-            # print("r_%s_%s" %(i,j))
             rText += "r_%s_%s" %(i,j)+" = "+r[i][j]+" ; \n"
     if len(P)<2:
         print(" ##### error %s" %dirTracking)
@@ -482,8 +483,6 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
     inputPQFile = open("inputPQ", "w")
     inputPQFile.write(inputTextPQ)
     inputPQFile.close()
-    # print("Try to call bertini inputPQ .. ")
-    # print("label %s", label)
     successPQ=False
     errorCountPQ=0
     foundQ =0
@@ -549,24 +548,27 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
             # print("smoothP is %s" % smoothP)
             if len(PPrime)>1:
                 label = "smooth"
-                print(len(PPrime))
+                if verbose > 1:
+                  print(len(PPrime))
                 del PPrime[:1]
             else:
                 PPrime=[]
-                print(PPrime)
+                if verbose > 1:
+                  print(PPrime)
                 label = "error"
         else:
             label = "error"
             PPrime =[]
             print("error (Branch) nonsingular_solutions does not exist in %s or label=error" %dirTracking)
     else:
-        print(" could not find Q.")
+        if verbose > 1:
+          print(" could not find Q.")
         PPrime =[]
         label="error"
     if len(PPrime)>1:
-        # print(PPrime)
-        print(dirTracking)
-        print("Node (Depth %d, dim %s, vg %s, deg %s, point %s)--\n--Node (Depth %d, dim %s, vg %s, deg %s. point %s)" %
+        if verbose > 1:
+          print(dirTracking)
+          print("Node (Depth %d, dim %s, vg %s, deg %s, point %s)--\n--Node (Depth %d, dim %s, vg %s, deg %s. point %s)" %
             (depth, bfe, str(vg), str(rg), str(hashPoint(P)),
             depth, bfePrime, str(vg), str(rg), str(hashPoint(PPrime))
             ))
@@ -601,12 +603,10 @@ def getLinearsThroughPoint(variables):
         spoint += [[]]
         for j in range(len(variables[i])):
             spoint[i]+=[[str(randomNumberGenerator()),str(randomNumberGenerator())]]
-#    print(spoint)
     startSolution = []
     for i in range(len(spoint)):
         for j in range(len(spoint[i])):
             startSolution+=[spoint[i][j][0]+" "+spoint[i][j][1]]
-#    print(startSolution)
     ell = []
     for i in range(len(variables)):
         ell.append([])
@@ -614,7 +614,6 @@ def getLinearsThroughPoint(variables):
         if i in projectiveVariableGroups:
             isAffGroup = 0
         terms = [None for x in range(len(variables[i])+isAffGroup-1)]
-#        print(terms)
         for j in range(len(variables[i])+isAffGroup-1):
             linearString=""
             for x in range(len(variables[i])+isAffGroup-1):
@@ -636,16 +635,8 @@ def getLinearsThroughPoint(variables):
                         str(spoint[i][x][0]),
                         str(spoint[i][x][1]),
                         str(variables[i][-1])) # last variable in group i
-            #print(terms)
             linearString = "+".join(terms)
-        #    print("Linear")
-        #    print(linearString)
-        #    print(" End Linear")
             ell[i].append(linearString)
-#    for i in range(len(variables)):
-#        print("\n The are %s ells in group %s .\n "% (len(ell[i]),i))
-#        print("\nThis is the first linear polynomial for variable group %s.\n "% i)
-#        print(ell[i][0])
     return (ell, startSolution)
 
 
