@@ -251,7 +251,9 @@ global maxProcesses
         if not queue.empty():
             with currentProcesses.get_lock():
                 currentProcesses.value+=1
-                pool.apply_async(outlineRegenerate, (*queue.get(),), callback=decCurrentProcesses)
+                args = queue.get()
+                pool.apply_async(outlineRegenerate, (args[0], args[1], 
+                  args[2], args[3], args[4],), callback=decCurrentProcesses)
 
     pool.close()
     print("Done.")
