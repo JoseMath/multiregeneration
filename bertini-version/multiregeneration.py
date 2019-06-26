@@ -289,20 +289,6 @@ def processNode(args): # a wrapper funcion to catch error. This is
 def outlineRegenerate(depth,G,B,bfe,P):
     if len(degrees)!=len(fNames):
         print("Error: length of degree list does not coincide with the number of polynomials in the system. ")
-    if targetDimensions:
-        canReach = []
-        for dim in targetDimensions:
-            b1 = all(dim[i] <= bfe[i] for i in range(len(dim)))
-            b2 = sum(bfe) - sum(dim) <= len(fNames)-depth
-            canReach.append(b1 and b2)
-        if verbose > 1:
-          print("canReach =", canReach)
-        if not any(canReach):
-            if verbose > 1:
-                print("Stopping at node", [depth, G, bfe, P], "because cannot reach any dimension in", targetDimensions)
-            return
-        if verbose > 1:
-            print("Continuing at node", [depth, G, bfe, P], "because could reach a dimension in", targetDimensions)
 
     label = "unknown"
     if depth<B and depth < len(fNames):
@@ -324,9 +310,17 @@ def outlineRegenerate(depth,G,B,bfe,P):
             if verbose > 1:
               print("Branch out")
             for i in range(len(bfe)):
-                if bfe[i]>0:
-                    bfePrime = list(bfe)
-                    bfePrime[i] = bfe[i]-1
+                bfePrime = list(bfe)
+                bfePrime[i] = bfe[i]-1
+                prune = bfe[i]>0
+                if targetDimensions:
+                    canReach = []
+                    for dim in targetDimensions:
+                        b1 = all(dim[i] <= bfePrime[i] for i in range(len(dim)))
+                        b2 = sum(bfePrime) - sum(dim) <= len(fNames)-depth
+                        canReach.append(b1 and b2)
+                    prune = not any(canReach)
+                if not prune:
                     for j in range(M[i]):
                         label="unknown"
 #                        print("We parentHomotopy at depth %s variable group %s degree %s and point %s" %(depth,i,j,hashPoint(P)))
@@ -354,7 +348,7 @@ def outlineRegenerate(depth,G,B,bfe,P):
                                     completedSmoothSolutions+"/depth_%s/%s" 
                                     %(depth,solName),
                                     "at node",
-                                    [depth+1,G+[True],B,bfePrime,PPrime])
+                                    [depth,G,B,bfe,P])
                             except:
                               print("error writing file", 
                                   completedSmoothSolutions+"/depth_%s/%s" 
