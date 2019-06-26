@@ -77,25 +77,25 @@ revisedEquationsText = None
 variableGroupText = None
 
 pool = None
-currentProcesses = Value('i', 0)
+jobsInPool = Value('i', 0)
 maxProcesses = mp.cpu_count()
 queue = mp.Queue()
  
 def decCurrentProcesses(out):
-  global currentProcesses
-  with currentProcesses.get_lock():
+  global jobsInPool
+  with jobsInPool.get_lock():
       if verbose > 1:
         print("attempting to decrement currentProcesse =", 
-            currentProcesses.value)
-      currentProcesses.value-=1
+            jobsInPool.value)
+      jobsInPool.value-=1
       if verbose > 1:
-        print("new vaule is currentProcesses = ", currentProcesses.value)
+        print("new vaule is jobsInPool = ", jobsInPool.value)
 
 def main():
     # Set global configuration variables in the inputFile
     global variables
     global depth
-    global bfe
+    global bfe # bold font e
     global fNames
     global degrees
     global B
@@ -251,21 +251,21 @@ global maxProcesses
 
     pool = mp.Pool(maxProcesses)
 
-    with currentProcesses.get_lock():
-      currentProcesses.value = 0
+    with jobsInPool.get_lock():
+      jobsInPool.value = 0
 
-    while not queue.empty() or currentProcesses.value > 0:
+    while not queue.empty() or jobsInPool.value > 0:
         if not queue.empty():
-            with currentProcesses.get_lock():
+            with jobsInPool.get_lock():
                 if verbose > 1:
-                  print("queue size =", queue.qsize(), "currentProcesses =", 
-                      currentProcesses.value)
-                currentProcesses.value+=1
+                  print("queue size =", queue.qsize(), "jobsInPool =", 
+                      jobsInPool.value)
+                jobsInPool.value+=1
                 args = queue.get()
                 pool.apply_async(processNode, (args,), callback=decCurrentProcesses)
                 if verbose > 1:
-                  print("queue size =", queue.qsize(), "currentProcesses =", 
-                      currentProcesses.value)
+                  print("queue size =", queue.qsize(), "jobsInPool =", 
+                      jobsInPool.value)
 
     pool.close()
     print("Done.")
