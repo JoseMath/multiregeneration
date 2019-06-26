@@ -76,6 +76,8 @@ bertiniEquations = None
 revisedEquationsText = None
 variableGroupText = None
 
+targetDimensions = None
+
 pool = None
 jobsInPool = Value('i', 0)
 maxProcesses = mp.cpu_count()
@@ -118,6 +120,8 @@ def main():
     global bertiniTrackingOptionsText
 
     global maxProcesses
+
+    global targetDimensions # a list of multidimensions
     setVariablesToGlobal = """
 global variables
 global depth
@@ -135,6 +139,7 @@ global verbose
 global projectiveVariableGroups
 global useBertiniInputStyle
 global maxProcesses
+global targetDimensions
 """
 
     # exec(setVariablesToGlobal + open("inputFile.py").read())
@@ -279,10 +284,26 @@ def processNode(args): # a wrapper funcion to catch error. This is
   except Exception as e:
     print("There was an error in a child process.")
     print(e)
+    print(traceback.format_exc())
 
 def outlineRegenerate(depth,G,B,bfe,P):
     if len(degrees)!=len(fNames):
         print("Error: length of degree list does not coincide with the number of polynomials in the system. ")
+    if targetDimensions:
+        canReach = []
+        for dim in targetDimensions:
+            b1 = all(dim[i] <= bfe[i] for i in range(len(dim)))
+            b2 = sum(bfe) - sum(dim) <= len(fNames)-depth
+            canReach.append(b1 and b2)
+        if verbose > 1:
+          print("canReach =", canReach)
+        if not any(canReach):
+            if verbose > 1:
+                print("Stopping at node", [depth, G, bfe, P], "because cannot reach any dimension in", targetDimensions)
+            return
+        if verbose > 1:
+            print("Continuing at node", [depth, G, bfe, P], "because could reach a dimension in", targetDimensions)
+
     label = "unknown"
     if depth<B and depth < len(fNames):
         # determine isVanishes value.
@@ -328,6 +349,12 @@ def outlineRegenerate(depth,G,B,bfe,P):
                               startFile = open(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName), "w")
                               startFile.write(solText)
                               startFile.close()
+                              if verbose > 1:
+                                print("wrote file", 
+                                    completedSmoothSolutions+"/depth_%s/%s" 
+                                    %(depth,solName),
+                                    "at node",
+                                    [depth+1,G+[True],B,bfePrime,PPrime])
                             except:
                               print("error writing file", 
                                   completedSmoothSolutions+"/depth_%s/%s" 

@@ -38,371 +38,375 @@ Solutions in a 'linearProduct' directory and :
 depth > 0 satisfy h1 = 0
 depth > 1 satisfy h2 = 0
 depth > 2 satisfy h3 = 0
-['0.52398887715564 0.8373816543095416', '-0.8937486757356421 -0.7144331472274266', '-0.8354261786157704 -0.4861090129265866', '0.44595551011266754 0.04519846342903766', '0.0660700696572234 0.8381115998201516', '0.3326373534367655 -0.965949826724323']
+['0.33249536266108115 -0.8685928608528062', '-0.14207530797534962 0.7108723175538769', '0.4117045305662288 -0.43442670310842035', '-0.42075210056501544 -0.4708785864059031', '-0.8759682586163982 0.4541342283539489', '-0.8310412564843059 0.12303089292048508']
 1 is the maximum degree in variable group 0. 
 2 is the maximum degree in variable group 1. 
 
 ################### Starting multiregeneration ####################
 
-0 [2, 2]
-bfe [2, 2]
+canReach = [True]
+Continuing at node [0, [], [2, 2], ['0.33249536266108115 -0.8685928608528062', '-0.14207530797534962 0.7108723175538769', '0.4117045305662288 -0.43442670310842035', '-0.42075210056501544 -0.4708785864059031', '-0.8759682586163982 0.4541342283539489', '-0.8310412564843059 0.12303089292048508']] because could reach a dimension in [[0, 1]]
 directory before isEvaluateZero is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 directory after isEvaluateZero is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 Branch out
 directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-changing to directory homotopy_tracking/depth_0/gens_1/dim_1_2/varGroup_0/regenLinear_0/pointId_49256712
+changing to directory homotopy_tracking/depth_0/gens_1/dim_1_2/varGroup_0/regenLinear_0/pointId_68335211
 7
-homotopy_tracking/depth_0/gens_1/dim_1_2/varGroup_0/regenLinear_0/pointId_49256712
-Node (Depth 0, dim [2, 2], vg 0, deg 0, point 49256712)--
---Node (Depth 0, dim [1, 2], vg 0, deg 0. point 51056826)
+homotopy_tracking/depth_0/gens_1/dim_1_2/varGroup_0/regenLinear_0/pointId_68335211
+Node (Depth 0, dim [2, 2], vg 0, deg 0, point 68335211)--
+--Node (Depth 0, dim [1, 2], vg 0, deg 0. point 25446375)
 changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-queueing node [1, [True], 3, [1, 2], ['1.625820370390456e-13 5.976752982149857e-13', '7.080057693838078e-01 -3.116518295206210e-01', '1.000000000000000e+00 0.000000000000000e+00', '1.002983070424715e-01 4.271366227198708e-01', '-7.546146816245285e-01 3.282604245529078e-01', '1.000000000000000e+00 0.000000000000000e+00']]
+wrote file _completed_smooth_solutions/depth_0/solution_tracking_depth_0_gens_1_dim_1_2_varGroup_0_regenLinear_0_pointId_25446375 at node [1, [True], 3, [1, 2], ['-1.405270553556765e-13 -2.463719613275694e-14', '1.000000000000000e+00 0.000000000000000e+00', '-4.438054747947854e-01 -2.216901214581782e-02', '1.589256681877670e-01 6.199450342547201e-01', '1.000000000000000e+00 0.000000000000000e+00', '8.051272450684074e-01 2.769563221715295e-01']]
+queueing node [1, [True], 3, [1, 2], ['-1.405270553556765e-13 -2.463719613275694e-14', '1.000000000000000e+00 0.000000000000000e+00', '-4.438054747947854e-01 -2.216901214581782e-02', '1.589256681877670e-01 6.199450342547201e-01', '1.000000000000000e+00 0.000000000000000e+00', '8.051272450684074e-01 2.769563221715295e-01']]
 We prune at depth 0 variable group 0
 directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-changing to directory homotopy_tracking/depth_0/gens_1/dim_2_1/varGroup_1/regenLinear_0/pointId_49256712
+changing to directory homotopy_tracking/depth_0/gens_1/dim_2_1/varGroup_1/regenLinear_0/pointId_68335211
 7
-homotopy_tracking/depth_0/gens_1/dim_2_1/varGroup_1/regenLinear_0/pointId_49256712
-Node (Depth 0, dim [2, 2], vg 1, deg 0, point 49256712)--
---Node (Depth 0, dim [2, 1], vg 1, deg 0. point 61687294)
+homotopy_tracking/depth_0/gens_1/dim_2_1/varGroup_1/regenLinear_0/pointId_68335211
+Node (Depth 0, dim [2, 2], vg 1, deg 0, point 68335211)--
+--Node (Depth 0, dim [2, 1], vg 1, deg 0. point 77408311)
 changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-queueing node [1, [True], 3, [2, 1], ['-8.146703492181334e-01 -2.857113634933030e-01', '1.000000000000000e+00 0.000000000000000e+00', '8.355883353095054e-01 -1.240426914913844e-01', '5.496290626513800e-01 1.183674743777796e-01', '1.000000000000000e+00 0.000000000000000e+00', '-7.748145313256816e-01 -5.918373718888525e-02']]
+wrote file _completed_smooth_solutions/depth_0/solution_tracking_depth_0_gens_1_dim_2_1_varGroup_1_regenLinear_0_pointId_77408311 at node [1, [True], 3, [2, 1], ['1.000000000000000e+00 0.000000000000000e+00', '-7.684310220076568e-01 1.305841303550992e-01', '5.944806736726709e-01 2.464243871038476e-01', '1.000000000000000e+00 0.000000000000000e+00', '-4.138919823051964e-01 7.357235186229217e-01', '-2.930540088473930e-01 -3.678617593114583e-01']]
+queueing node [1, [True], 3, [2, 1], ['1.000000000000000e+00 0.000000000000000e+00', '-7.684310220076568e-01 1.305841303550992e-01', '5.944806736726709e-01 2.464243871038476e-01', '1.000000000000000e+00 0.000000000000000e+00', '-4.138919823051964e-01 7.357235186229217e-01', '-2.930540088473930e-01 -3.678617593114583e-01']]
 directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-changing to directory homotopy_tracking/depth_0/gens_1/dim_2_1/varGroup_1/regenLinear_1/pointId_49256712
+changing to directory homotopy_tracking/depth_0/gens_1/dim_2_1/varGroup_1/regenLinear_1/pointId_68335211
 7
-homotopy_tracking/depth_0/gens_1/dim_2_1/varGroup_1/regenLinear_1/pointId_49256712
-Node (Depth 0, dim [2, 2], vg 1, deg 1, point 49256712)--
---Node (Depth 0, dim [2, 1], vg 1, deg 1. point 4455883)
+homotopy_tracking/depth_0/gens_1/dim_2_1/varGroup_1/regenLinear_1/pointId_68335211
+Node (Depth 0, dim [2, 2], vg 1, deg 1, point 68335211)--
+--Node (Depth 0, dim [2, 1], vg 1, deg 1. point 90653613)
 changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-queueing node [1, [True], 3, [2, 1], ['-8.146703492181332e-01 -2.857113634933028e-01', '1.000000000000000e+00 0.000000000000000e+00', '8.355883353095054e-01 -1.240426914913844e-01', '1.355080169102546e-14 -9.705191565226251e-15', '-8.538548644672781e-01 8.750733437249933e-02', '1.000000000000000e+00 0.000000000000000e+00']]
+wrote file _completed_smooth_solutions/depth_0/solution_tracking_depth_0_gens_1_dim_2_1_varGroup_1_regenLinear_1_pointId_90653613 at node [1, [True], 3, [2, 1], ['1.000000000000000e+00 0.000000000000000e+00', '-7.684310220076569e-01 1.305841303550991e-01', '5.944806736726709e-01 2.464243871038476e-01', '2.072630891516067e-15 2.310670818111716e-15', '1.000000000000000e+00 0.000000000000000e+00', '4.372841071207499e-01 2.996433780875186e-01']]
+queueing node [1, [True], 3, [2, 1], ['1.000000000000000e+00 0.000000000000000e+00', '-7.684310220076569e-01 1.305841303550991e-01', '5.944806736726709e-01 2.464243871038476e-01', '2.072630891516067e-15 2.310670818111716e-15', '1.000000000000000e+00 0.000000000000000e+00', '4.372841071207499e-01 2.996433780875186e-01']]
 We prune at depth 0 variable group 1
+canReach = [True]
+Continuing at node [1, [True], [2, 1], ['1.000000000000000e+00 0.000000000000000e+00', '-7.684310220076569e-01 1.305841303550991e-01', '5.944806736726709e-01 2.464243871038476e-01', '2.072630891516067e-15 2.310670818111716e-15', '1.000000000000000e+00 0.000000000000000e+00', '4.372841071207499e-01 2.996433780875186e-01']] because could reach a dimension in [[0, 1]]
 directory before isEvaluateZero is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 directory after isEvaluateZero is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 Branch out
 directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-changing to directory homotopy_tracking/depth_1/gens_1_1/dim_1_1/varGroup_0/regenLinear_0/pointId_4455883
+changing to directory homotopy_tracking/depth_1/gens_1_1/dim_1_1/varGroup_0/regenLinear_0/pointId_90653613
 7
-homotopy_tracking/depth_1/gens_1_1/dim_1_1/varGroup_0/regenLinear_0/pointId_4455883
-Node (Depth 1, dim [2, 1], vg 0, deg 0, point 4455883)--
---Node (Depth 1, dim [1, 1], vg 0, deg 0. point 10851188)
+homotopy_tracking/depth_1/gens_1_1/dim_1_1/varGroup_0/regenLinear_0/pointId_90653613
+Node (Depth 1, dim [2, 1], vg 0, deg 0, point 90653613)--
+--Node (Depth 1, dim [1, 1], vg 0, deg 0. point 95713990)
 changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-queueing node [2, [True, True], 3, [1, 1], ['1.000000000000000e+00 0.000000000000000e+00', '-8.514609934133430e-16 2.245373273205457e-16', '6.271186556678250e-01 5.716142076311573e-01', '1.536872925367211e-264 1.495322805253494e-264', '-8.538548644672853e-01 8.750733437250641e-02', '1.000000000000000e+00 0.000000000000000e+00']]
+wrote file _completed_smooth_solutions/depth_1/solution_tracking_depth_1_gens_1_1_dim_1_1_varGroup_0_regenLinear_0_pointId_95713990 at node [2, [True, True], 3, [1, 1], ['1.000000000000000e+00 0.000000000000000e+00', '1.978492040197612e-16 1.873383177306852e-14', '2.505518579316554e-01 2.873429824166694e-01', '0.000000000000000e+00 0.000000000000000e+00', '1.000000000000000e+00 0.000000000000000e+00', '4.372841071207484e-01 2.996433780875197e-01']]
+queueing node [2, [True, True], 3, [1, 1], ['1.000000000000000e+00 0.000000000000000e+00', '1.978492040197612e-16 1.873383177306852e-14', '2.505518579316554e-01 2.873429824166694e-01', '0.000000000000000e+00 0.000000000000000e+00', '1.000000000000000e+00 0.000000000000000e+00', '4.372841071207484e-01 2.996433780875197e-01']]
 We prune at depth 1 variable group 0
 directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-changing to directory homotopy_tracking/depth_1/gens_1_1/dim_2_0/varGroup_1/regenLinear_0/pointId_4455883
+changing to directory homotopy_tracking/depth_1/gens_1_1/dim_2_0/varGroup_1/regenLinear_0/pointId_90653613
 7
-homotopy_tracking/depth_1/gens_1_1/dim_2_0/varGroup_1/regenLinear_0/pointId_4455883
-Node (Depth 1, dim [2, 1], vg 1, deg 0, point 4455883)--
---Node (Depth 1, dim [2, 0], vg 1, deg 0. point 92293013)
+homotopy_tracking/depth_1/gens_1_1/dim_2_0/varGroup_1/regenLinear_0/pointId_90653613
+Node (Depth 1, dim [2, 1], vg 1, deg 0, point 90653613)--
+--Node (Depth 1, dim [2, 0], vg 1, deg 0. point 99300963)
 changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-queueing node [2, [True, True], 3, [2, 0], ['-8.146703492181332e-01 -2.857113634933028e-01', '1.000000000000000e+00 0.000000000000000e+00', '8.355883353095054e-01 -1.240426914913844e-01', '8.127067605163914e-87 6.732271845067276e-87', '-5.952942390685093e-15 7.697831055342646e-15', '1.000000000000000e+00 0.000000000000000e+00']]
-directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-changing to directory homotopy_tracking/depth_1/gens_1_1/dim_2_0/varGroup_1/regenLinear_1/pointId_4455883
-7
-homotopy_tracking/depth_1/gens_1_1/dim_2_0/varGroup_1/regenLinear_1/pointId_4455883
-Node (Depth 1, dim [2, 1], vg 1, deg 1, point 4455883)--
---Node (Depth 1, dim [2, 0], vg 1, deg 1. point 48900822)
-changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-queueing node [2, [True, True], 3, [2, 0], ['-8.146703492181331e-01 -2.857113634933028e-01', '1.000000000000000e+00 0.000000000000000e+00', '8.355883353095053e-01 -1.240426914913843e-01', '1.489683300412109e-61 2.965531319283397e-61', '-5.999999999999717e-01 -3.447242491461111e-14', '1.000000000000000e+00 0.000000000000000e+00']]
-We prune at depth 1 variable group 1
+wrote file _completed_smooth_solutions/depth_1/solution_tracking_depth_1_gens_1_1_dim_2_0_varGroup_1_regenLinear_0_pointId_99300963 at node [2, [True, True], 3, [2, 0], ['1.000000000000000e+00 0.000000000000000e+00', '-7.684310220076569e-01 1.305841303550991e-01', '5.944806736726711e-01 2.464243871038476e-01', '-8.801758491799365e-172 -6.429067989241615e-173', '8.479526154911770e-16 7.301619235441127e-16', '1.000000000000000e+00 0.000000000000000e+00']]canReach = [True]
+Continuing at node [1, [True], [1, 2], ['-1.405270553556765e-13 -2.463719613275694e-14', '1.000000000000000e+00 0.000000000000000e+00', '-4.438054747947854e-01 -2.216901214581782e-02', '1.589256681877670e-01 6.199450342547201e-01', '1.000000000000000e+00 0.000000000000000e+00', '8.051272450684074e-01 2.769563221715295e-01']] because could reach a dimension in [[0, 1]]
 directory before isEvaluateZero is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 directory after isEvaluateZero is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 Branch out
 directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-changing to directory homotopy_tracking/depth_2/gens_1_1_1/dim_1_0/varGroup_0/regenLinear_0/pointId_51443089
+changing to directory homotopy_tracking/depth_1/gens_1_1/dim_0_2/varGroup_0/regenLinear_0/pointId_25446375
 7
-homotopy_tracking/depth_2/gens_1_1_1/dim_1_0/varGroup_0/regenLinear_0/pointId_51443089
-Node (Depth 2, dim [2, 0], vg 0, deg 0, point 51443089)--
---Node (Depth 2, dim [1, 0], vg 0, deg 0. point 48884635)
+homotopy_tracking/depth_1/gens_1_1/dim_0_2/varGroup_0/regenLinear_0/pointId_25446375
+Node (Depth 1, dim [1, 2], vg 0, deg 0, point 25446375)--
+--Node (Depth 1, dim [0, 2], vg 0, deg 0. point 44178248)
 changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-queueing node [3, [True, True, True], 3, [1, 0], ['1.000000000000000e+00 0.000000000000000e+00', '-6.221482398890223e-01 -2.092634804994616e-01', '-1.978343023672784e-15 2.097930516942718e-15', '1.000000000000000e+00 0.000000000000000e+00', '-9.881312916824931e-324 -4.940656458412465e-324', '-4.999999999999999e-01 2.775557561562891e-17']]
-We prune at depth 2 variable group 0
-directory before isEvaluateZero is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-directory after isEvaluateZero is /home/colin/repos/multiregeneration/bertini-version/test-BI/rundirectory before isEvaluateZero is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-directory after isEvaluateZero is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-Branch out
-directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-changing to directory homotopy_tracking/depth_1/gens_1_1/dim_0_2/varGroup_0/regenLinear_0/pointId_51056826
-7
-homotopy_tracking/depth_1/gens_1_1/dim_0_2/varGroup_0/regenLinear_0/pointId_51056826
-Node (Depth 1, dim [1, 2], vg 0, deg 0, point 51056826)--
---Node (Depth 1, dim [0, 2], vg 0, deg 0. point 87760525)
-changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-queueing node [2, [True, True], 3, [0, 2], ['0.000000000000000e+00 0.000000000000000e+00', '2.400854076658226e-15 -9.095857012970128e-16', '1.000000000000000e+00 0.000000000000000e+00', '1.002983070424715e-01 4.271366227198708e-01', '-7.546146816245285e-01 3.282604245529078e-01', '1.000000000000000e+00 0.000000000000000e+00']]
+wrote file _completed_smooth_solutions/depth_1/solution_tracking_depth_1_gens_1_1_dim_0_2_varGroup_0_regenLinear_0_pointId_44178248 at node [2, [True, True], 3, [0, 2], ['0.000000000000000e+00 0.000000000000000e+00', '-2.231429629102541e-15 -1.804619269023526e-15', '1.000000000000000e+00 0.000000000000000e+00', '1.589256681877670e-01 6.199450342547201e-01', '1.000000000000000e+00 0.000000000000000e+00', '8.051272450684073e-01 2.769563221715294e-01']]
+queueing node [2, [True, True], 3, [0, 2], ['0.000000000000000e+00 0.000000000000000e+00', '-2.231429629102541e-15 -1.804619269023526e-15', '1.000000000000000e+00 0.000000000000000e+00', '1.589256681877670e-01 6.199450342547201e-01', '1.000000000000000e+00 0.000000000000000e+00', '8.051272450684073e-01 2.769563221715294e-01']]
 We prune at depth 1 variable group 0
 directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-changing to directory homotopy_tracking/depth_1/gens_1_1/dim_1_1/varGroup_1/regenLinear_0/pointId_51056826
+changing to directory homotopy_tracking/depth_1/gens_1_1/dim_1_1/varGroup_1/regenLinear_0/pointId_25446375
 7
-homotopy_tracking/depth_1/gens_1_1/dim_1_1/varGroup_1/regenLinear_0/pointId_51056826
-Node (Depth 1, dim [1, 2], vg 1, deg 0, point 51056826)--
---Node (Depth 1, dim [1, 1], vg 1, deg 0. point 50862400)
+homotopy_tracking/depth_1/gens_1_1/dim_1_1/varGroup_1/regenLinear_0/pointId_25446375
+Node (Depth 1, dim [1, 2], vg 1, deg 0, point 25446375)--
+--Node (Depth 1, dim [1, 1], vg 1, deg 0. point 93998226)
 changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-queueing node [2, [True, True], 3, [1, 1], ['0.000000000000000e+00 0.000000000000000e+00', '7.080057693837838e-01 -3.116518295202150e-01', '1.000000000000000e+00 0.000000000000000e+00', '1.000000000000000e+00 0.000000000000000e+00', '3.061378878791603e-17 -9.826819064331587e-15', '6.903004302027833e-01 -4.023464723918302e-02']]
+wrote file _completed_smooth_solutions/depth_1/solution_tracking_depth_1_gens_1_1_dim_1_1_varGroup_1_regenLinear_0_pointId_93998226 at node [2, [True, True], 3, [1, 1], ['-0.000000000000000e+00 0.000000000000000e+00', '1.000000000000000e+00 0.000000000000000e+00', '-4.438054747947572e-01 -2.216901214577133e-02', '1.000000000000000e+00 0.000000000000000e+00', '-1.682526140655271e-01 2.927719406860231e-01', '-5.291230989079487e-02 -4.879532344767032e-01']]
+queueing node [2, [True, True], 3, [1, 1], ['-0.000000000000000e+00 0.000000000000000e+00', '1.000000000000000e+00 0.000000000000000e+00', '-4.438054747947572e-01 -2.216901214577133e-02', '1.000000000000000e+00 0.000000000000000e+00', '-1.682526140655271e-01 2.927719406860231e-01', '-5.291230989079487e-02 -4.879532344767032e-01']]
 directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-changing to directory homotopy_tracking/depth_1/gens_1_1/dim_1_1/varGroup_1/regenLinear_1/pointId_51056826
+changing to directory homotopy_tracking/depth_1/gens_1_1/dim_1_1/varGroup_1/regenLinear_1/pointId_25446375
 7
-homotopy_tracking/depth_1/gens_1_1/dim_1_1/varGroup_1/regenLinear_1/pointId_51056826
-Node (Depth 1, dim [1, 2], vg 1, deg 1, point 51056826)--
---Node (Depth 1, dim [1, 1], vg 1, deg 1. point 52166437)
+homotopy_tracking/depth_1/gens_1_1/dim_1_1/varGroup_1/regenLinear_1/pointId_25446375
+Node (Depth 1, dim [1, 2], vg 1, deg 1, point 25446375)--
+--Node (Depth 1, dim [1, 1], vg 1, deg 1. point 34341534)
 changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-queueing node [2, [True, True], 3, [1, 1], ['9.881312916824931e-324 -2.470328229206233e-323', '7.080057693837839e-01 -3.116518295202150e-01', '1.000000000000000e+00 0.000000000000000e+00', '3.316180756625285e-01 -7.136178194476925e-02', '-6.663236151325167e-01 1.427235638895374e-02', '1.000000000000000e+00 0.000000000000000e+00']]
+wrote file _completed_smooth_solutions/depth_1/solution_tracking_depth_1_gens_1_1_dim_1_1_varGroup_1_regenLinear_1_pointId_34341534 at node [2, [True, True], 3, [1, 1], ['-0.000000000000000e+00 0.000000000000000e+00', '1.000000000000000e+00 0.000000000000000e+00', '-4.438054747947572e-01 -2.216901214577133e-02', '1.000000000000000e+00 0.000000000000000e+00', '2.394100779525122e-15 -4.488010022002567e-17', '1.083890575379808e-01 -5.655619694989483e-01']]
+queueing node [2, [True, True], 3, [1, 1], ['-0.000000000000000e+00 0.000000000000000e+00', '1.000000000000000e+00 0.000000000000000e+00', '-4.438054747947572e-01 -2.216901214577133e-02', '1.000000000000000e+00 0.000000000000000e+00', '2.394100779525122e-15 -4.488010022002567e-17', '1.083890575379808e-01 -5.655619694989483e-01']]
 We prune at depth 1 variable group 1
+canReach = [True]
+Continuing at node [2, [True, True], [0, 2], ['0.000000000000000e+00 0.000000000000000e+00', '-2.231429629102541e-15 -1.804619269023526e-15', '1.000000000000000e+00 0.000000000000000e+00', '1.589256681877670e-01 6.199450342547201e-01', '1.000000000000000e+00 0.000000000000000e+00', '8.051272450684073e-01 2.769563221715294e-01']] because could reach a dimension in [[0, 1]]
 directory before isEvaluateZero is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 directory after isEvaluateZero is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 Branch out
 directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-changing to directory homotopy_tracking/depth_2/gens_1_1_1/dim_0_1/varGroup_1/regenLinear_0/pointId_87760525
-7
-homotopy_tracking/depth_2/gens_1_1_1/dim_0_1/varGroup_1/regenLinear_0/pointId_87760525
-Node (Depth 2, dim [0, 2], vg 1, deg 0, point 87760525)--
---Node (Depth 2, dim [0, 1], vg 1, deg 0. point 40378963)
-changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-queueing node [3, [True, True, True], 3, [0, 1], ['0.000000000000000e+00 0.000000000000000e+00', '0.000000000000000e+00 0.000000000000000e+00', '1.000000000000000e+00 0.000000000000000e+00', '1.000000000000000e+00 0.000000000000000e+00', '5.858955535438901e-01 -9.476089982875019e-02', '-8.379376131824826e-13 1.469049394190336e-13']]
-directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-changing to directory homotopy_tracking/depth_2/gens_1_1_1/dim_0_1/varGroup_1/regenLinear_1/pointId_87760525
+changing to directory homotopy_tracking/depth_2/gens_1_1_1/dim_0_1/varGroup_1/regenLinear_0/pointId_44178248
 []
 changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
- label is error at directory homotopy_tracking/depth_2/gens_1_1_1/dim_0_1/varGroup_1/regenLinear_1/pointId_87760525
+ label is error at directory homotopy_tracking/depth_2/gens_1_1_1/dim_0_1/varGroup_1/regenLinear_0/pointId_44178248
+directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
+function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
+changing to directory homotopy_tracking/depth_2/gens_1_1_1/dim_0_1/varGroup_1/regenLinear_1/pointId_44178248
+7
+homotopy_tracking/depth_2/gens_1_1_1/dim_0_1/varGroup_1/regenLinear_1/pointId_44178248
+Node (Depth 2, dim [0, 2], vg 1, deg 1, point 44178248)--
+--Node (Depth 2, dim [0, 1], vg 1, deg 1. point 96014478)
+changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
+directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
+wrote file _completed_smooth_solutions/depth_2/solution_tracking_depth_2_gens_1_1_1_dim_0_1_varGroup_1_regenLinear_1_pointId_96014478 at node [3, [True, True, True], 3, [0, 1], ['-1.304978785619803e-128 8.170466334446288e-130', '0.000000000000000e+00 0.000000000000000e+00', '1.000000000000000e+00 0.000000000000000e+00', '3.681150395282075e-01 -8.437337993987177e-01', '1.000000000000000e+00 0.000000000000000e+00', '-2.931258767243171e-15 -2.825331494274846e-15']]
+queueing node [3, [True, True, True], 3, [0, 1], ['-1.304978785619803e-128 8.170466334446288e-130', '0.000000000000000e+00 0.000000000000000e+00', '1.000000000000000e+00 0.000000000000000e+00', '3.681150395282075e-01 -8.437337993987177e-01', '1.000000000000000e+00 0.000000000000000e+00', '-2.931258767243171e-15 -2.825331494274846e-15']]
 We prune at depth 2 variable group 1
+canReach = [False]
+Stopping at node [2, [True, True], [2, 0], ['1.000000000000000e+00 0.000000000000000e+00', '-7.684310220076567e-01 1.305841303550993e-01', '5.944806736726709e-01 2.464243871038474e-01', '1.000000000000000e+00 0.000000000000000e+00', '1.428571428571446e-01 1.196742357989500e-15', '-5.714285714285722e-01 -5.932754287840680e-16']]canReach = [True]
+Continuing at node [1, [True], [2, 1], ['1.000000000000000e+00 0.000000000000000e+00', '-7.684310220076568e-01 1.305841303550992e-01', '5.944806736726709e-01 2.464243871038476e-01', '1.000000000000000e+00 0.000000000000000e+00', '-4.138919823051964e-01 7.357235186229217e-01', '-2.930540088473930e-01 -3.678617593114583e-01']] because could reach a dimension in [[0, 1]]
 directory before isEvaluateZero is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 directory after isEvaluateZero is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 Branch out
 directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-changing to directory homotopy_tracking/depth_2/gens_1_1_1/dim_0_1/varGroup_0/regenLinear_0/pointId_50862400
+changing to directory homotopy_tracking/depth_1/gens_1_1/dim_1_1/varGroup_0/regenLinear_0/pointId_77408311
 7
-homotopy_tracking/depth_2/gens_1_1_1/dim_0_1/varGroup_0/regenLinear_0/pointId_50862400
-Node (Depth 2, dim [1, 1], vg 0, deg 0, point 50862400)--
---Node (Depth 2, dim [0, 1], vg 0, deg 0. point 52507906)
+homotopy_tracking/depth_1/gens_1_1/dim_1_1/varGroup_0/regenLinear_0/pointId_77408311
+Node (Depth 1, dim [2, 1], vg 0, deg 0, point 77408311)--
+--Node (Depth 1, dim [1, 1], vg 0, deg 0. point 76101732)
 changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-queueing node [3, [True, True, True], 3, [0, 1], ['-0.000000000000000e+00 0.000000000000000e+00', '1.000000000000000e+00 0.000000000000000e+00', '4.267838298372848e-14 1.350791379602488e-13', '1.000000000000000e+00 0.000000000000000e+00', '3.523915227027134e-33 4.437094397328719e-33', '6.903004302027849e-01 -4.023464723919429e-02']]
+wrote file _completed_smooth_solutions/depth_1/solution_tracking_depth_1_gens_1_1_dim_1_1_varGroup_0_regenLinear_0_pointId_76101732 at node [2, [True, True], 3, [1, 1], ['1.000000000000000e+00 0.000000000000000e+00', '4.435844271720564e-15 -1.733860908848357e-15', '2.505518579316529e-01 2.873429824166782e-01', '1.000000000000000e+00 0.000000000000000e+00', '-4.138919823052056e-01 7.357235186229223e-01', '-2.930540088473972e-01 -3.678617593114611e-01']]
+queueing node [2, [True, True], 3, [1, 1], ['1.000000000000000e+00 0.000000000000000e+00', '4.435844271720564e-15 -1.733860908848357e-15', '2.505518579316529e-01 2.873429824166782e-01', '1.000000000000000e+00 0.000000000000000e+00', '-4.138919823052056e-01 7.357235186229223e-01', '-2.930540088473972e-01 -3.678617593114611e-01']]
+We prune at depth 1 variable group 0
+directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
+function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
+changing to directory homotopy_tracking/depth_1/gens_1_1/dim_2_0/varGroup_1/regenLinear_0/pointId_77408311
+7
+homotopy_tracking/depth_1/gens_1_1/dim_2_0/varGroup_1/regenLinear_0/pointId_77408311
+Node (Depth 1, dim [2, 1], vg 1, deg 0, point 77408311)--
+--Node (Depth 1, dim [2, 0], vg 1, deg 0. point 56371975)
+changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
+directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
+wrote file _completed_smooth_solutions/depth_1/solution_tracking_depth_1_gens_1_1_dim_2_0_varGroup_1_regenLinear_0_pointId_56371975 at node [2, [True, True], 3, [2, 0], ['1.000000000000000e+00 0.000000000000000e+00', '-7.684310220076567e-01 1.305841303550993e-01', '5.944806736726709e-01 2.464243871038474e-01', '1.000000000000000e+00 0.000000000000000e+00', '1.428571428571446e-01 1.196742357989500e-15', '-5.714285714285722e-01 -5.932754287840680e-16']]
+queueing node [2, [True, True], 3, [2, 0], ['1.000000000000000e+00 0.000000000000000e+00', '-7.684310220076567e-01 1.305841303550993e-01', '5.944806736726709e-01 2.464243871038474e-01', '1.000000000000000e+00 0.000000000000000e+00', '1.428571428571446e-01 1.196742357989500e-15', '-5.714285714285722e-01 -5.932754287840680e-16']]
+directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
+function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
+changing to directory homotopy_tracking/depth_1/gens_1_1/dim_2_0/varGroup_1/regenLinear_1/pointId_77408311
+7
+homotopy_tracking/depth_1/gens_1_1/dim_2_0/varGroup_1/regenLinear_1/pointId_77408311
+Node (Depth 1, dim [2, 1], vg 1, deg 1, point 77408311)--
+--Node (Depth 1, dim [2, 0], vg 1, deg 1. point 73182743)
+changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
+directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
+wrote file _completed_smooth_solutions/depth_1/solution_tracking_depth_1_gens_1_1_dim_2_0_varGroup_1_regenLinear_1_pointId_73182743 at node [2, [True, True], 3, [2, 0], ['1.000000000000000e+00 0.000000000000000e+00', '-7.684310220076567e-01 1.305841303550993e-01', '5.944806736726709e-01 2.464243871038474e-01', '1.000000000000000e+00 0.000000000000000e+00', '-2.942480947674426e-15 -1.715794662151575e-16', '-4.999999999999987e-01 6.938893903907228e-17']]
+queueing node [2, [True, True], 3, [2, 0], ['1.000000000000000e+00 0.000000000000000e+00', '-7.684310220076567e-01 1.305841303550993e-01', '5.944806736726709e-01 2.464243871038474e-01', '1.000000000000000e+00 0.000000000000000e+00', '-2.942480947674426e-15 -1.715794662151575e-16', '-4.999999999999987e-01 6.938893903907228e-17']]
+We prune at depth 1 variable group 1
+canReach = [True]
+Continuing at node [2, [True, True], [1, 1], ['1.000000000000000e+00 0.000000000000000e+00', '4.435844271720564e-15 -1.733860908848357e-15', '2.505518579316529e-01 2.873429824166782e-01', '1.000000000000000e+00 0.000000000000000e+00', '-4.138919823052056e-01 7.357235186229223e-01', '-2.930540088473972e-01 -3.678617593114611e-01']] because could reach a dimension in [[0, 1]]
+directory before isEvaluateZero is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
+directory after isEvaluateZero is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
+Branch out
+directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
+function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
+changing to directory homotopy_tracking/depth_2/gens_1_1_1/dim_0_1/varGroup_0/regenLinear_0/pointId_76101732
+7
+homotopy_tracking/depth_2/gens_1_1_1/dim_0_1/varGroup_0/regenLinear_0/pointId_76101732
+Node (Depth 2, dim [1, 1], vg 0, deg 0, point 76101732)--
+--Node (Depth 2, dim [0, 1], vg 0, deg 0. point 81923879)
+changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
+directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
+wrote file _completed_smooth_solutions/depth_2/solution_tracking_depth_2_gens_1_1_1_dim_0_1_varGroup_0_regenLinear_0_pointId_81923879 at node [3, [True, True, True], 3, [0, 1], ['1.000000000000000e+00 0.000000000000000e+00', '0.000000000000000e+00 -0.000000000000000e+00', '7.940211844888127e-13 -6.605008754989729e-13', '1.000000000000000e+00 0.000000000000000e+00', '-4.138919823052055e-01 7.357235186229222e-01', '-2.930540088473971e-01 -3.678617593114610e-01']]
+queueing node [3, [True, True, True], 3, [0, 1], ['1.000000000000000e+00 0.000000000000000e+00', '0.000000000000000e+00 -0.000000000000000e+00', '7.940211844888127e-13 -6.605008754989729e-13', '1.000000000000000e+00 0.000000000000000e+00', '-4.138919823052055e-01 7.357235186229222e-01', '-2.930540088473971e-01 -3.678617593114610e-01']]
 We prune at depth 2 variable group 0
 directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-changing to directory homotopy_tracking/depth_2/gens_1_1_1/dim_1_0/varGroup_1/regenLinear_0/pointId_50862400
-[]
-changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
- label is error at directory homotopy_tracking/depth_2/gens_1_1_1/dim_1_0/varGroup_1/regenLinear_0/pointId_50862400
-directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-changing to directory homotopy_tracking/depth_2/gens_1_1_1/dim_1_0/varGroup_1/regenLinear_1/pointId_50862400
+changing to directory homotopy_tracking/depth_2/gens_1_1_1/dim_1_0/varGroup_1/regenLinear_0/pointId_76101732
 7
-homotopy_tracking/depth_2/gens_1_1_1/dim_1_0/varGroup_1/regenLinear_1/pointId_50862400
-Node (Depth 2, dim [1, 1], vg 1, deg 1, point 50862400)--
---Node (Depth 2, dim [1, 0], vg 1, deg 1. point 14849551)
+homotopy_tracking/depth_2/gens_1_1_1/dim_1_0/varGroup_1/regenLinear_0/pointId_76101732
+Node (Depth 2, dim [1, 1], vg 1, deg 0, point 76101732)--
+--Node (Depth 2, dim [1, 0], vg 1, deg 0. point 72451001)
 changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-queueing node [3, [True, True, True], 3, [1, 0], ['0.000000000000000e+00 0.000000000000000e+00', '7.080057693837839e-01 -3.116518295202150e-01', '1.000000000000000e+00 0.000000000000000e+00', '1.000000000000000e+00 0.000000000000000e+00', '1.302045273296213e-163 1.333022739080888e-163', '-3.935081962399593e-15 -5.623826695315144e-15']]queue size = 1 currentProcesses = 0
-queue size = 0 currentProcesses = 1
-queue size = 1 currentProcesses = 1
-queue size = 0 currentProcesses = 2
-queue size = 1 currentProcesses = 2
-queue size = 0 currentProcesses = 3
-queue size = 1 currentProcesses = 3
-queue size = 0 currentProcesses = 4
-queue size = 1 currentProcesses = 4
-queue size = 0 currentProcesses = 5
-queue size = 1 currentProcesses = 5
-queue size = 0 currentProcesses = 6
-attempting to decrement currentProcesse = 6
-new vaule is currentProcesses =  5
-queue size = 1 currentProcesses = 5
-queue size = 0 currentProcesses = 6
-queue size = 1 currentProcesses = 6
-queue size = 0 currentProcesses = 7
-queue size = 1 currentProcesses = 7
-queue size = 0 currentProcesses = 8
-queue size = 1 currentProcesses = 8
-queue size = 0 currentProcesses = 9
+wrote file _completed_smooth_solutions/depth_2/solution_tracking_depth_2_gens_1_1_1_dim_1_0_varGroup_1_regenLinear_0_pointId_72451001 at node [3, [True, True, True], 3, [1, 0], ['1.000000000000000e+00 0.000000000000000e+00', '5.580055592293996e-33 7.136778855985615e-33', '2.505518579316550e-01 2.873429824166777e-01', '-9.999999999998297e-01 1.377231662047507e-13', '1.000000000000000e+00 0.000000000000000e+00', '-8.518247895347862e-14 -6.892310723990358e-14']]queue size = 1 jobsInPool = 0
+queue size = 0 jobsInPool = 1
+queue size = 1 jobsInPool = 1
+queue size = 0 jobsInPool = 2
+queue size = 1 jobsInPool = 2
+queue size = 0 jobsInPool = 3
+queue size = 1 jobsInPool = 3
+queue size = 0 jobsInPool = 4
+attempting to decrement currentProcesse = 4
+new vaule is jobsInPool =  3
+queue size = 2 jobsInPool = 3
+queue size = 1 jobsInPool = 4
+queue size = 1 jobsInPool = 4
+queue size = 0 jobsInPool = 5
+queue size = 2 jobsInPool = 5
+queue size = 1 jobsInPool = 6
+queue size = 1 jobsInPool = 6
+queue size = 0 jobsInPool = 7
+queue size = 1 jobsInPool = 7
+queue size = 0 jobsInPool = 8
+queue size = 2 jobsInPool = 8
+queue size = 1 jobsInPool = 9
 attempting to decrement currentProcesse = 9
-new vaule is currentProcesses =  8
-queue size = 1 currentProcesses = 8
-queue size = 0 currentProcesses = 9
+new vaule is jobsInPool =  8
+queue size = 1 jobsInPool = 8
+queue size = 0 jobsInPool = 9
 attempting to decrement currentProcesse = 9
-new vaule is currentProcesses =  8
-queue size = 2 currentProcesses = 8
-queue size = 1 currentProcesses = 9
-queue size = 1 currentProcesses = 9
-queue size = 0 currentProcesses = 10
-queue size = 1 currentProcesses = 10
-queue size = 0 currentProcesses = 11
-queue size = 1 currentProcesses = 11
-queue size = 0 currentProcesses = 12
-attempting to decrement currentProcesse = 12
-new vaule is currentProcesses =  11
+new vaule is jobsInPool =  8
+queue size = 1 jobsInPool = 8
+queue size = 0 jobsInPool = 9
+queue size = 1 jobsInPool = 9
+queue size = 0 jobsInPool = 10
+queue size = 1 jobsInPool = 10
+queue size = 0 jobsInPool = 11
 attempting to decrement currentProcesse = 11
-new vaule is currentProcesses =  10
-queue size = 1 currentProcesses = 10
-queue size = 0 currentProcesses = 11
-queue size = 1 currentProcesses = 11
-queue size = 0 currentProcesses = 12
-attempting to decrement currentProcesse = 12
-new vaule is currentProcesses =  11
-queue size = 1 currentProcesses = 11
-queue size = 0 currentProcesses = 12
-attempting to decrement currentProcesse = 12
-new vaule is currentProcesses =  11
+new vaule is jobsInPool =  10
+queue size = 1 jobsInPool = 10
+queue size = 0 jobsInPool = 11
 attempting to decrement currentProcesse = 11
-new vaule is currentProcesses =  10
-queue size = 1 currentProcesses = 10
-queue size = 0 currentProcesses = 11
-queue size = 1 currentProcesses = 11
-queue size = 0 currentProcesses = 12
-queue size = 1 currentProcesses = 12
-queue size = 0 currentProcesses = 13
-attempting to decrement currentProcesse = 13
-new vaule is currentProcesses =  12
-queue size = 1 currentProcesses = 12
-queue size = 0 currentProcesses = 13
-attempting to decrement currentProcesse = 13
-new vaule is currentProcesses =  12
-attempting to decrement currentProcesse = 12
-new vaule is currentProcesses =  11
-attempting to decrement currentProcesse = 11
-new vaule is currentProcesses =  10
-queue size = 1 currentProcesses = 10
-queue size = 0 currentProcesses = 11
-attempting to decrement currentProcesse = 11
-new vaule is currentProcesses =  10
+new vaule is jobsInPool =  10
 attempting to decrement currentProcesse = 10
-new vaule is currentProcesses =  9
+new vaule is jobsInPool =  9
+queue size = 1 jobsInPool = 9
+queue size = 0 jobsInPool = 10
+attempting to decrement currentProcesse = 10
+new vaule is jobsInPool =  9
 attempting to decrement currentProcesse = 9
-new vaule is currentProcesses =  8
+new vaule is jobsInPool =  8
+queue size = 1 jobsInPool = 8
+queue size = 0 jobsInPool = 9
+queue size = 1 jobsInPool = 9
+queue size = 0 jobsInPool = 10
+attempting to decrement currentProcesse = 10
+new vaule is jobsInPool =  9
+attempting to decrement currentProcesse = 9
+new vaule is jobsInPool =  8
 attempting to decrement currentProcesse = 8
-new vaule is currentProcesses =  7
+new vaule is jobsInPool =  7
 attempting to decrement currentProcesse = 7
-new vaule is currentProcesses =  6
+new vaule is jobsInPool =  6
 attempting to decrement currentProcesse = 6
-new vaule is currentProcesses =  5
+new vaule is jobsInPool =  5
 attempting to decrement currentProcesse = 5
-new vaule is currentProcesses =  4
+new vaule is jobsInPool =  4
 attempting to decrement currentProcesse = 4
-new vaule is currentProcesses =  3
-queue size = 1 currentProcesses = 3
-queue size = 0 currentProcesses = 4
-attempting to decrement currentProcesse = 4
-new vaule is currentProcesses =  3
+new vaule is jobsInPool =  3
 attempting to decrement currentProcesse = 3
-new vaule is currentProcesses =  2
-queue size = 1 currentProcesses = 2
-queue size = 0 currentProcesses = 3
+new vaule is jobsInPool =  2
+queue size = 1 jobsInPool = 2
+queue size = 0 jobsInPool = 3
 attempting to decrement currentProcesse = 3
-new vaule is currentProcesses =  2
+new vaule is jobsInPool =  2
+queue size = 1 jobsInPool = 2
+queue size = 0 jobsInPool = 3
+attempting to decrement currentProcesse = 3
+new vaule is jobsInPool =  2
+queue size = 1 jobsInPool = 2
+queue size = 0 jobsInPool = 3
+attempting to decrement currentProcesse = 3
+new vaule is jobsInPool =  2
 attempting to decrement currentProcesse = 2
-new vaule is currentProcesses =  1
+new vaule is jobsInPool =  1
 attempting to decrement currentProcesse = 1
-new vaule is currentProcesses =  0
+new vaule is jobsInPool =  0
 Done.
-directory before isEvaluateZero is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-directory after isEvaluateZero is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-Branch out
+
+queueing node [3, [True, True, True], 3, [1, 0], ['1.000000000000000e+00 0.000000000000000e+00', '5.580055592293996e-33 7.136778855985615e-33', '2.505518579316550e-01 2.873429824166777e-01', '-9.999999999998297e-01 1.377231662047507e-13', '1.000000000000000e+00 0.000000000000000e+00', '-8.518247895347862e-14 -6.892310723990358e-14']]
 directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-changing to directory homotopy_tracking/depth_1/gens_1_1/dim_1_1/varGroup_0/regenLinear_0/pointId_61687294
-7
-homotopy_tracking/depth_1/gens_1_1/dim_1_1/varGroup_0/regenLinear_0/pointId_61687294
-Node (Depth 1, dim [2, 1], vg 0, deg 0, point 61687294)--
---Node (Depth 1, dim [1, 1], vg 0, deg 0. point 83912935)
-changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-queueing node [2, [True, True], 3, [1, 1], ['1.000000000000000e+00 0.000000000000000e+00', '-8.205314057367748e-14 -1.093526227853123e-13', '6.271186556677859e-01 5.716142076309849e-01', '5.496290626513729e-01 1.183674743777755e-01', '1.000000000000000e+00 0.000000000000000e+00', '-7.748145313256865e-01 -5.918373718888781e-02']]
-We prune at depth 1 variable group 0
-directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-changing to directory homotopy_tracking/depth_1/gens_1_1/dim_2_0/varGroup_1/regenLinear_0/pointId_61687294
-7
-homotopy_tracking/depth_1/gens_1_1/dim_2_0/varGroup_1/regenLinear_0/pointId_61687294
-Node (Depth 1, dim [2, 1], vg 1, deg 0, point 61687294)--
---Node (Depth 1, dim [2, 0], vg 1, deg 0. point 51443089)
-changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-queueing node [2, [True, True], 3, [2, 0], ['-8.146703492181331e-01 -2.857113634933028e-01', '1.000000000000000e+00 0.000000000000000e+00', '8.355883353095053e-01 -1.240426914913843e-01', '1.000000000000000e+00 0.000000000000000e+00', '-5.105818654307562e-14 1.200165773996093e-13', '-4.999999999999746e-01 -6.014633235906786e-14']]
-directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-changing to directory homotopy_tracking/depth_1/gens_1_1/dim_2_0/varGroup_1/regenLinear_1/pointId_61687294
-7
-homotopy_tracking/depth_1/gens_1_1/dim_2_0/varGroup_1/regenLinear_1/pointId_61687294
-Node (Depth 1, dim [2, 1], vg 1, deg 1, point 61687294)--
---Node (Depth 1, dim [2, 0], vg 1, deg 1. point 3223688)
-changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-queueing node [2, [True, True], 3, [2, 0], ['-8.146703492181330e-01 -2.857113634933027e-01', '1.000000000000000e+00 0.000000000000000e+00', '8.355883353095054e-01 -1.240426914913844e-01', '1.000000000000000e+00 0.000000000000000e+00', '1.428571428571754e-01 -7.405187574249794e-14', '-5.714285714285876e-01 3.716471574932712e-14']]
-We prune at depth 1 variable group 1
-directory before isEvaluateZero is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-directory after isEvaluateZero is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-Branch out
-directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-changing to directory homotopy_tracking/depth_2/gens_1_1_1/dim_0_1/varGroup_0/regenLinear_0/pointId_83912935
-7
-homotopy_tracking/depth_2/gens_1_1_1/dim_0_1/varGroup_0/regenLinear_0/pointId_83912935
-Node (Depth 2, dim [1, 1], vg 0, deg 0, point 83912935)--
---Node (Depth 2, dim [0, 1], vg 0, deg 0. point 44513074)
-changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-queueing node [3, [True, True, True], 3, [0, 1], ['1.000000000000000e+00 0.000000000000000e+00', '8.046433373329681e-113 -1.162337878332928e-113', '2.289217632785051e-13 -8.549208506681243e-13', '5.496290626513730e-01 1.183674743777755e-01', '1.000000000000000e+00 0.000000000000000e+00', '-7.748145313256865e-01 -5.918373718888770e-02']]
-We prune at depth 2 variable group 0
-directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-changing to directory homotopy_tracking/depth_2/gens_1_1_1/dim_1_0/varGroup_1/regenLinear_0/pointId_83912935
+changing to directory homotopy_tracking/depth_2/gens_1_1_1/dim_1_0/varGroup_1/regenLinear_1/pointId_76101732
 []
 changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
- label is error at directory homotopy_tracking/depth_2/gens_1_1_1/dim_1_0/varGroup_1/regenLinear_0/pointId_83912935
+ label is error at directory homotopy_tracking/depth_2/gens_1_1_1/dim_1_0/varGroup_1/regenLinear_1/pointId_76101732
+We prune at depth 2 variable group 1
+canReach = [False]
+Stopping at node [2, [True, True], [2, 0], ['1.000000000000000e+00 0.000000000000000e+00', '-7.684310220076569e-01 1.305841303550991e-01', '5.944806736726711e-01 2.464243871038476e-01', '-8.801758491799365e-172 -6.429067989241615e-173', '8.479526154911770e-16 7.301619235441127e-16', '1.000000000000000e+00 0.000000000000000e+00']] because cannot reach any dimension in [[0, 1]]
+canReach = [True]
+Continuing at node [3, [True, True, True], [0, 1], ['1.000000000000000e+00 0.000000000000000e+00', '0.000000000000000e+00 -0.000000000000000e+00', '7.940211844888127e-13 -6.605008754989729e-13', '1.000000000000000e+00 0.000000000000000e+00', '-4.138919823052055e-01 7.357235186229222e-01', '-2.930540088473971e-01 -3.678617593114610e-01']] because could reach a dimension in [[0, 1]]
+We reached depth 3
+canReach = [False]
+Stopping at node [2, [True, True], [2, 0], ['1.000000000000000e+00 0.000000000000000e+00', '-7.684310220076569e-01 1.305841303550991e-01', '5.944806736726711e-01 2.464243871038476e-01', '2.693140163735709e-153 8.141710036153168e-153', '-6.000000000000016e-01 -2.942091015256665e-15', '1.000000000000000e+00 0.000000000000000e+00']] because cannot reach any dimension in [[0, 1]]
+canReach = [True]
+Continuing at node [3, [True, True, True], [0, 1], ['-1.304978785619803e-128 8.170466334446288e-130', '0.000000000000000e+00 0.000000000000000e+00', '1.000000000000000e+00 0.000000000000000e+00', '3.681150395282075e-01 -8.437337993987177e-01', '1.000000000000000e+00 0.000000000000000e+00', '-2.931258767243171e-15 -2.825331494274846e-15']] because could reach a dimension in [[0, 1]]
+We reached depth 3
+canReach = [False]
+Stopping at node [3, [True, True, False], [1, 1], ['1.000000000000000e+00 0.000000000000000e+00', '1.978492040197612e-16 1.873383177306852e-14', '2.505518579316554e-01 2.873429824166694e-01', '0.000000000000000e+00 0.000000000000000e+00', '1.000000000000000e+00 0.000000000000000e+00', '4.372841071207484e-01 2.996433780875197e-01']] because cannot reach any dimension in [[0, 1]]
+canReach = [False]
+Stopping at node [3, [True, True, True], [1, 0], ['1.000000000000000e+00 0.000000000000000e+00', '5.580055592293996e-33 7.136778855985615e-33', '2.505518579316550e-01 2.873429824166777e-01', '-9.999999999998297e-01 1.377231662047507e-13', '1.000000000000000e+00 0.000000000000000e+00', '-8.518247895347862e-14 -6.892310723990358e-14']] because cannot reach any dimension in [[0, 1]]
+canReach = [True]
+Continuing at node [3, [True, True, True], [0, 1], ['3.438656868028998e-191 1.652160119800605e-190', '1.000000000000000e+00 0.000000000000000e+00', '4.447107476778127e-16 1.391358696751070e-15', '1.000000000000000e+00 0.000000000000000e+00', '-1.682526140655241e-01 2.927719406860216e-01', '-5.291230989079325e-02 -4.879532344767028e-01']] because could reach a dimension in [[0, 1]]
+We reached depth 3
+canReach = [True]
+Continuing at node [3, [True, True, True], [0, 1], ['2.632441751450637e-128 5.834016987376081e-128', '1.000000000000000e+00 0.000000000000000e+00', '1.520027261998856e-13 9.915854997224654e-13', '1.000000000000000e+00 0.000000000000000e+00', '-0.000000000000000e+00 0.000000000000000e+00', '1.083890575379798e-01 -5.655619694989493e-01']] because could reach a dimension in [[0, 1]]
+We reached depth 3
+canReach = [False]
+Stopping at node [3, [True, True, True], [1, 0], ['-0.000000000000000e+00 0.000000000000000e+00', '1.000000000000000e+00 0.000000000000000e+00', '-4.438054747947572e-01 -2.216901214577138e-02', '1.000000000000000e+00 0.000000000000000e+00', '-1.999999999999901e-01 -3.511080315377058e-15', '-1.644777642687463e-14 5.855274790012496e-15']] because cannot reach any dimension in [[0, 1]]
+canReach = [False]
+Stopping at node [3, [True, True, True], [1, 0], ['-0.000000000000000e+00 0.000000000000000e+00', '1.000000000000000e+00 0.000000000000000e+00', '-4.438054747947572e-01 -2.216901214577138e-02', '1.000000000000000e+00 0.000000000000000e+00', '-1.269266231105930e-166 -1.463226625986874e-167', '-9.912192414336954e-15 1.709757152455047e-15']] because cannot reach any dimension in [[0, 1]]
+
+queueing node [2, [True, True], 3, [2, 0], ['1.000000000000000e+00 0.000000000000000e+00', '-7.684310220076569e-01 1.305841303550991e-01', '5.944806736726711e-01 2.464243871038476e-01', '-8.801758491799365e-172 -6.429067989241615e-173', '8.479526154911770e-16 7.301619235441127e-16', '1.000000000000000e+00 0.000000000000000e+00']]
 directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-changing to directory homotopy_tracking/depth_2/gens_1_1_1/dim_1_0/varGroup_1/regenLinear_1/pointId_83912935
+changing to directory homotopy_tracking/depth_1/gens_1_1/dim_2_0/varGroup_1/regenLinear_1/pointId_90653613
 7
-homotopy_tracking/depth_2/gens_1_1_1/dim_1_0/varGroup_1/regenLinear_1/pointId_83912935
-Node (Depth 2, dim [1, 1], vg 1, deg 1, point 83912935)--
---Node (Depth 2, dim [1, 0], vg 1, deg 1. point 25337167)
+homotopy_tracking/depth_1/gens_1_1/dim_2_0/varGroup_1/regenLinear_1/pointId_90653613
+Node (Depth 1, dim [2, 1], vg 1, deg 1, point 90653613)--
+--Node (Depth 1, dim [2, 0], vg 1, deg 1. point 27809456)
 changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-queueing node [3, [True, True, True], 3, [1, 0], ['1.000000000000000e+00 0.000000000000000e+00', '-5.666263985638803e-33 2.275351341092990e-33', '6.271186556678261e-01 5.716142076311574e-01', '-9.999999999999051e-01 -2.964850587261481e-13', '1.000000000000000e+00 0.000000000000000e+00', '-4.742325409956331e-14 1.482588112955757e-13']]
-We prune at depth 2 variable group 1
-directory before isEvaluateZero is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-directory after isEvaluateZero is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-We  oneEdgeHomotopy at depth 2
-vanishes!
-_completed_smooth_solutions/depth_2/solution_vanishing_depth_2_pointId_10851188
-wrote file _completed_smooth_solutions/depth_2/solution_vanishing_depth_2_pointId_10851188
+wrote file _completed_smooth_solutions/depth_1/solution_tracking_depth_1_gens_1_1_dim_2_0_varGroup_1_regenLinear_1_pointId_27809456 at node [2, [True, True], 3, [2, 0], ['1.000000000000000e+00 0.000000000000000e+00', '-7.684310220076569e-01 1.305841303550991e-01', '5.944806736726711e-01 2.464243871038476e-01', '2.693140163735709e-153 8.141710036153168e-153', '-6.000000000000016e-01 -2.942091015256665e-15', '1.000000000000000e+00 0.000000000000000e+00']]
+queueing node [2, [True, True], 3, [2, 0], ['1.000000000000000e+00 0.000000000000000e+00', '-7.684310220076569e-01 1.305841303550991e-01', '5.944806736726711e-01 2.464243871038476e-01', '2.693140163735709e-153 8.141710036153168e-153', '-6.000000000000016e-01 -2.942091015256665e-15', '1.000000000000000e+00 0.000000000000000e+00']]
+We prune at depth 1 variable group 1
+canReach = [True]
+Continuing at node [2, [True, True], [1, 1], ['-0.000000000000000e+00 0.000000000000000e+00', '1.000000000000000e+00 0.000000000000000e+00', '-4.438054747947572e-01 -2.216901214577133e-02', '1.000000000000000e+00 0.000000000000000e+00', '-1.682526140655271e-01 2.927719406860231e-01', '-5.291230989079487e-02 -4.879532344767032e-01']] because could reach a dimension in [[0, 1]]
 directory before isEvaluateZero is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 directory after isEvaluateZero is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 Branch out
 directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-changing to directory homotopy_tracking/depth_2/gens_1_1_1/dim_1_0/varGroup_0/regenLinear_0/pointId_3223688
+changing to directory homotopy_tracking/depth_2/gens_1_1_1/dim_0_1/varGroup_0/regenLinear_0/pointId_93998226
 7
-homotopy_tracking/depth_2/gens_1_1_1/dim_1_0/varGroup_0/regenLinear_0/pointId_3223688
-Node (Depth 2, dim [2, 0], vg 0, deg 0, point 3223688)--
---Node (Depth 2, dim [1, 0], vg 0, deg 0. point 3299092)
+homotopy_tracking/depth_2/gens_1_1_1/dim_0_1/varGroup_0/regenLinear_0/pointId_93998226
+Node (Depth 2, dim [1, 1], vg 0, deg 0, point 93998226)--
+--Node (Depth 2, dim [0, 1], vg 0, deg 0. point 85346294)
 changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
 directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
-queueing node [3, [True, True, True], 3, [1, 0], ['1.000000000000000e+00 0.000000000000000e+00', '-6.221482398890192e-01 -2.092634804994583e-01', '-1.203423471838631e-16 7.738119111198941e-15', '1.000000000000000e+00 0.000000000000000e+00', '1.428571428571428e-01 -1.387778780781446e-17', '-5.714285714285714e-01 0.000000000000000e+00']]
+wrote file _completed_smooth_solutions/depth_2/solution_tracking_depth_2_gens_1_1_1_dim_0_1_varGroup_0_regenLinear_0_pointId_85346294 at node [3, [True, True, True], 3, [0, 1], ['3.438656868028998e-191 1.652160119800605e-190', '1.000000000000000e+00 0.000000000000000e+00', '4.447107476778127e-16 1.391358696751070e-15', '1.000000000000000e+00 0.000000000000000e+00', '-1.682526140655241e-01 2.927719406860216e-01', '-5.291230989079325e-02 -4.879532344767028e-01']]
+queueing node [3, [True, True, True], 3, [0, 1], ['3.438656868028998e-191 1.652160119800605e-190', '1.000000000000000e+00 0.000000000000000e+00', '4.447107476778127e-16 1.391358696751070e-15', '1.000000000000000e+00 0.000000000000000e+00', '-1.682526140655241e-01 2.927719406860216e-01', '-5.291230989079325e-02 -4.879532344767028e-01']]
 We prune at depth 2 variable group 0
-We reached depth 3
+directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
+function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
+changing to directory homotopy_tracking/depth_2/gens_1_1_1/dim_1_0/varGroup_1/regenLinear_0/pointId_93998226
+7
+homotopy_tracking/depth_2/gens_1_1_1/dim_1_0/varGroup_1/regenLinear_0/pointId_93998226
+Node (Depth 2, dim [1, 1], vg 1, deg 0, point 93998226)--
+--Node (Depth 2, dim [1, 0], vg 1, deg 0. point 65657380)
+changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
+directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
+wrote file _completed_smooth_solutions/depth_2/solution_tracking_depth_2_gens_1_1_1_dim_1_0_varGroup_1_regenLinear_0_pointId_65657380 at node [3, [True, True, True], 3, [1, 0], ['-0.000000000000000e+00 0.000000000000000e+00', '1.000000000000000e+00 0.000000000000000e+00', '-4.438054747947572e-01 -2.216901214577138e-02', '1.000000000000000e+00 0.000000000000000e+00', '-1.999999999999901e-01 -3.511080315377058e-15', '-1.644777642687463e-14 5.855274790012496e-15']]
+queueing node [3, [True, True, True], 3, [1, 0], ['-0.000000000000000e+00 0.000000000000000e+00', '1.000000000000000e+00 0.000000000000000e+00', '-4.438054747947572e-01 -2.216901214577138e-02', '1.000000000000000e+00 0.000000000000000e+00', '-1.999999999999901e-01 -3.511080315377058e-15', '-1.644777642687463e-14 5.855274790012496e-15']]
+directory before branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
+function 'branchHomotopy' starting in directory /home/colin/repos/multiregeneration/bertini-version/test-BI/run
+changing to directory homotopy_tracking/depth_2/gens_1_1_1/dim_1_0/varGroup_1/regenLinear_1/pointId_93998226
+[]
+changing back to /home/colin/repos/multiregeneration/bertini-version/test-BI/run
+directory after branchHomotopy is /home/colin/repos/multiregeneration/bertini-version/test-BI/run
+ label is error at directory homotopy_tracking/depth_2/gens_1_1_1/dim_1_0/varGroup_1/regenLinear_1/pointId_93998226
+We prune at depth 2 variable group 1
