@@ -1,8 +1,8 @@
-verbose = 2
+verbose = 1
 maxProcesses = 3
 degrees =[[1,2],[1,2],[1,2]]
-targetDimensions = [[0,1],[1,0]]
+targetDimensions = None
 logTolerance = -10
 workingDirectory = "run"
-depth = 0
-B=3
+explorationOrder = "breadthFirst"
+# B=4
