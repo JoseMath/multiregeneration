@@ -262,8 +262,11 @@ global explorationOrder
 
 
     global queue
-    queue = mp.Manager().Queue()
-    priorityQueue = PriorityQueue()
+    queue = mp.Manager().Queue() # a messege queue for the child 
+    #processes to comunication with this one
+    priorityQueue = PriorityQueue() # where this process, which is the 
+    #queue manager, stores the jobs that need to be done
+
     priorityQueue.put((0,[depth, G, B, bfe, startSolution]))
 
     pool = mp.Pool(maxProcesses)
@@ -271,6 +274,9 @@ global explorationOrder
     with jobsInPool.get_lock():
       jobsInPool.value = 0
 
+    #This loop looks for messeges from the child processes in the queue, 
+    # then puts them in the priority queue. When there is space for more 
+    # jobs, explore nodes in the priority queue.
     while True:
         if priorityQueue.empty() and queue.empty() and jobsInPool.value is 0:
             break
