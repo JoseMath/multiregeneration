@@ -21,7 +21,7 @@ import os.path
 import multiprocessing as mp
 from multiprocessing.sharedctypes import Value
 from os import path
-from queue import PriorityQueue
+from Queue import PriorityQueue
 # pip install networkx
 #import networkx as nx # TODO
 # variables = [["x1", "x2"], ["y1", "y2"]]
@@ -42,7 +42,8 @@ from queue import PriorityQueue
 
 ### Configuration ###
 # Optional inputs # This can be specified in the inputFile
-projectiveVariableGroups = []  # This can be specified in the inputFile
+projectiveVariableGroups = []  # This can be specified in the inputFile # We don't need this nay more right?
+algebraicTorusVariableGroups = []
 #randomNumberGenerator = random.random
 def randomNumberGenerator():
     rho = random.uniform(-1,1)
@@ -84,13 +85,13 @@ explorationOrder = "breadthFirst"
 pool = None
 jobsInPool = Value('i', 0)
 maxProcesses = mp.cpu_count()
-queue = None 
- 
+queue = None
+
 def decJobsInPool(out):
   global jobsInPool
   with jobsInPool.get_lock():
       if verbose > 1:
-        print("attempting to decrement currentProcesse =", 
+        print("attempting to decrement currentProcesse =",
             jobsInPool.value)
       jobsInPool.value-=1
       if verbose > 1:
@@ -112,6 +113,7 @@ def main():
     global logTolerance
     global verbose
     global projectiveVariableGroups
+    global algebraicTorusVariableGroups
     global bertiniVariableGroupString
 
 
@@ -142,6 +144,7 @@ global workingDirectory
 global logTolerance
 global verbose
 global projectiveVariableGroups
+global algebraicTorusVariableGroups
 global useBertiniInputStyle
 global maxProcesses
 global targetDimensions
@@ -251,7 +254,7 @@ global explorationOrder
         B=len(fNames)  # TODO: check that this is not off by one.
         print("B is set to %d" % B)
     if verbose > 0:
-        print("exploring tree in oreder", explorationOrder)
+        print("exploring tree in order", explorationOrder)
     if verbose > 0:
         print("\n################### Starting multiregeneration ####################\n")
     completedSmoothSolutions="_completed_smooth_solutions"
@@ -262,9 +265,9 @@ global explorationOrder
 
 
     global queue
-    queue = mp.Manager().Queue() # a messege queue for the child 
+    queue = mp.Manager().Queue() # a messege queue for the child
     #processes to comunication with this one
-    priorityQueue = PriorityQueue() # where this process, which is the 
+    priorityQueue = PriorityQueue() # where this process, which is the
     #queue manager, stores the jobs that need to be done
 
     priorityQueue.put((0,[depth, G, B, bfe, startSolution]))
@@ -274,8 +277,8 @@ global explorationOrder
     with jobsInPool.get_lock():
       jobsInPool.value = 0
 
-    #This loop looks for messeges from the child processes in the queue, 
-    # then puts them in the priority queue. When there is space for more 
+    #This loop looks for messeges from the child processes in the queue,
+    # then puts them in the priority queue. When there is space for more
     # jobs, explore nodes in the priority queue.
     while True:
         if priorityQueue.empty() and queue.empty() and jobsInPool.value is 0:
@@ -294,8 +297,8 @@ global explorationOrder
         if not priorityQueue.empty() and jobsInPool.value < maxProcesses:
             with jobsInPool.get_lock():
                 if verbose > 1:
-                  print("queue size =", queue.qsize(), "priorityQueue size", 
-                      priorityQueue.qsize(), "jobsInPool =", 
+                  print("queue size =", queue.qsize(), "priorityQueue size",
+                      priorityQueue.qsize(), "jobsInPool =",
                       jobsInPool.value)
                 jobsInPool.value+=1
                 args = priorityQueue.get()[1]
@@ -304,15 +307,15 @@ global explorationOrder
                 pool.apply_async(processNode, (args,), callback=decJobsInPool)
                 if verbose > 1:
                   print("queue size =", queue.qsize(), "priorityQueue size",
-                      priorityQueue.qsize(), "jobsInPool =", 
+                      priorityQueue.qsize(), "jobsInPool =",
                       jobsInPool.value)
 
     pool.close()
     print("Done.")
 
 
-def processNode(args): # a wrapper funcion to catch error. This is 
-#                           stupid, but it's a way to see when there is 
+def processNode(args): # a wrapper funcion to catch error. This is
+#                           stupid, but it's a way to see when there is
 #                           an error in one of the child processes.
   try:
     outlineRegenerate(args[0], args[1], args[2], args[3], args[4])
@@ -368,6 +371,16 @@ def outlineRegenerate(depth,G,B,bfe,P):
                         (PPrime,label) = branchHomotopy(dirTracking, depth, G, bfePrime,bfe, i, j, M, P)
                         if verbose > 1:
                           print("directory after branchHomotopy is", os.getcwd())
+                        count = 0
+                        if len(algebraicTorusVariableGroups)>0 and len(PPrime)>0: # Prune if not in the algebraic torus based on algebraicTorusVariableGroups
+                            for i in range(len(variables)):
+                                for j in range(len(variables[i])):
+                                    if (i in algebraicTorusVariableGroups):
+#                                        print(count)
+#                                        print(PPrime[count])
+                                        if coordinateLineIsZero(PPrime[count], logTolerance): # What should the logTolerance be here?
+                                            label="prune"
+                                    count = count +1;
                         if label=="smooth" and len(PPrime)>1:
                             completedSmoothSolutions = "_completed_smooth_solutions"
                             solText = "\n"
@@ -379,19 +392,19 @@ def outlineRegenerate(depth,G,B,bfe,P):
                               startFile.write(solText)
                               startFile.close()
                               if verbose > 1:
-                                print("wrote file", 
-                                    completedSmoothSolutions+"/depth_%s/%s" 
+                                print("wrote file",
+                                    completedSmoothSolutions+"/depth_%s/%s"
                                     %(depth,solName),
                                     "at node",
                                     [depth,G,B,bfe,P])
                             except:
-                              print("error writing file", 
-                                  completedSmoothSolutions+"/depth_%s/%s" 
+                              print("error writing file",
+                                  completedSmoothSolutions+"/depth_%s/%s"
                                   %(depth,solName))
                             if verbose > 1:
-                              print("queueing node", 
+                              print("queueing node",
                                   [depth+1,G+[True],B,bfePrime,PPrime])
-                            queue.put([depth+1,G+[True],B,bfePrime,PPrime]) 
+                            queue.put([depth+1,G+[True],B,bfePrime,PPrime])
                         # elif label=="singular":
                         #     print(" We prune because the endpoint is singular")
                         # elif label=="infinity":
@@ -421,11 +434,11 @@ def outlineRegenerate(depth,G,B,bfe,P):
                   startFile.write(solText)
                   startFile.close()
                   if verbose > 1:
-                    print("wrote file", completedSmoothSolutions+"/depth_%s/%s" 
+                    print("wrote file", completedSmoothSolutions+"/depth_%s/%s"
                         %(depth,solName))
                 except:
-                  print("error writing file", 
-                      completedSmoothSolutions+"/depth_%s/%s" 
+                  print("error writing file",
+                      completedSmoothSolutions+"/depth_%s/%s"
                       %(depth,solName))
             if verbose > 1:
                 print("queueing node", [depth+1,G+[False],B,bfe,P])
@@ -543,7 +556,7 @@ def writeParameters():
 
 def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
     if verbose > 1:
-      print("function 'branchHomotopy' starting in directory", 
+      print("function 'branchHomotopy' starting in directory",
           os.getcwd())
     label="unknown"
     cwd = os.getcwd()
@@ -593,7 +606,7 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
     successPQ=False
     errorCountPQ=0
     foundQ =0
-    while not(errorCountPQ>3 or (successPQ==True)):
+    while not(errorCountPQ>3 or (successPQ==True)): # We give Bertini three chances to find Q.
         label="unknown"
         try:
             bertiniCommand = "bertini inputPQ"
@@ -754,6 +767,9 @@ def isZero(s, logTolerance):
     return True
   return int(s.split("e")[1]) < logTolerance
 
+def coordinateLineIsZero(s,logTolerance):
+    value = s.split(' ')
+    return(isZero(value[0], logTolerance) and isZero(value[1], logTolerance))
 
 
 def directoryNameIsVanishing(depth, P):
