@@ -21,6 +21,7 @@ import os.path
 import multiprocessing as mp
 from multiprocessing.sharedctypes import Value
 from os import path
+from queue import PriorityQueue
 # pip install networkx
 #import networkx as nx # TODO
 # variables = [["x1", "x2"], ["y1", "y2"]]
@@ -78,12 +79,14 @@ variableGroupText = None
 
 targetDimensions = None
 
+explorationOrder = "breadthFirst"
+
 pool = None
 jobsInPool = Value('i', 0)
 maxProcesses = mp.cpu_count()
-queue = mp.Queue()
+queue = None 
  
-def decCurrentProcesses(out):
+def decJobsInPool(out):
   global jobsInPool
   with jobsInPool.get_lock():
       if verbose > 1:
@@ -121,6 +124,8 @@ def main():
 
     global maxProcesses
 
+    global explorationOrder
+
     global targetDimensions # a list of multidimensions
     setVariablesToGlobal = """
 global variables
@@ -140,6 +145,7 @@ global projectiveVariableGroups
 global useBertiniInputStyle
 global maxProcesses
 global targetDimensions
+global explorationOrder
 """
 
     # exec(setVariablesToGlobal + open("inputFile.py").read())
@@ -245,6 +251,8 @@ global targetDimensions
         B=len(fNames)  # TODO: check that this is not off by one.
         print("B is set to %d" % B)
     if verbose > 0:
+        print("exploring tree in oreder", explorationOrder)
+    if verbose > 0:
         print("\n################### Starting multiregeneration ####################\n")
     completedSmoothSolutions="_completed_smooth_solutions"
     os.makedirs(completedSmoothSolutions)
@@ -252,24 +260,45 @@ global targetDimensions
         os.makedirs(completedSmoothSolutions+"/depth_%s"% i)
 # branch node outline
 
-    queue.put([depth, G, B, bfe, startSolution])
+
+    global queue
+    queue = mp.Manager().Queue()
+    priorityQueue = PriorityQueue()
+    priorityQueue.put((0,[depth, G, B, bfe, startSolution]))
 
     pool = mp.Pool(maxProcesses)
 
     with jobsInPool.get_lock():
       jobsInPool.value = 0
 
-    while not queue.empty() or jobsInPool.value > 0:
+    while True:
+        if priorityQueue.empty() and queue.empty() and jobsInPool.value is 0:
+            break
         if not queue.empty():
+            job = queue.get()
+            if explorationOrder is "breadthFirst":
+                priority = job[0]
+                priorityQueue.put((priority,job)) #depth is first in tuple, will process lower depth jobs first
+            elif explorationOrder is "depthFirst":
+                priority = -1*job[0]
+                priorityQueue.put((priority,job))
+            else:
+                print("Error: explorationOrder should be 'breadthFirst' or 'depthFirst', not '%s'"%explorationOrder)
+                sys.exit(1)
+        if not priorityQueue.empty() and jobsInPool.value < maxProcesses:
             with jobsInPool.get_lock():
                 if verbose > 1:
-                  print("queue size =", queue.qsize(), "jobsInPool =", 
+                  print("queue size =", queue.qsize(), "priorityQueue size", 
+                      priorityQueue.qsize(), "jobsInPool =", 
                       jobsInPool.value)
                 jobsInPool.value+=1
-                args = queue.get()
-                pool.apply_async(processNode, (args,), callback=decCurrentProcesses)
+                args = priorityQueue.get()[1]
                 if verbose > 1:
-                  print("queue size =", queue.qsize(), "jobsInPool =", 
+                  print("dequeued node", args)
+                pool.apply_async(processNode, (args,), callback=decJobsInPool)
+                if verbose > 1:
+                  print("queue size =", queue.qsize(), "priorityQueue size",
+                      priorityQueue.qsize(), "jobsInPool =", 
                       jobsInPool.value)
 
     pool.close()
@@ -312,7 +341,7 @@ def outlineRegenerate(depth,G,B,bfe,P):
             for i in range(len(bfe)):
                 bfePrime = list(bfe)
                 bfePrime[i] = bfe[i]-1
-                prune = bfe[i]>0
+                prune = bfe[i] is 0
                 if targetDimensions:
                     canReach = []
                     for dim in targetDimensions:
@@ -364,10 +393,10 @@ def outlineRegenerate(depth,G,B,bfe,P):
                         else:
                           if verbose > 1:
                             print(" label is %s at directory %s" % (label,dirTracking))
-                    else:
-                      if verbose > 1:
-                        print("We prune at depth %s variable group %s" %(depth,i))
-                      label="prune"
+                else:
+                  if verbose > 1:
+                    print("We prune at depth %s variable group %s" %(depth,i))
+                  label="prune"
         elif isVanishes: # isVanishes is true
             if verbose > 1:
               print("We  oneEdgeHomotopy at depth %s" %depth)
@@ -392,6 +421,8 @@ def outlineRegenerate(depth,G,B,bfe,P):
                   print("error writing file", 
                       completedSmoothSolutions+"/depth_%s/%s" 
                       %(depth,solName))
+            if verbose > 1:
+                print("queueing node", [depth+1,G+[False],B,bfe,P])
             queue.put([depth+1,G+[False],B,bfe,P])
         else:
           if verbose > 1:
