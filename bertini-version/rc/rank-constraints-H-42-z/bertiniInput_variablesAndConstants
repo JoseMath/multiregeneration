@@ -1,0 +1,3 @@
+hom_variable_group p00,p01,p11,ps ;
+hom_variable_group lam00,lam01,lam11,a ;
+hom_variable_group L00,L01,L10,L11,Lz ;

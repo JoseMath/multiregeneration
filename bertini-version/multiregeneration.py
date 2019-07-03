@@ -44,6 +44,7 @@ from Queue import PriorityQueue
 # Optional inputs # This can be specified in the inputFile
 projectiveVariableGroups = []  # This can be specified in the inputFile # We don't need this nay more right?
 algebraicTorusVariableGroups = []
+nonzeroCoordinates = []
 #randomNumberGenerator = random.random
 def randomNumberGenerator():
     rho = random.uniform(-1,1)
@@ -114,6 +115,7 @@ def main():
     global verbose
     global projectiveVariableGroups
     global algebraicTorusVariableGroups
+    global nonzeroCoordinates
     global bertiniVariableGroupString
 
 
@@ -145,6 +147,7 @@ global logTolerance
 global verbose
 global projectiveVariableGroups
 global algebraicTorusVariableGroups
+global nonzeroCoordinates
 global useBertiniInputStyle
 global maxProcesses
 global targetDimensions
@@ -371,6 +374,7 @@ def outlineRegenerate(depth,G,B,bfe,P):
                         (PPrime,label) = branchHomotopy(dirTracking, depth, G, bfePrime,bfe, i, j, M, P)
                         if verbose > 1:
                           print("directory after branchHomotopy is", os.getcwd())
+                        # TODO: Check if this agrees with our vision of what the code should do.
                         count = 0
                         if len(algebraicTorusVariableGroups)>0 and len(PPrime)>0: # Prune if not in the algebraic torus based on algebraicTorusVariableGroups
                             for i in range(len(variables)):
@@ -378,6 +382,15 @@ def outlineRegenerate(depth,G,B,bfe,P):
                                     if (i in algebraicTorusVariableGroups):
 #                                        print(count)
 #                                        print(PPrime[count])
+                                        if coordinateLineIsZero(PPrime[count], logTolerance): # What should the logTolerance be here?
+                                            label="prune"
+                                    count = count +1;
+                        # Check if coordinates are nonzero
+                        count = 0
+                        if len(nonzeroCoordinates)>0 and len(PPrime)>0: # Prune if not in the algebraic torus based on algebraicTorusVariableGroups
+                            for i in range(len(variables)):
+                                for j in range(len(variables[i])):
+                                    if (count in nonzeroCoordinates):
                                         if coordinateLineIsZero(PPrime[count], logTolerance): # What should the logTolerance be here?
                                             label="prune"
                                     count = count +1;
