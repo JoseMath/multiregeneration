@@ -21,7 +21,7 @@ import os.path
 import multiprocessing as mp
 from multiprocessing.sharedctypes import Value
 from os import path
-from queue import PriorityQueue
+from Queue import PriorityQueue
 # pip install networkx
 #import networkx as nx # TODO
 # variables = [["x1", "x2"], ["y1", "y2"]]
@@ -273,9 +273,9 @@ global symmetric
         for s in range(len(fNames)):
             maxdeg= max(maxdeg,degrees[s][0])
         if 0 in projectiveVariableGroups:
-            rCoefficients = [[randomNumberGenerator() for i in range(len(variables[0])*2)] for r in range(maxdeg)]
+            rCoefficients = [[randomNumberGenerator() for i in range(len(variables[0])*2)] for rd in range(maxdeg)]
         elif 0 not in projectiveVariableGroups:
-            rCoefficients = [[randomNumberGenerator() for i in range(len(variables[0])*2+2)] for r in range(maxdeg)]
+            rCoefficients = [[randomNumberGenerator() for i in range(len(variables[0])*2+2)] for rd in range(maxdeg)]
         for i in range(len(variables)):
             r.append([])
             print("%s is the maximum degree in variable group %s. "%(maxdeg,i))
