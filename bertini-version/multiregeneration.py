@@ -21,7 +21,7 @@ import os.path
 import multiprocessing as mp
 from multiprocessing.sharedctypes import Value
 from os import path
-from Queue import PriorityQueue
+from queue import PriorityQueue
 # pip install networkx
 #import networkx as nx # TODO
 # variables = [["x1", "x2"], ["y1", "y2"]]
@@ -83,6 +83,8 @@ targetDimensions = None
 
 explorationOrder = "breadthFirst"
 
+symmetric = False
+
 pool = None
 jobsInPool = Value('i', 0)
 maxProcesses = mp.cpu_count()
@@ -131,6 +133,8 @@ def main():
     global explorationOrder
 
     global targetDimensions # a list of multidimensions
+
+    global symmetric
     setVariablesToGlobal = """
 global variables
 global depth
@@ -152,6 +156,7 @@ global useBertiniInputStyle
 global maxProcesses
 global targetDimensions
 global explorationOrder
+global symmetric
 """
 
     # exec(setVariablesToGlobal + open("inputFile.py").read())
@@ -241,18 +246,43 @@ global explorationOrder
             if c >= depth:
                 print("depth > "+str(c)+" satisfy "+ f+" = 0")
 # Determine random linear polynomials l[i][j]
-    (l, startSolution) = getLinearsThroughPoint(variables)
-    print(startSolution)
+    if not symmetric:
+        (l, startSolution) = getLinearsThroughPoint(variables)
+    elif symmetric:
+        (l, startSolution) = getLinearsThroughSymmetricPoint(variables)
+
+    if verbose > 1:
+        print("Using start solution", startSolution)
+        print("Using dimesion linears", l)
 # Determine random linear polynomials r[i][j]
     r = []
-    for i in range(len(variables)):
-        r.append([])
+    if not symmetric:
+        for i in range(len(variables)):
+            r.append([])
+            maxdeg= 0
+            for s in range(len(fNames)):
+                maxdeg= max(maxdeg,degrees[s][i])
+            print("%s is the maximum degree in variable group %s. "%(maxdeg,i))
+            for d in range(maxdeg):
+                r[i].append(getGenericLinearInVariableGroup(i))
+    elif symmetric:
+        #TODO: check that the degrees, types, and number of variables match
+        # accross all variable groups.
+        rCoefficients = None
         maxdeg= 0
         for s in range(len(fNames)):
-            maxdeg= max(maxdeg,degrees[s][i])
-        print("%s is the maximum degree in variable group %s. "%(maxdeg,i))
-        for d in range(maxdeg):
-            r[i].append(getGenericLinearInVariableGroup(i))
+            maxdeg= max(maxdeg,degrees[s][0])
+        if 0 in projectiveVariableGroups:
+            rCoefficients = [[randomNumberGenerator() for i in range(len(variables[0])*2)] for r in range(maxdeg)]
+        elif 0 not in projectiveVariableGroups:
+            rCoefficients = [[randomNumberGenerator() for i in range(len(variables[0])*2+2)] for r in range(maxdeg)]
+        for i in range(len(variables)):
+            r.append([])
+            print("%s is the maximum degree in variable group %s. "%(maxdeg,i))
+            for d in range(maxdeg):
+                r[i].append(getGenericLinearInVariableGroup(i, rCoefficients[d]))
+    if verbose > 1:
+        print("Using degree linears", r)
     if B== None:
         B=len(fNames)  # TODO: check that this is not off by one.
         print("B is set to %d" % B)
@@ -361,6 +391,10 @@ def outlineRegenerate(depth,G,B,bfe,P):
                         b2 = sum(bfePrime) - sum(dim) <= len(fNames)-depth
                         canReach.append(b1 and b2)
                     prune = not any(canReach)
+                if symmetric:
+                    if verbose > 1:
+                        print("bfe is nonDecreasing:", nonDecreasing(bfe))
+                    prune = prune or not nonDecreasing(bfe)
                 if not prune:
                     for j in range(M[i]):
                         label="unknown"
@@ -714,7 +748,6 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
 
 
 
-
 #    regenerateSolving(depth, G, B, bfe, startSolution,"smooth")
 
 
@@ -728,6 +761,25 @@ def getGenericLinearInVariableGroup(variableGroup):
     if not variableGroup in projectiveVariableGroups:
       terms.append("(%s + I*%s)"%(str(randomNumberGenerator()),
         str(randomNumberGenerator())))
+    return "+".join(terms)
+
+# used for the symmetric case, where the coefficients need to be the same
+# accross variable groups. Takes a list of coefficients as input.
+def getGenericLinearInVariableGroup(variableGroup, coefficients):
+    terms = []
+    seed = 0
+    if variableGroup in projectiveVariableGroups and len(coefficients) < 2*len(variables[variableGroup]):
+        print("Error: not enough coefficients given")
+        sys.exit(0)
+    elif variableGroup not in projectiveVariableGroups and len(coefficients) < 2*len(variables[variableGroup])+2:
+        print("Error: not enough coefficients given")
+        sys.exit(0)
+    for var in variables[variableGroup]:
+        terms.append("(%s + I*%s)*%s"%(coefficients[seed], coefficients[seed+1], var))
+        seed += 2
+    if not variableGroup in projectiveVariableGroups:
+      terms.append("(%s + I*%s)"%(coefficients[seed], coefficients[seed+1]))
+      seed+=2
     return "+".join(terms)
 
 # used to get generic linears (B)
@@ -773,6 +825,57 @@ def getLinearsThroughPoint(variables):
             ell[i].append(linearString)
     return (ell, startSolution)
 
+def getLinearsThroughSymmetricPoint(variables):
+    spoint = [[]]
+    for j in range(len(variables[0])):
+        spoint[0]+=[[str(randomNumberGenerator()),str(randomNumberGenerator())]]
+    for i in range(1, len(variables)):
+        spoint += [[]]
+        for j in range(len(variables[i])):
+            spoint[i]+=[[spoint[0][j][0],spoint[0][j][1]]]
+    startSolution = []
+    for i in range(len(spoint)):
+        for j in range(len(spoint[i])):
+            startSolution+=[spoint[i][j][0]+" "+spoint[i][j][1]]
+    ell = []
+    for i in range(len(variables)):
+        ell.append([])
+        isAffGroup=1
+        if i in projectiveVariableGroups:
+            isAffGroup = 0
+        terms = [None for x in range(len(variables[i])+isAffGroup-1)]
+        for j in range(len(variables[i])+isAffGroup-1):
+            linearString=""
+            coefficients = []
+            coefficients.append([str(randomNumberGenerator()), str(randomNumberGenerator())])
+            for x in range(1, len(variables[i])+isAffGroup-1):
+                coefficients.append([coefficients[0][0], coefficients[0][1]])
+
+            for x in range(len(variables[i])+isAffGroup-1):
+                if isAffGroup:
+                    terms[x]="(%s+I*%s)*(%s-(%s+I*%s))"%(
+                        coefficients[x][0],
+                        coefficients[x][1],
+                        str(variables[i][x]),
+                        spoint[i][x][0],
+                        spoint[i][x][1],
+                        )
+                else:
+                    terms[x]="(%s+I*%s)*((%s+I*%s)*%s-(%s+I*%s)*%s)"%(
+                        coefficients[x][0],
+                        coefficients[x][1],
+                        str(spoint[i][-1][0]), #real  part of last coordinate of spoint
+                        str(spoint[i][-1][1]),  # imaginary part of last coordinate of spoint
+                        str(variables[i][x]), # a variable in group i
+                        str(spoint[i][x][0]),
+                        str(spoint[i][x][1]),
+                        str(variables[i][-1])) # last variable in group i
+            linearString = "+".join(terms)
+            ell[i].append(linearString)
+    return (ell, startSolution)
+
+def nonDecreasing(l):
+    return all(l[i] <= l[i+1] for i in range(len(l)-1))
 # helper function to determine if a value is zero.
 def isZero(s, logTolerance):
   if all([not str(i) in s for i in range(1, 10)]):

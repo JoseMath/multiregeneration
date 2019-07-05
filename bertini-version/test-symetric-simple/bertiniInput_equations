@@ -1,0 +1,4 @@
+function f1, f2;
+
+f1 = x^2 + y^2 - 1;
+f2 = x*y;
