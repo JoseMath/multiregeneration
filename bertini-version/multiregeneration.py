@@ -263,6 +263,7 @@ global symmetric
             for s in range(len(fNames)):
                 maxdeg= max(maxdeg,degrees[s][i])
             print("%s is the maximum degree in variable group %s. "%(maxdeg,i))
+            print(getGenericLinearInVariableGroup(i))
             for d in range(maxdeg):
                 r[i].append(getGenericLinearInVariableGroup(i))
     elif symmetric:
@@ -280,7 +281,7 @@ global symmetric
             r.append([])
             print("%s is the maximum degree in variable group %s. "%(maxdeg,i))
             for d in range(maxdeg):
-                r[i].append(getGenericLinearInVariableGroup(i, rCoefficients[d]))
+                r[i].append(getSymGenericLinearInVariableGroup(i, rCoefficients[d]))
     if verbose > 1:
         print("Using degree linears", r)
     if B== None:
@@ -765,7 +766,7 @@ def getGenericLinearInVariableGroup(variableGroup):
 
 # used for the symmetric case, where the coefficients need to be the same
 # accross variable groups. Takes a list of coefficients as input.
-def getGenericLinearInVariableGroup(variableGroup, coefficients):
+def getSymGenericLinearInVariableGroup(variableGroup, coefficients):
     terms = []
     seed = 0
     if variableGroup in projectiveVariableGroups and len(coefficients) < 2*len(variables[variableGroup]):
