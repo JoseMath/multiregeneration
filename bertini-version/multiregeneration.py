@@ -392,10 +392,13 @@ def outlineRegenerate(depth,G,B,bfe,P):
                         b2 = sum(bfePrime) - sum(dim) <= len(fNames)-depth
                         canReach.append(b1 and b2)
                     prune = not any(canReach)
-                if symmetric:
+                if symmetric: #right now it looks for diheadral symetry
+                    # if verbose > 1:
+                    #     print("bfe is nonDecreasing:", nonDecreasing(bfe))
+                    # prune = prune or not nonDecreasing(bfe)
                     if verbose > 1:
-                        print("bfe is nonDecreasing:", nonDecreasing(bfe))
-                    prune = prune or not nonDecreasing(bfe)
+                        print("first is min in bfe", firstIsMin(bfe))
+                    prune = prune or not firstIsMin(bfe)
                 if not prune:
                     for j in range(M[i]):
                         label="unknown"
@@ -877,6 +880,8 @@ def getLinearsThroughSymmetricPoint(variables):
 
 def nonDecreasing(l):
     return all(l[i] <= l[i+1] for i in range(len(l)-1))
+def firstIsMin(l):
+    return l[0] == min(l)
 # helper function to determine if a value is zero.
 def isZero(s, logTolerance):
   if all([not str(i) in s for i in range(1, 10)]):
