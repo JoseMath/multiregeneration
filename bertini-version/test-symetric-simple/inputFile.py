@@ -1,7 +1,7 @@
 verbose = 2
 maxProcesses = 3
 degrees =[[2,2], [1,1]]
-symetric = True
+symmetric = True
 targetDimensions = None
 logTolerance = -10
 workingDirectory = "run"

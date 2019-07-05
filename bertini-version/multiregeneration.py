@@ -83,7 +83,7 @@ targetDimensions = None
 
 explorationOrder = "breadthFirst"
 
-symetric = False
+symmetric = False
 
 pool = None
 jobsInPool = Value('i', 0)
@@ -134,7 +134,7 @@ def main():
 
     global targetDimensions # a list of multidimensions
 
-    global symetric
+    global symmetric
     setVariablesToGlobal = """
 global variables
 global depth
@@ -156,7 +156,7 @@ global useBertiniInputStyle
 global maxProcesses
 global targetDimensions
 global explorationOrder
-global symetric
+global symmetric
 """
 
     # exec(setVariablesToGlobal + open("inputFile.py").read())
@@ -246,17 +246,17 @@ global symetric
             if c >= depth:
                 print("depth > "+str(c)+" satisfy "+ f+" = 0")
 # Determine random linear polynomials l[i][j]
-    if not symetric:
+    if not symmetric:
         (l, startSolution) = getLinearsThroughPoint(variables)
-    elif symetric:
-        (l, startSolution) = getLinearsThroughSymetricPoint(variables)
+    elif symmetric:
+        (l, startSolution) = getLinearsThroughSymmetricPoint(variables)
 
     if verbose > 1:
         print("Using start solution", startSolution)
         print("Using dimesion linears", l)
 # Determine random linear polynomials r[i][j]
     r = []
-    if not symetric:
+    if not symmetric:
         for i in range(len(variables)):
             r.append([])
             maxdeg= 0
@@ -265,7 +265,7 @@ global symetric
             print("%s is the maximum degree in variable group %s. "%(maxdeg,i))
             for d in range(maxdeg):
                 r[i].append(getGenericLinearInVariableGroup(i))
-    elif symetric:
+    elif symmetric:
         #TODO: check that the degrees, types, and number of variables match 
         # accross all variable groups.
         rCoefficients = None
@@ -391,7 +391,7 @@ def outlineRegenerate(depth,G,B,bfe,P):
                         b2 = sum(bfePrime) - sum(dim) <= len(fNames)-depth
                         canReach.append(b1 and b2)
                     prune = not any(canReach)
-                if symetric:
+                if symmetric:
                     if verbose > 1:
                         print("bfe is nonDecreasing:", nonDecreasing(bfe))
                     prune = prune or not nonDecreasing(bfe)
@@ -763,7 +763,7 @@ def getGenericLinearInVariableGroup(variableGroup):
         str(randomNumberGenerator())))
     return "+".join(terms)
 
-# used for the symetric case, where the coefficients need to be the same 
+# used for the symmetric case, where the coefficients need to be the same 
 # accross variable groups. Takes a list of coefficients as input.
 def getGenericLinearInVariableGroup(variableGroup, coefficients):
     terms = []
@@ -825,7 +825,7 @@ def getLinearsThroughPoint(variables):
             ell[i].append(linearString)
     return (ell, startSolution)
 
-def getLinearsThroughSymetricPoint(variables):
+def getLinearsThroughSymmetricPoint(variables):
     spoint = [[]]
     for j in range(len(variables[0])):
         spoint[0]+=[[str(randomNumberGenerator()),str(randomNumberGenerator())]]
