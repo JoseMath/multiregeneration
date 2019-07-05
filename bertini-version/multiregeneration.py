@@ -266,7 +266,7 @@ global symmetric
             for d in range(maxdeg):
                 r[i].append(getGenericLinearInVariableGroup(i))
     elif symmetric:
-        #TODO: check that the degrees, types, and number of variables match 
+        #TODO: check that the degrees, types, and number of variables match
         # accross all variable groups.
         rCoefficients = None
         maxdeg= 0
@@ -766,7 +766,7 @@ def getGenericLinearInVariableGroup(variableGroup):
         str(randomNumberGenerator())))
     return "+".join(terms)
 
-# used for the symmetric case, where the coefficients need to be the same 
+# used for the symmetric case, where the coefficients need to be the same
 # accross variable groups. Takes a list of coefficients as input.
 def getGenericLinearInVariableGroup(variableGroup, coefficients):
     terms = []
@@ -853,7 +853,7 @@ def getLinearsThroughSymmetricPoint(variables):
             coefficients.append([str(randomNumberGenerator()), str(randomNumberGenerator())])
             for x in range(1, len(variables[i])+isAffGroup-1):
                 coefficients.append([coefficients[0][0], coefficients[0][1]])
-                
+
             for x in range(len(variables[i])+isAffGroup-1):
                 if isAffGroup:
                     terms[x]="(%s+I*%s)*(%s-(%s+I*%s))"%(
