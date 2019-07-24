@@ -22,6 +22,9 @@ import multiprocessing as mp
 from multiprocessing.sharedctypes import Value
 from os import path
 from Queue import PriorityQueue
+import numpy as np
+
+
 # pip install networkx
 #import networkx as nx # TODO
 # variables = [["x1", "x2"], ["y1", "y2"]]
@@ -398,7 +401,6 @@ def outlineRegenerate(depth,G,B,bfe,P):
                     # prune = prune or not nonDecreasing(bfe)
                     if verbose > 1:
                         print("first is min in bfe", firstIsMin(bfe))
-                    prune = prune or not firstIsMin(bfe)
                 if not prune:
                     for j in range(M[i]):
                         label="unknown"
@@ -425,7 +427,7 @@ def outlineRegenerate(depth,G,B,bfe,P):
                                     count = count +1;
                         # Check if coordinates are nonzero
                         count = 0
-                        if len(nonzeroCoordinates)>0 and len(PPrime)>0: # Prune if not in the algebraic torus based on algebraicTorusVariableGroups
+                        if len(nonzeroCoordinates)>0 and len(PPrime)>0: # Prune if not in the algebraic torus based on nonzeroCoordinates
                             for i in range(len(variables)):
                                 for j in range(len(variables[i])):
                                     if (count in nonzeroCoordinates):
@@ -830,6 +832,8 @@ def getLinearsThroughPoint(variables):
     return (ell, startSolution)
 
 def getLinearsThroughSymmetricPoint(variables):
+    print("getLinearsThroughSymmetricPoint")
+# make a symmetric point
     spoint = [[]]
     for j in range(len(variables[0])):
         spoint[0]+=[[str(randomNumberGenerator()),str(randomNumberGenerator())]]
@@ -841,33 +845,45 @@ def getLinearsThroughSymmetricPoint(variables):
     for i in range(len(spoint)):
         for j in range(len(spoint[i])):
             startSolution+=[spoint[i][j][0]+" "+spoint[i][j][1]]
+# make symmetric slices
+    # coefficients of dimension linears
+    isAffGroup=1
+    if 0 in projectiveVariableGroups:
+        isAffGroup = 0
+    coefficients=[]
+    for j in range(len(variables[0])+isAffGroup-1):
+#        print("j",j)
+#        print(len(variables[0])+isAffGroup-1)
+#        print(coefficients)
+        coefficients.append([])
+#        print(coefficients)
+        coefficients[j].append([str(randomNumberGenerator()), str(randomNumberGenerator())])
+#        print(coefficients)
+#        print("j",j)
+        for x in range(1, len(variables[0])+isAffGroup-1):
+            coefficients[j].append([str(randomNumberGenerator()), str(randomNumberGenerator())])
+#        print(coefficients)
+    #
+#    print("ell")
     ell = []
     for i in range(len(variables)):
+        linearString=""
         ell.append([])
-        isAffGroup=1
-        if i in projectiveVariableGroups:
-            isAffGroup = 0
         terms = [None for x in range(len(variables[i])+isAffGroup-1)]
-        for j in range(len(variables[i])+isAffGroup-1):
-            linearString=""
-            coefficients = []
-            coefficients.append([str(randomNumberGenerator()), str(randomNumberGenerator())])
-            for x in range(1, len(variables[i])+isAffGroup-1):
-                coefficients.append([coefficients[0][0], coefficients[0][1]])
-
+        for j in range(len(variables[0])+isAffGroup-1):
             for x in range(len(variables[i])+isAffGroup-1):
                 if isAffGroup:
                     terms[x]="(%s+I*%s)*(%s-(%s+I*%s))"%(
-                        coefficients[x][0],
-                        coefficients[x][1],
+                        coefficients[j][x][0],
+                        coefficients[j][x][1],
                         str(variables[i][x]),
                         spoint[i][x][0],
                         spoint[i][x][1],
                         )
                 else:
                     terms[x]="(%s+I*%s)*((%s+I*%s)*%s-(%s+I*%s)*%s)"%(
-                        coefficients[x][0],
-                        coefficients[x][1],
+                        coefficients[j][x][0],
+                        coefficients[j][x][1],
                         str(spoint[i][-1][0]), #real  part of last coordinate of spoint
                         str(spoint[i][-1][1]),  # imaginary part of last coordinate of spoint
                         str(variables[i][x]), # a variable in group i
