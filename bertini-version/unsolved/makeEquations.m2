@@ -2,7 +2,7 @@ restart
 dir="/Users/jo/Documents/GoodGit/multiregeneration/bertini-version/unsolved"
 --This M2 code produces a system of likelihood equations
 --This formulation is the homogeneous local kernel formulation
- 
+
 printDegrees = F ->(
     D := F/degree/(i->new Array from drop(i,1));
     print("degrees = "|toString (new Array from D))
@@ -46,14 +46,25 @@ homogeneousSymLocalKernelFormulation=(n,r)->(
         bigJ = bigL;
         print(bigL,bigP);
         M = hadamard(bigP,(transpose bigL)*Lam*bigJ)+uplus*bigP-hadamard(U,scale(U));
+        colsumM = (uplus*bigP-hadamard(U,scale(U)))*transpose matrix {for i to numRows M-1 list 1_R};
 --        uSub = flatten for i to numRows U-1 list for j from i to numRows U-1 list U_(i,j)=>random(1,100);
 --        uAll = sum flatten for i to numRows U-1 list for j to numRows U-1 list U_(i,j);
 --        M = sub(sub(M,{uplus=>uAll}),uSub);
         F = flatten for i to numRows M-1 list for j from i+1 to numRows M-1 list homog({1,ps,a,Lz},M_(i,j));
         DF = flatten for i to numRows M-1 list homog({1,ps,a,Lz},M_(i,i));
-        G = apply(subsets(1+numRows M,2),i->homog({1,ps,a,Lz},M_(i_0,-1+i_1)));
-        F=DF|F;
-        F = G ;
+        CF = flatten for i to numRows M-1 list homog({1,ps,a,Lz},colsumM_(i,0));
+        G = apply(subsets(1+numRows M,2),i->(
+            if i_1==numRows M
+            then homog({1,ps,a,Lz},colsumM_(i_0,0))
+            else homog({1,ps,a,Lz},M_(i_0,-1+i_1))));
+        G = flatten apply(subsets(1+numRows M,2),i->(
+            if i_0==-1+i_1
+            then {}
+            else homog({1,ps,a,Lz},M_(i_0,-1+i_1))));
+--        F=DF|F;
+--        F = G ;
+--        F=F|CF;
+        F=CF|F;
         u := support (product flatten entries U);
         p1 := "constant ii, ";
         p1 = p1|demark(",",u/toString)|" ; ";
@@ -87,3 +98,23 @@ homogeneousSymLocalKernelFormulation=(n,r)->(
 (n,r)=(6,3)
 F = homogeneousSymLocalKernelFormulation(n,r)
 printDegrees(F)
+
+S=QQ[p,a,LZ]
+irr=ideal(p^7,a^7,LZ^10)
+degX=degX//toList/toList
+degY = apply(degX,i->p*(i_0)+a*(i_1)+LZ*(i_2))
+B=1;scan(#degY,d->(B=(B*degY_d) %irr;print(d=>sub(B,{p=>1,LZ=>1,a=>1}));print B));
+
+
+
+1 2544	.
+3 depth_0
+5 depth_1
+5 depth_2
+4 depth_3
+13 depth_4
+35 depth_5
+60 depth_6
+87 depth_7
+78 depth_8
+38 depth_9
