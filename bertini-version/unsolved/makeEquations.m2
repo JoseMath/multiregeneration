@@ -1,9 +1,8 @@
 restart
-dir="/Users/jo/Documents/GoodGit/multiregeneration/bertini-version/rank-constraints-H-52-4"
 dir="/Users/jo/Documents/GoodGit/multiregeneration/bertini-version/unsolved"
 --This M2 code produces a system of likelihood equations
 --This formulation is the homogeneous local kernel formulation
-
+ 
 printDegrees = F ->(
     D := F/degree/(i->new Array from drop(i,1));
     print("degrees = "|toString (new Array from D))
@@ -52,7 +51,9 @@ homogeneousSymLocalKernelFormulation=(n,r)->(
 --        M = sub(sub(M,{uplus=>uAll}),uSub);
         F = flatten for i to numRows M-1 list for j from i+1 to numRows M-1 list homog({1,ps,a,Lz},M_(i,j));
         DF = flatten for i to numRows M-1 list homog({1,ps,a,Lz},M_(i,i));
+        G = apply(subsets(1+numRows M,2),i->homog({1,ps,a,Lz},M_(i_0,-1+i_1)));
         F=DF|F;
+        F = G ;
         u := support (product flatten entries U);
         p1 := "constant ii, ";
         p1 = p1|demark(",",u/toString)|" ; ";
