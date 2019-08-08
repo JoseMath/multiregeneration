@@ -52,7 +52,7 @@ def randomNumberGenerator():
 # TODO: Restart mode.
 depth = 0  # Begin the computation at a different depth index
 bfe = []
-verbose = 1  # Integer that is larger if we want to print more
+verbose = 0  # Integer that is larger if we want to print more
 # Level 0 for nothing except errors
 # Level 1 messages we would usually like printed
 # Level 2 for debugging
@@ -363,21 +363,23 @@ def outlineRegenerate(depth,G,B,bfe,P):
         print("Error: length of degree list does not coincide with the number of polynomials in the system. ")
 
     label = "unknown"
-    if depth<B and depth < len(fNames):
-        # determine isVanishes value.
-#        print("bfe %s" %bfe)
+    # if depth isn't too large then
+    if depth < B and depth < len(fNames):
+        # # (1) we create a directory to test if the next polynomial vanishes at point P.
         dirVanish = directoryNameIsVanishing(depth, P)
         M = degrees[depth]
         try:
             os.makedirs(dirVanish)
         except:
             pass
-        isVanishes="unknown"
         if verbose > 1:
           print("directory before isEvaluateZero is", os.getcwd())
+        isVanishes="unknown"
+        # # (2) evaluate the next polynomial at the point P to to determine isVanishes (Boolean)
         isVanishes=isEvaluateZero(dirVanish,depth,P)
         if verbose > 1:
           print("directory after isEvaluateZero is", os.getcwd())
+        # # (3) if the next polynomial does not vanish at P then we need to branch with edges with weight one.
         if not(isVanishes):
             if verbose > 1:
               print("Branch out")
@@ -467,14 +469,13 @@ def outlineRegenerate(depth,G,B,bfe,P):
                   if verbose > 1:
                     print("We prune at depth %s variable group %s" %(depth,i))
                   label="prune"
+        # # (4) if the next polynomial vanishes at P then we need to branch with edges with weight zero.
         elif isVanishes: # isVanishes is true
-            if verbose > 1:
-              print("We  oneEdgeHomotopy at depth %s" %depth)
             if label!="error":
                 completedSmoothSolutions = "_completed_smooth_solutions"
                 if verbose > 1:
                   print("vanishes!")
-                solName = directoryNameImmediateSolution(depth, P)
+                solName = directoryNameImmediateSolution(depth, G, bfe, P)
                 solText = "\n"
                 for line in P:
                     solText += line+"\n"
@@ -898,12 +899,23 @@ def directoryNameIsVanishing(depth, P):
     dirName = "homotopy_vanishing/depth_%s/pointId_%s"%(depth,hashPoint(P))
     return dirName
 
+#
+# def directoryNameImmediateSolution(depth, P):
+# #    print(useFunction)
+#     dirName = "solution_vanishing_depth_%s_pointId_%s"%(depth,hashPoint(P))
+#     return dirName
 
-def directoryNameImmediateSolution(depth, P):
-#    print(useFunction)
-    dirName = "solution_vanishing_depth_%s_pointId_%s"%(depth,hashPoint(P))
+
+def directoryNameImmediateSolution(depth, G, bfe, P):
+    useFunction = "_".join(map(lambda b: "1" if b else "0", G+[0]))
+    hashP=hashPoint(P)
+    dirName = "solution_vanishing_depth_%d_gens_%s_dim_%s_pointId_%s_%s"%(depth,
+        useFunction,
+        "_".join(map(str, bfe)),
+        hashP,
+        hashP
+        )
     return dirName
-
 
 # Makes the directory for each process.
 def directoryNameTracking(depth, G, bfe, varGroup, regenLinear, P):
