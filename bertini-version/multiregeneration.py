@@ -381,6 +381,7 @@ def outlineRegenerate(depth,G,B,bfe,P):
           print("directory after isEvaluateZero is", os.getcwd())
         # # (3) if the next polynomial does not vanish at P then we need to branch with edges with weight one.
         if not(isVanishes):
+            startHash=hashPoint(P)
             if verbose > 1:
               print("Branch out")
             for i in range(len(bfe)):
@@ -439,7 +440,7 @@ def outlineRegenerate(depth,G,B,bfe,P):
                             solText = "\n"
                             for line in PPrime:
                                 solText += line+"\n"
-                            solName = directoryNameTrackingSolution(depth, G, bfePrime, i, j, PPrime)
+                            solName = directoryNameTrackingSolution(depth, G, bfePrime, i, j, PPrime, startHash)
                             try:
                               startFile = open(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName), "w")
                               startFile.write(solText)
@@ -932,15 +933,16 @@ def directoryNameTracking(depth, G, bfe, varGroup, regenLinear, P):
     return dirName
 
 
-def directoryNameTrackingSolution(depth, G, bfe, varGroup, regenLinear, P):
+def directoryNameTrackingSolution(depth, G, bfe, varGroup, regenLinear, P, startHash):
 #    print("This is G: %s" % G)
     useFunction = "_".join(map(lambda b: "1" if b else "0", G+[1]))
 #    print(useFunction)
-    dirName = "solution_tracking_depth_%d_gens_%s_dim_%s_varGroup_%d_regenLinear_%d_pointId_%s"%(depth,
+    dirName = "solution_tracking_depth_%d_gens_%s_dim_%s_varGroup_%d_regenLinear_%d_pointId_%s_%s"%(depth,
         useFunction,
         "_".join(map(str, bfe)),
         varGroup,
         regenLinear,
+        startHash,
         hashPoint(P)
         )
     return dirName
