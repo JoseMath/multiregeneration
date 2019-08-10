@@ -78,7 +78,7 @@ bertiniFunctionNames = None
 bertiniEquations = None
 revisedEquationsText = None
 variableGroupText = None
-
+realDimensionLinears = True
 targetDimensions = None
 
 explorationOrder = "breadthFirst"
@@ -133,6 +133,7 @@ def main():
     global explorationOrder
 
     global targetDimensions # a list of multidimensions
+    global realDimensionLinears
 
     global symmetric
     setVariablesToGlobal = """
@@ -154,6 +155,7 @@ global algebraicTorusVariableGroups
 global nonzeroCoordinates
 global useBertiniInputStyle
 global maxProcesses
+global realDimensionLinears
 global targetDimensions
 global explorationOrder
 global symmetric
@@ -161,11 +163,11 @@ global symmetric
 
     # exec(setVariablesToGlobal + open("inputFile.py").read())
 # Our input will consist of four text files and a main input file.
-# bertiniInput_variablesAndConstants
+# bertiniInput_variables
 # bertiniInput_trackingOptions
 # bertiniInput_equations
     try:
-        with open("bertiniInput_variablesAndConstants", "r") as f:
+        with open("bertiniInput_variables", "r") as f:
             bertiniVariablesAndConstants = f.read()
         with open("bertiniInput_trackingOptions", "r") as f:
             bertiniTrackingOptionsText = f.read()
@@ -176,7 +178,7 @@ global symmetric
             print("found bertiniInput_equations")
     except:
         print("Exiting due to incomplete input. Please include the following files:")
-        print("\t" + "bertiniInput_variablesAndConstants")
+        print("\t" + "bertiniInput_variables")
         print("\t" + "bertiniInput_trackingOptions")
 #            print("\t" + "bertiniInput_G")
         print("\t" + "bertiniInput_equations")
@@ -246,11 +248,11 @@ global symmetric
             if c >= depth:
                 print("depth > "+str(c)+" satisfy "+ f+" = 0")
 # Determine random linear polynomials l[i][j]
-    if not symmetric:
-        (l, startSolution) = getLinearsThroughPoint(variables)
+    (l, startSolution) = getLinearsThroughPoint(variables)
+    if realDimensionLinears:
+        (l, startSolution) = getRealValuedLinearsThroughPoint(variables)
     elif symmetric:
         (l, startSolution) = getLinearsThroughSymmetricPoint(variables)
-
     if verbose > 1:
         print("Using start solution", startSolution)
         print("Using dimesion linears", l)
@@ -830,6 +832,45 @@ def getLinearsThroughPoint(variables):
             linearString = "+".join(terms)
             ell[i].append(linearString)
     return (ell, startSolution)
+
+def getRealValuedLinearsThroughPoint(variables):
+    spoint = []
+    for i in range(len(variables)):
+        spoint += [[]]
+        for j in range(len(variables[i])):
+            spoint[i]+=[[str(randomNumberGenerator()),str(0.0)]]
+    startSolution = []
+    for i in range(len(spoint)):
+        for j in range(len(spoint[i])):
+            startSolution+=[spoint[i][j][0]+" "+spoint[i][j][1]]
+    ell = []
+    for i in range(len(variables)):
+        ell.append([])
+        isAffGroup=1
+        if i in projectiveVariableGroups:
+            isAffGroup = 0
+        terms = [None for x in range(len(variables[i])+isAffGroup-1)]
+        for j in range(len(variables[i])+isAffGroup-1):
+            linearString=""
+            for x in range(len(variables[i])+isAffGroup-1):
+                if isAffGroup:
+                    terms[x]="(%s)*(%s-(%s))"%(
+                        str(randomNumberGenerator()),
+                        str(variables[i][x]),
+                        spoint[i][x][0]
+                        )
+                else:
+                    terms[x]="(%s)*((%s)*%s-(%s)*%s)"%(
+                        str(randomNumberGenerator()),
+                        str(spoint[i][-1][0]), #real  part of last coordinate of spoint
+                        str(variables[i][x]), # a variable in group i
+                        str(spoint[i][x][0]),
+                        str(variables[i][-1])) # last variable in group i
+            linearString = "+".join(terms)
+            ell[i].append(linearString)
+    return (ell, startSolution)
+
+
 
 def getLinearsThroughSymmetricPoint(variables):
     spoint = [[]]
