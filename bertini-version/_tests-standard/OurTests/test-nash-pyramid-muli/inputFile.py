@@ -1,0 +1,9 @@
+logTolerance = -10
+workingDirectory = "run"
+maxProcesses = 1
+logTolerance = -10
+workingDirectory = "run"
+degrees =[[0,1,1,1,1],[1,0,1,1,0],[1,1,0,0,1], [1,1,0,0,1], [1,0,1,1,0]]
+targetDimensions = [[0,0,0,0,0]]
+# depth = 0
+# B=3
