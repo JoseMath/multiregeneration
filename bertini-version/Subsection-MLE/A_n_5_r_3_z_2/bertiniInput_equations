@@ -1,0 +1,46 @@
+constant ii, u00,u01,u11,u02,u12,u22,u03,u13,u23,u33,u04,u14,u24,u34,u44 ; 
+ii = I ;
+u00 = 0 ; 
+u01 = .36322+.0663582*ii ; 
+u11 = 0 ; 
+u02 = .529888-.118064*ii ; 
+u12 = -.36209+.348202*ii ; 
+u22 = 0 ; 
+u03 = -.196137+.20193*ii ; 
+u13 = .914159+.005089*ii ; 
+u23 = .263896-.330578*ii ; 
+u33 = .110923+.38836*ii ; 
+u04 = .886341+.23674*ii ; 
+u14 = .188496+.508454*ii ; 
+u24 = -.0417647-.0147805*ii ; 
+u34 = .173704+.684234*ii ; 
+u44 = .097638-.711062*ii ; 
+
+uplus = u00+u01+u11+u02+u12+u22+u03+u13+u23+u33+u04+u14+u24+u34+u44 ; 
+function f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12 ; 
+f0 = uplus*p01*L01+uplus*p01*L11+uplus*p01*Lz+uplus*p02*L02+uplus*p02*L12+uplus*p02*Lz-u01*ps*Lz-u02*ps*Lz-u03*ps*Lz-u04*ps*Lz ; 
+
+f1 = uplus*p01*L00+uplus*p01*L10+uplus*p01*Lz+uplus*p12*L02+uplus*p12*L12+uplus*p12*Lz-u01*ps*Lz-u12*ps*Lz-u13*ps*Lz-u14*ps*Lz ; 
+
+f2 = uplus*p02*L00+uplus*p02*L10+uplus*p02*Lz+uplus*p12*L01+uplus*p12*L11+uplus*p12*Lz+2*uplus*p22*L02+2*uplus*p22*L12+2*uplus*p22*Lz-u02*ps*Lz-u12*ps*Lz-u23*ps*Lz-u24*ps*Lz ; 
+
+f3 = 2*uplus*p01*L00*L01+uplus*p01*L01*L10+uplus*p01*L00*L11+uplus*p01*L00*Lz+uplus*p01*L01*Lz+2*uplus*p02*L00*L02+uplus*p02*L02*L10+uplus*p02*L00*L12+uplus*p02*L00*Lz+uplus*p02*L02*Lz+2*uplus*p12*L01*L02+uplus*p12*L02*L11+uplus*p12*L01*L12+uplus*p12*L01*Lz+uplus*p12*L02*Lz+2*uplus*p22*L02^2+2*uplus*p22*L02*L12+2*uplus*p22*L02*Lz-u03*ps*Lz^2-u13*ps*Lz^2-u23*ps*Lz^2-2*u33*ps*Lz^2-u34*ps*Lz^2 ; 
+
+f4 = uplus*p01*L01*L10+uplus*p01*L00*L11+2*uplus*p01*L10*L11+uplus*p01*L10*Lz+uplus*p01*L11*Lz+uplus*p02*L02*L10+uplus*p02*L00*L12+2*uplus*p02*L10*L12+uplus*p02*L10*Lz+uplus*p02*L12*Lz+uplus*p12*L02*L11+uplus*p12*L01*L12+2*uplus*p12*L11*L12+uplus*p12*L11*Lz+uplus*p12*L12*Lz+2*uplus*p22*L02*L12+2*uplus*p22*L12^2+2*uplus*p22*L12*Lz-u04*ps*Lz^2-u14*ps*Lz^2-u24*ps*Lz^2-u34*ps*Lz^2-2*u44*ps*Lz^2 ; 
+
+f5 = uplus*a*Lz^2+lam00*L02^2+2*lam01*L02*L12+lam11*L12^2 ; 
+
+f6 = uplus*p01*a*L00*L01+uplus*p02*a*L00*L02+uplus*p12*a*L01*L02+uplus*p22*a*L02^2-u33*ps*a*Lz^2+p01*lam00*L00*L01+p02*lam00*L00*L02+p12*lam00*L01*L02+p22*lam00*L02^2 ; 
+
+f7 = uplus*p01*a*Lz^2-u01*ps*a*Lz^2+p01*lam00*L00*L01+p01*lam01*L01*L10+p01*lam01*L00*L11+p01*lam11*L10*L11 ; 
+
+f8 = uplus*p02*a*Lz^2-u02*ps*a*Lz^2+p02*lam00*L00*L02+p02*lam01*L02*L10+p02*lam01*L00*L12+p02*lam11*L10*L12 ; 
+
+f9 = uplus*p01*a*L01*Lz+uplus*p02*a*L02*Lz-u03*ps*a*Lz^2-p01*lam00*L00*L01-p01*lam01*L01*L10-p02*lam00*L00*L02-p02*lam01*L02*L10 ; 
+
+f10 = uplus*p12*a*Lz^2-u12*ps*a*Lz^2+p12*lam00*L01*L02+p12*lam01*L02*L11+p12*lam01*L01*L12+p12*lam11*L11*L12 ; 
+
+f11 = uplus*p01*a*L00*Lz+uplus*p12*a*L02*Lz-u13*ps*a*Lz^2-p01*lam00*L00*L01-p01*lam01*L00*L11-p12*lam00*L01*L02-p12*lam01*L02*L11 ; 
+
+f12 = uplus*p02*a*L00*Lz+uplus*p12*a*L01*Lz+2*uplus*p22*a*L02*Lz-u23*ps*a*Lz^2-p02*lam00*L00*L02-p02*lam01*L00*L12-p12*lam00*L01*L02-p12*lam01*L01*L12-2*p22*lam00*L02^2-2*p22*lam01*L02*L12 ; 
+
