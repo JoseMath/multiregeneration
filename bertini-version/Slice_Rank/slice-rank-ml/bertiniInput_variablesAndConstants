@@ -1,0 +1,8 @@
+hom_variable_group p111,p211,p311, p112,p212,p312, p113,p213,p313,p121,p221,p321,p122,p222,p322, p123,p223,p323,p131,p231,p331, p132,p232,p332, p133,p233,p333;
+hom_variable_group r,s;
+hom_variable_group Lam11_0,Lam11_1,Lam11_2 ;
+hom_variable_group Lam22_0,Lam22_1,Lam22_2 ;
+hom_variable_group Lam33_0,Lam33_1,Lam33_2 ;
+hom_variable_group Lam12_0,Lam12_1,Lam12_2,Lam12_3,Lam12_4,Lam12_5 ;
+hom_variable_group Lam13_0,Lam13_1,Lam13_2,Lam13_3,Lam13_4,Lam13_5 ;
+hom_variable_group Lam23_0,Lam23_1,Lam23_2,Lam23_3,Lam23_4,Lam23_5 ;

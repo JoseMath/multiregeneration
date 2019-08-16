@@ -123,7 +123,7 @@ algebraicTorusVariableGroups = [0,1,2]";
         ))
 
 apply(4,z->(
-    (n,r)=(4,3);
+    (n,r)=(5,3);
     F = homogeneousSymLocalKernelFormulation(n,r,z)))
 
 --uSub = {u00 => 0, u01 => 17, u02 => 79, u03 => 5, u04 => 38, u11 => 0, u12 => 8, u13 => 70, u14 => 23, u22 => 0, u23 => 31, u24 => 88, u33 => 19, u34 => 66, u44 => 95}
