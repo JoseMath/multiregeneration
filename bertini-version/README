@@ -1,8 +1,24 @@
 TODO: Write a friendly introduction
 
-Example: Run the following commands
 
-    cd test-twisted-cubic
+(1) Example: Run the following commands
+
+    cd _tests-standard/first-test
     python ../multiregeneration.py
 
-The data of the run will be stored in test-twisted-cubic/run.
+The data of the run will be stored in _tests-standard/first-test/run
+
+
+(2) To run our implementation Python and Bertini must be installed.
+
+(2a) Python is an interpreted high-level programming language for
+general-purpose programming. For more information see
+https://www.python.org/
+
+(2b) Bertini is a general-purpose solver, written in C, that was created by
+Daniel J. Bates, Jonathan D. Hauenstein, Andrew J. Sommese, and Charles W. Wampler
+ for research about polynomial continuation. For more information see
+https://bertini.nd.edu/
+
+[Caution] A frequently reported issue for Mac users: the first time Bertini
+is called an error regarding mpfr is displayed.
