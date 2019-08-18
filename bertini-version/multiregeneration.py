@@ -254,10 +254,12 @@ global pointGroupAction
         l = []
         for i in range(len(variables)):
             with open("dimensionLinears_%s" %i, "r") as f:
-                A = f.readlines()
+                A = (line.rstrip() for line in f)
+                A = list(line for line in A if line)
             l.append(A)
         with open("startSolution", "r") as f:
-            startSolution = f.readlines()
+            startSolution = (line.rstrip() for line in f)
+            startSolution = list(line for line in startSolution if line)
     elif realDimensionLinears:
         (l, startSolution) = getRealValuedLinearsThroughPoint(variables)
     else:
@@ -292,7 +294,8 @@ global pointGroupAction
                 maxdeg= max(maxdeg,degrees[s][i])
             print("%s is the maximum degree in variable group %s. "%(maxdeg,i))
             with open("degreeLinears_%s" %i, "r") as f:
-                A = f.readlines()
+                A = (line.rstrip() for line in f)
+                A = list(line for line in A if line)
             r.append(A)
     if verbose > 0:
         print("Using degree linears")
@@ -321,9 +324,6 @@ global pointGroupAction
     for i in range(depth, depth+len(fNames)):
         os.makedirs(completedSmoothSolutions+"/depth_%s"% i)
 # branch node outline
-
-
-
 
     global queue
     queue = mp.Manager().Queue() # a messege queue for the child
