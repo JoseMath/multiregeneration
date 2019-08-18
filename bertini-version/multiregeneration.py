@@ -83,7 +83,7 @@ targetDimensions = None
 
 explorationOrder = "breadthFirst"
 
-loadDimensionLinears = False
+loadDimensionLinearsAndStartSolution = False
 loadDegreeLinears = False
 pruneGroupAction = False
 pointGroupAction = False
@@ -139,7 +139,7 @@ def main():
     global targetDimensions # a list of multidimensions
     global realDimensionLinears
 
-    global loadDimensionLinears
+    global loadDimensionLinearsAndStartSolution
     global loadDegreeLinears
     global pruneGroupAction
     global pointGroupAction
@@ -168,7 +168,7 @@ global realDimensionLinears
 global targetDimensions
 global explorationOrder
 global symmetric
-global loadDimensionLinears
+global loadDimensionLinearsAndStartSolution
 global loadDegreeLinears
 global pruneGroupAction
 global pointGroupAction
@@ -249,15 +249,28 @@ global pointGroupAction
         for c, f in enumerate(fNames): # 0 is the depth we start with
             if c >= depth:
                 print("depth > "+str(c)+" satisfy "+ f+" = 0")
-# Determine random linear polynomials l[i][j]
-    (l, startSolution) = getLinearsThroughPoint(variables)
-    if realDimensionLinears:
+# Determine random linear polynomials l[i][j] and start solution
+    if loadDimensionLinearsAndStartSolution:
+        l = []
+        for i in range(len(variables)):
+            with open("dimensionLinears_%s" %i, "r") as f:
+                A = f.readlines()
+            l.append(A)
+        with open("startSolution", "r") as f:
+            startSolution = f.readlines()
+    elif realDimensionLinears:
         (l, startSolution) = getRealValuedLinearsThroughPoint(variables)
-    elif symmetric:
-        (l, startSolution) = getLinearsThroughSymmetricPoint(variables)
-    if verbose > 1:
-        print("Using start solution", startSolution)
-        print("Using dimesion linears", l)
+    else:
+        (l, startSolution) = getLinearsThroughPoint(variables)
+    if verbose > 0:
+        print("\nUsing start solution")
+        for i in startSolution:
+            print(i)
+        print("\nUsing dimesion linears")
+        for i in range(len(variables)):
+            for j in range(len(l[i])):
+                print("l[%s][%s]"%(i,j))
+                print(l[i][j])
     # Determine random linear polynomials r[i][j] degree linears
     r = []
     if not loadDegreeLinears:
@@ -282,7 +295,11 @@ global pointGroupAction
                 A = f.readlines()
             r.append(A)
     if verbose > 0:
-        print("Using degree linears", r)
+        print("Using degree linears")
+    for i in range(len(variables)):
+        for j in range(len(r[i])):
+            print("r[%s][%s]"%(i,j))
+            print(r[i][j])
     if B== None:
         B=len(fNames)  # TODO: check that this is not off by one.
         print("B is set to %d" % B)
