@@ -85,8 +85,15 @@ explorationOrder = "breadthFirst"
 
 loadDimensionLinearsAndStartSolution = False
 loadDegreeLinears = False
-pruneGroupAction = False
-pointGroupAction = False
+
+dimGroupAction = None
+def dimGroupAction(bfe):
+    return(False)
+
+pointGroupAction = None
+def pointGroupAction(bfe,PPi):
+    return([PPi])
+
 symmetric = False
 
 pool = None
@@ -141,7 +148,7 @@ def main():
 
     global loadDimensionLinearsAndStartSolution
     global loadDegreeLinears
-    global pruneGroupAction
+    global dimGroupAction
     global pointGroupAction
 
     global symmetric
@@ -170,11 +177,10 @@ global explorationOrder
 global symmetric
 global loadDimensionLinearsAndStartSolution
 global loadDegreeLinears
-global pruneGroupAction
+global dimGroupAction
 global pointGroupAction
 """
-
-    # exec(setVariablesToGlobal + open("inputFile.py").read())
+# exec(setVariablesToGlobal + open("inputFile.py").read())
 # Our input will consist of four text files and a main input file.
 # bertiniInput_variables
 # bertiniInput_trackingOptions
@@ -239,6 +245,8 @@ global pointGroupAction
     print(revisedEquationsText)
     exec(setVariablesToGlobal + open("inputFile.py").read())
 # set degrees TODO
+    print(dimGroupAction(1111))
+    print(pointGroupAction(1,2222))
 
 
 # print to screen system summary.
@@ -308,6 +316,8 @@ global pointGroupAction
         print("B is set to %d" % B)
     if verbose > 0:
         print("exploring tree in order", explorationOrder)
+        #    return(random.randint(1,1000000)+abs(hash("_".join(P))) % (10 ** 8))
+
     if verbose > 0:
         print("\n################### Starting multiregeneration ####################\n")
     #####################
