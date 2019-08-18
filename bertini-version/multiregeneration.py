@@ -477,10 +477,18 @@ def outlineRegenerate(depth,G,B,bfe,P):
                                     ppGroup.append(PPrime[count])
                                     count = count +1;
                                 PPi.append(ppGroup)
-                            print(PPi)
-                            LP = pointGroupAction(bfe,PPi)
-                            for ppi in PPi:
-                                PPrime = [item for sublist in ppi for item in sublist]
+                            #print("PPi")
+                            #print(PPi)
+                            LP = pointGroupAction(bfePrime,PPi)
+                            for PPi in LP:
+                                #print("ppi2")
+                                #print(PPi)
+                                PPrime = []
+                                for i in range(len(PPi)):
+                                    for j in range(len(PPi[i])):
+                                        PPrime.append(PPi[i][j])
+                                #print(PPrime)
+                                #print(len(PPrime))
                                 solText = "\n"
                                 for line in PPrime:
                                     solText += line+"\n"
