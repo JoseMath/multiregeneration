@@ -241,17 +241,6 @@ global pointGroupAction
 # set degrees TODO
 
 
-    #####################
-# Make directory to store final solutions
-    if os.path.isdir(workingDirectory):
-        shutil.rmtree(workingDirectory)
-    os.makedirs(workingDirectory)
-    os.chdir(workingDirectory)
-    os.makedirs("all_full_depth_solutions")
-    os.makedirs("_truncated_singular_solutions")
-    os.makedirs("_saturated_solutions")
-
-
 # print to screen system summary.
     if verbose > 0:
         print("\n################### Setup multiregeneration ####################\n")
@@ -289,13 +278,9 @@ global pointGroupAction
             for s in range(len(fNames)):
                 maxdeg= max(maxdeg,degrees[s][i])
             print("%s is the maximum degree in variable group %s. "%(maxdeg,i))
-            try:
-                dlF = open("degreeLinears_%s" %i, "r")
-                dlLines = dlF.readlines()
-                dlF.close()
-            except:
-                print("Ope! Error opening file 'degreeLinears_%s'" %i)
-            r.append(dlLines)
+            with open("degreeLinears_%s" %i, "r") as f:
+                A = f.readlines()
+            r.append(A)
     if verbose > 0:
         print("Using degree linears", r)
     if B== None:
@@ -305,11 +290,22 @@ global pointGroupAction
         print("exploring tree in order", explorationOrder)
     if verbose > 0:
         print("\n################### Starting multiregeneration ####################\n")
+    #####################
+# Make directory to store final solutions
+    if os.path.isdir(workingDirectory):
+        shutil.rmtree(workingDirectory)
+    os.makedirs(workingDirectory)
+    os.chdir(workingDirectory)
+    os.makedirs("all_full_depth_solutions")
+    os.makedirs("_truncated_singular_solutions")
+    os.makedirs("_saturated_solutions")
     completedSmoothSolutions="_completed_smooth_solutions"
     os.makedirs(completedSmoothSolutions)
     for i in range(depth, depth+len(fNames)):
         os.makedirs(completedSmoothSolutions+"/depth_%s"% i)
 # branch node outline
+
+
 
 
     global queue
