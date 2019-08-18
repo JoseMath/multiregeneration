@@ -78,11 +78,15 @@ bertiniFunctionNames = None
 bertiniEquations = None
 revisedEquationsText = None
 variableGroupText = None
-realDimensionLinears = True
+realDimensionLinears = False
 targetDimensions = None
 
 explorationOrder = "breadthFirst"
 
+loadDimensionLinears = False
+loadDegreeLinears = False
+pruneGroupAction = False
+pointGroupAction = False
 symmetric = False
 
 pool = None
@@ -135,6 +139,11 @@ def main():
     global targetDimensions # a list of multidimensions
     global realDimensionLinears
 
+    global loadDimensionLinears
+    global loadDegreeLinears
+    global pruneGroupAction
+    global pointGroupAction
+
     global symmetric
     setVariablesToGlobal = """
 global variables
@@ -159,6 +168,10 @@ global realDimensionLinears
 global targetDimensions
 global explorationOrder
 global symmetric
+global loadDimensionLinears
+global loadDegreeLinears
+global pruneGroupAction
+global pointGroupAction
 """
 
     # exec(setVariablesToGlobal + open("inputFile.py").read())
@@ -256,9 +269,9 @@ global symmetric
     if verbose > 1:
         print("Using start solution", startSolution)
         print("Using dimesion linears", l)
-# Determine random linear polynomials r[i][j]
+    # Determine random linear polynomials r[i][j] degree linears
     r = []
-    if not symmetric:
+    if not loadDegreeLinears:
         for i in range(len(variables)):
             r.append([])
             maxdeg= 0
@@ -268,23 +281,22 @@ global symmetric
             print(getGenericLinearInVariableGroup(i))
             for d in range(maxdeg):
                 r[i].append(getGenericLinearInVariableGroup(i))
-    elif symmetric:
+    elif loadDegreeLinears:
         #TODO: check that the degrees, types, and number of variables match
-        # accross all variable groups.
-        rCoefficients = None
-        maxdeg= 0
-        for s in range(len(fNames)):
-            maxdeg= max(maxdeg,degrees[s][0])
-        if 0 in projectiveVariableGroups:
-            rCoefficients = [[randomNumberGenerator() for i in range(len(variables[0])*2)] for rd in range(maxdeg)]
-        elif 0 not in projectiveVariableGroups:
-            rCoefficients = [[randomNumberGenerator() for i in range(len(variables[0])*2+2)] for rd in range(maxdeg)]
+        # across all variable groups.
         for i in range(len(variables)):
-            r.append([])
+            maxdeg= 0
+            for s in range(len(fNames)):
+                maxdeg= max(maxdeg,degrees[s][i])
             print("%s is the maximum degree in variable group %s. "%(maxdeg,i))
-            for d in range(maxdeg):
-                r[i].append(getSymGenericLinearInVariableGroup(i, rCoefficients[d]))
-    if verbose > 1:
+            try:
+                dlF = open("degreeLinears_%s" %i, "r")
+                dlLines = dlF.readlines()
+                dlF.close()
+            except:
+                print("Ope! Error opening file 'degreeLinears_%s'" %i)
+            r.append(dlLines)
+    if verbose > 0:
         print("Using degree linears", r)
     if B== None:
         B=len(fNames)  # TODO: check that this is not off by one.
@@ -397,6 +409,7 @@ def outlineRegenerate(depth,G,B,bfe,P):
                         b2 = sum(bfePrime) - sum(dim) <= len(fNames)-depth
                         canReach.append(b1 and b2)
                     prune = not any(canReach)
+                # TODO: have a group action respecting pruning condition option
                 if symmetric: #right now it looks for diheadral symetry
                     # if verbose > 1:
                     #     print("bfe is nonDecreasing:", nonDecreasing(bfe))
@@ -439,6 +452,7 @@ def outlineRegenerate(depth,G,B,bfe,P):
                                     count = count +1;
                         if label=="smooth" and len(PPrime)>1:
                             completedSmoothSolutions = "_completed_smooth_solutions"
+                            # TODO: have a group action to find additional solutions
                             solText = "\n"
                             for line in PPrime:
                                 solText += line+"\n"
