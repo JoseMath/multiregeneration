@@ -87,11 +87,11 @@ loadDimensionLinearsAndStartSolution = False
 loadDegreeLinears = False
 
 dimGroupAction = None
-def dimGroupAction(bfe):
+def dimGroupAction(bfePrime):
     return(False)
 
 pointGroupAction = None
-def pointGroupAction(bfe,PPi):
+def pointGroupAction(bfePrime,i,PPi):
     return([PPi])
 
 symmetric = False
@@ -450,9 +450,9 @@ def outlineRegenerate(depth,G,B,bfe,P):
                         # TODO: Check if this agrees with our vision of what the code should do.
                         count = 0
                         if len(algebraicTorusVariableGroups)>0 and len(PPrime)>0: # Prune if not in the algebraic torus based on algebraicTorusVariableGroups
-                            for i in range(len(variables)):
-                                for j in range(len(variables[i])):
-                                    if (i in algebraicTorusVariableGroups):
+                            for a in range(len(variables)):
+                                for b in range(len(variables[a])):
+                                    if (a in algebraicTorusVariableGroups):
 #                                        print(count)
 #                                        print(PPrime[count])
                                         if coordinateLineIsZero(PPrime[count], logTolerance): # What should the logTolerance be here?
@@ -479,7 +479,7 @@ def outlineRegenerate(depth,G,B,bfe,P):
                                 PPi.append(ppGroup)
                             #print("PPi")
                             #print(PPi)
-                            LP = pointGroupAction(bfePrime,PPi)
+                            LP = pointGroupAction(bfePrime,i,PPi)
                             for PPi in LP:
                                 #print("ppi2")
                                 #print(PPi)
@@ -683,7 +683,8 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
     for i in range(len(bfe)):
         for j in range(bfe[i]):
             ellText += "l_%d_%d" % (i,j)+" = "+l[i][j]+" ; \n"
-#    ellText += "l_%s_%d" % (vg, bfePrime[eval(vg)]) +" = "+l[eval(vg)][bfePrime[eval(vg)]]+" ; \n"
+    print(bfe,ellText)
+#    ellText += "l_%s_%dl_" % (vg, bfePrime[eval(vg)]) +" = "+l[eval(vg)][bfePrime[eval(vg)]]+" ; \n"
     rText = "\n % rText\n"
     for i in range(len(bfe)):
         for j in range(M[i]):
@@ -735,6 +736,7 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
             print(errorCountPQ)
             print(label)
             label="error"
+            print(bfe,bfePrime,i)
             print("error (Count %d) (Branch) nonsingular_solutions does not exist in %s" %(errorCountPQ,dirTracking))
 ### Now we go from Q to p.
     # print("Rename")
