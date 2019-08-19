@@ -85,8 +85,15 @@ explorationOrder = "breadthFirst"
 
 loadDimensionLinearsAndStartSolution = False
 loadDegreeLinears = False
-pruneGroupAction = False
-pointGroupAction = False
+
+dimGroupAction = None
+def dimGroupAction(bfePrime):
+    return(False)
+
+pointGroupAction = None
+def pointGroupAction(bfePrime,i,PPi):
+    return([PPi])
+
 symmetric = False
 
 pool = None
@@ -141,7 +148,7 @@ def main():
 
     global loadDimensionLinearsAndStartSolution
     global loadDegreeLinears
-    global pruneGroupAction
+    global dimGroupAction
     global pointGroupAction
 
     global symmetric
@@ -170,11 +177,10 @@ global explorationOrder
 global symmetric
 global loadDimensionLinearsAndStartSolution
 global loadDegreeLinears
-global pruneGroupAction
+global dimGroupAction
 global pointGroupAction
 """
-
-    # exec(setVariablesToGlobal + open("inputFile.py").read())
+# exec(setVariablesToGlobal + open("inputFile.py").read())
 # Our input will consist of four text files and a main input file.
 # bertiniInput_variables
 # bertiniInput_trackingOptions
@@ -308,6 +314,8 @@ global pointGroupAction
         print("B is set to %d" % B)
     if verbose > 0:
         print("exploring tree in order", explorationOrder)
+        #    return(random.randint(1,1000000)+abs(hash("_".join(P))) % (10 ** 8))
+
     if verbose > 0:
         print("\n################### Starting multiregeneration ####################\n")
     #####################
@@ -422,14 +430,10 @@ def outlineRegenerate(depth,G,B,bfe,P):
                         b2 = sum(bfePrime) - sum(dim) <= len(fNames)-depth
                         canReach.append(b1 and b2)
                     prune = not any(canReach)
-                # TODO: have a group action respecting pruning condition option
-                if symmetric: #right now it looks for diheadral symetry
-                    # if verbose > 1:
-                    #     print("bfe is nonDecreasing:", nonDecreasing(bfe))
-                    # prune = prune or not nonDecreasing(bfe)
-                    if verbose > 1:
-                        print("first is min in bfe", firstIsMin(bfe))
-                    prune = prune or not firstIsMin(bfe)
+                # dimGroupAction returns False as the default.
+                # Redfine this function in inputFile.py as you like.
+                if not prune:
+                    prune = dimGroupAction(bfePrime)
                 if not prune:
                     for j in range(M[i]):
                         label="unknown"
@@ -446,9 +450,9 @@ def outlineRegenerate(depth,G,B,bfe,P):
                         # TODO: Check if this agrees with our vision of what the code should do.
                         count = 0
                         if len(algebraicTorusVariableGroups)>0 and len(PPrime)>0: # Prune if not in the algebraic torus based on algebraicTorusVariableGroups
-                            for i in range(len(variables)):
-                                for j in range(len(variables[i])):
-                                    if (i in algebraicTorusVariableGroups):
+                            for a in range(len(variables)):
+                                for b in range(len(variables[a])):
+                                    if (a in algebraicTorusVariableGroups):
 #                                        print(count)
 #                                        print(PPrime[count])
                                         if coordinateLineIsZero(PPrime[count], logTolerance): # What should the logTolerance be here?
@@ -466,28 +470,47 @@ def outlineRegenerate(depth,G,B,bfe,P):
                         if label=="smooth" and len(PPrime)>1:
                             completedSmoothSolutions = "_completed_smooth_solutions"
                             # TODO: have a group action to find additional solutions
-                            solText = "\n"
-                            for line in PPrime:
-                                solText += line+"\n"
-                            solName = directoryNameTrackingSolution(depth, G, bfePrime, i, j, PPrime, startHash)
-                            try:
-                              startFile = open(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName), "w")
-                              startFile.write(solText)
-                              startFile.close()
-                              if verbose > 1:
-                                print("wrote file",
-                                    completedSmoothSolutions+"/depth_%s/%s"
-                                    %(depth,solName),
-                                    "at node",
-                                    [depth,G,B,bfe,P])
-                            except:
-                              print("error writing file",
-                                  completedSmoothSolutions+"/depth_%s/%s"
-                                  %(depth,solName))
-                            if verbose > 1:
-                              print("queueing node",
-                                  [depth+1,G+[True],B,bfePrime,PPrime])
-                            queue.put([depth+1,G+[True],B,bfePrime,PPrime])
+                            PPi=[]
+                            for i in range(len(variables)):
+                                ppGroup = []
+                                for j in range(len(variables[i])):
+                                    ppGroup.append(PPrime[count])
+                                    count = count +1;
+                                PPi.append(ppGroup)
+                            #print("PPi")
+                            #print(PPi)
+                            LP = pointGroupAction(bfePrime,i,PPi)
+                            for PPi in LP:
+                                #print("ppi2")
+                                #print(PPi)
+                                PPrime = []
+                                for i in range(len(PPi)):
+                                    for j in range(len(PPi[i])):
+                                        PPrime.append(PPi[i][j])
+                                #print(PPrime)
+                                #print(len(PPrime))
+                                solText = "\n"
+                                for line in PPrime:
+                                    solText += line+"\n"
+                                solName = directoryNameTrackingSolution(depth, G, bfePrime, i, j, PPrime, startHash)
+                                try:
+                                  startFile = open(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName), "w")
+                                  startFile.write(solText)
+                                  startFile.close()
+                                  if verbose > 1:
+                                    print("wrote file",
+                                        completedSmoothSolutions+"/depth_%s/%s"
+                                        %(depth,solName),
+                                        "at node",
+                                        [depth,G,B,bfe,P])
+                                except:
+                                  print("error writing file",
+                                      completedSmoothSolutions+"/depth_%s/%s"
+                                      %(depth,solName))
+                                if verbose > 1:
+                                  print("queueing node",
+                                      [depth+1,G+[True],B,bfePrime,PPrime])
+                                queue.put([depth+1,G+[True],B,bfePrime,PPrime])
                         # elif label=="singular":
                         #     print(" We prune because the endpoint is singular")
                         # elif label=="infinity":
@@ -535,7 +558,7 @@ def outlineRegenerate(depth,G,B,bfe,P):
 
 
 def hashPoint(P):
-    return(abs(hash("_".join(P))) % (10 ** 8))
+    return(abs(hash("_".join(P))) % (10 ** 12))
 #    return(random.randint(1,1000000)+abs(hash("_".join(P))) % (10 ** 8))
 
 
@@ -645,7 +668,6 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
     if verbose > 1:
       print("changing to directory", dirTracking)
     os.chdir(dirTracking)
-    label = "Missing"
     m=M[vg]
     vg=str(vg)
     rg=str(rg)
@@ -661,7 +683,8 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
     for i in range(len(bfe)):
         for j in range(bfe[i]):
             ellText += "l_%d_%d" % (i,j)+" = "+l[i][j]+" ; \n"
-#    ellText += "l_%s_%d" % (vg, bfePrime[eval(vg)]) +" = "+l[eval(vg)][bfePrime[eval(vg)]]+" ; \n"
+    print(bfe,ellText)
+#    ellText += "l_%s_%dl_" % (vg, bfePrime[eval(vg)]) +" = "+l[eval(vg)][bfePrime[eval(vg)]]+" ; \n"
     rText = "\n % rText\n"
     for i in range(len(bfe)):
         for j in range(M[i]):
@@ -688,7 +711,7 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
     successPQ=False
     errorCountPQ=0
     foundQ =0
-    while not(errorCountPQ>3 or (successPQ==True)): # We give Bertini three chances to find Q.
+    while not(errorCountPQ>1 or (successPQ==True)): # We give Bertini one chance to find Q.
         label="unknown"
         try:
             bertiniCommand = "bertini inputPQ"
@@ -710,7 +733,10 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
                 errorCountPQ+=1
         else:
             errorCountPQ += 1
+            print(errorCountPQ)
+            print(label)
             label="error"
+            print(bfe,bfePrime,i)
             print("error (Count %d) (Branch) nonsingular_solutions does not exist in %s" %(errorCountPQ,dirTracking))
 ### Now we go from Q to p.
     # print("Rename")
