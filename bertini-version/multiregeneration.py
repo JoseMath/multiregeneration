@@ -537,7 +537,7 @@ END;
     os.chdir(dirVanish)
     # print("Try bertini inputEval..")
     try:
-        bertiniCommand = "bertini inputEval"
+        bertiniCommand = "/Applications/bertini-serial inputEval"
         process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)
         output, error = process.communicate()
         # print("..success likely")
@@ -660,7 +660,7 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
     while not(errorCountPQ>3 or (successPQ==True)): # We give Bertini three chances to find Q.
         label="unknown"
         try:
-            bertiniCommand = "bertini inputPQ"
+            bertiniCommand = "/Applications/bertini-serial inputPQ"
             process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)
             output, error = process.communicate()
         except:
@@ -702,7 +702,7 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
         inputQP.write(inputTextQP)
         inputQP.close()
         try:
-            bertiniCommand = "bertini inputQP"
+            bertiniCommand = "/Applications/bertini-serial inputQP"
             process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)  #What is going on here?
 #                process = subprocess.Popen(bertiniCommand, stdout=subprocess.PIPE)  #What is going on here?
             output, errors = process.communicate()
