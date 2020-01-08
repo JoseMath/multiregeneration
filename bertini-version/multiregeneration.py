@@ -683,7 +683,7 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
     for i in range(len(bfe)):
         for j in range(bfe[i]):
             ellText += "l_%d_%d" % (i,j)+" = "+l[i][j]+" ; \n"
-    print(bfe,ellText)
+    # print(bfe,ellText)
 #    ellText += "l_%s_%dl_" % (vg, bfePrime[eval(vg)]) +" = "+l[eval(vg)][bfePrime[eval(vg)]]+" ; \n"
     rText = "\n % rText\n"
     for i in range(len(bfe)):
