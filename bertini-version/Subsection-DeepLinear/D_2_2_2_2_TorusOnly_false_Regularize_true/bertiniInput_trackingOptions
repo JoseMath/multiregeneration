@@ -1,0 +1,5 @@
+
+finalTol : 1e-16;
+SecurityLevel :1;
+MPTYPE :2;
+CONDNUMTHRESHOLD :1e12;

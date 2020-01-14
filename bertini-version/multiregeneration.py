@@ -52,7 +52,7 @@ def randomNumberGenerator():
 # TODO: Restart mode.
 depth = 0  # Begin the computation at a different depth index
 bfe = []
-verbose = 1  # Integer that is larger if we want to print more
+verbose = 0  # Integer that is larger if we want to print more
 # Level 0 for nothing except errors
 # Level 1 messages we would usually like printed
 # Level 2 for debugging
@@ -78,10 +78,21 @@ bertiniFunctionNames = None
 bertiniEquations = None
 revisedEquationsText = None
 variableGroupText = None
-
+realDimensionLinears = False
 targetDimensions = None
 
 explorationOrder = "breadthFirst"
+
+loadDimensionLinearsAndStartSolution = False
+loadDegreeLinears = False
+
+dimGroupAction = None
+def dimGroupAction(bfePrime):
+    return(False)
+
+pointGroupAction = None
+def pointGroupAction(bfePrime,i,PPi):
+    return([PPi])
 
 symmetric = False
 
@@ -133,6 +144,12 @@ def main():
     global explorationOrder
 
     global targetDimensions # a list of multidimensions
+    global realDimensionLinears
+
+    global loadDimensionLinearsAndStartSolution
+    global loadDegreeLinears
+    global dimGroupAction
+    global pointGroupAction
 
     global symmetric
     setVariablesToGlobal = """
@@ -154,18 +171,22 @@ global algebraicTorusVariableGroups
 global nonzeroCoordinates
 global useBertiniInputStyle
 global maxProcesses
+global realDimensionLinears
 global targetDimensions
 global explorationOrder
 global symmetric
+global loadDimensionLinearsAndStartSolution
+global loadDegreeLinears
+global dimGroupAction
+global pointGroupAction
 """
-
-    # exec(setVariablesToGlobal + open("inputFile.py").read())
+# exec(setVariablesToGlobal + open("inputFile.py").read())
 # Our input will consist of four text files and a main input file.
-# bertiniInput_variablesAndConstants
+# bertiniInput_variables
 # bertiniInput_trackingOptions
 # bertiniInput_equations
     try:
-        with open("bertiniInput_variablesAndConstants", "r") as f:
+        with open("bertiniInput_variables", "r") as f:
             bertiniVariablesAndConstants = f.read()
         with open("bertiniInput_trackingOptions", "r") as f:
             bertiniTrackingOptionsText = f.read()
@@ -176,7 +197,7 @@ global symmetric
             print("found bertiniInput_equations")
     except:
         print("Exiting due to incomplete input. Please include the following files:")
-        print("\t" + "bertiniInput_variablesAndConstants")
+        print("\t" + "bertiniInput_variables")
         print("\t" + "bertiniInput_trackingOptions")
 #            print("\t" + "bertiniInput_G")
         print("\t" + "bertiniInput_equations")
@@ -226,17 +247,6 @@ global symmetric
 # set degrees TODO
 
 
-    #####################
-# Make directory to store final solutions
-    if os.path.isdir(workingDirectory):
-        shutil.rmtree(workingDirectory)
-    os.makedirs(workingDirectory)
-    os.chdir(workingDirectory)
-    os.makedirs("all_full_depth_solutions")
-    os.makedirs("_truncated_singular_solutions")
-    os.makedirs("_saturated_solutions")
-
-
 # print to screen system summary.
     if verbose > 0:
         print("\n################### Setup multiregeneration ####################\n")
@@ -245,18 +255,33 @@ global symmetric
         for c, f in enumerate(fNames): # 0 is the depth we start with
             if c >= depth:
                 print("depth > "+str(c)+" satisfy "+ f+" = 0")
-# Determine random linear polynomials l[i][j]
-    if not symmetric:
+# Determine random linear polynomials l[i][j] and start solution
+    if loadDimensionLinearsAndStartSolution:
+        l = []
+        for i in range(len(variables)):
+            with open("dimensionLinears_%s" %i, "r") as f:
+                A = (line.rstrip() for line in f)
+                A = list(line for line in A if line)
+            l.append(A)
+        with open("startSolution", "r") as f:
+            startSolution = (line.rstrip() for line in f)
+            startSolution = list(line for line in startSolution if line)
+    elif realDimensionLinears:
+        (l, startSolution) = getRealValuedLinearsThroughPoint(variables)
+    else:
         (l, startSolution) = getLinearsThroughPoint(variables)
-    elif symmetric:
-        (l, startSolution) = getLinearsThroughSymmetricPoint(variables)
-
-    if verbose > 1:
-        print("Using start solution", startSolution)
-        print("Using dimesion linears", l)
-# Determine random linear polynomials r[i][j]
+    if verbose > 0:
+        print("\nUsing start solution")
+        for i in startSolution:
+            print(i)
+        print("\nUsing dimesion linears")
+        for i in range(len(variables)):
+            for j in range(len(l[i])):
+                print("l[%s][%s]"%(i,j))
+                print(l[i][j])
+    # Determine random linear polynomials r[i][j] degree linears
     r = []
-    if not symmetric:
+    if not loadDegreeLinears:
         for i in range(len(variables)):
             r.append([])
             maxdeg= 0
@@ -266,37 +291,47 @@ global symmetric
             print(getGenericLinearInVariableGroup(i))
             for d in range(maxdeg):
                 r[i].append(getGenericLinearInVariableGroup(i))
-    elif symmetric:
+    elif loadDegreeLinears:
         #TODO: check that the degrees, types, and number of variables match
-        # accross all variable groups.
-        rCoefficients = None
-        maxdeg= 0
-        for s in range(len(fNames)):
-            maxdeg= max(maxdeg,degrees[s][0])
-        if 0 in projectiveVariableGroups:
-            rCoefficients = [[randomNumberGenerator() for i in range(len(variables[0])*2)] for rd in range(maxdeg)]
-        elif 0 not in projectiveVariableGroups:
-            rCoefficients = [[randomNumberGenerator() for i in range(len(variables[0])*2+2)] for rd in range(maxdeg)]
+        # across all variable groups.
         for i in range(len(variables)):
-            r.append([])
+            maxdeg= 0
+            for s in range(len(fNames)):
+                maxdeg= max(maxdeg,degrees[s][i])
             print("%s is the maximum degree in variable group %s. "%(maxdeg,i))
-            for d in range(maxdeg):
-                r[i].append(getSymGenericLinearInVariableGroup(i, rCoefficients[d]))
-    if verbose > 1:
-        print("Using degree linears", r)
+            with open("degreeLinears_%s" %i, "r") as f:
+                A = (line.rstrip() for line in f)
+                A = list(line for line in A if line)
+            r.append(A)
+    if verbose > 0:
+        print("Using degree linears")
+    for i in range(len(variables)):
+        for j in range(len(r[i])):
+            print("r[%s][%s]"%(i,j))
+            print(r[i][j])
     if B== None:
         B=len(fNames)  # TODO: check that this is not off by one.
         print("B is set to %d" % B)
     if verbose > 0:
         print("exploring tree in order", explorationOrder)
+        #    return(random.randint(1,1000000)+abs(hash("_".join(P))) % (10 ** 8))
+
     if verbose > 0:
         print("\n################### Starting multiregeneration ####################\n")
+    #####################
+# Make directory to store final solutions
+    if os.path.isdir(workingDirectory):
+        shutil.rmtree(workingDirectory)
+    os.makedirs(workingDirectory)
+    os.chdir(workingDirectory)
+    os.makedirs("all_full_depth_solutions")
+    os.makedirs("_truncated_singular_solutions")
+    os.makedirs("_saturated_solutions")
     completedSmoothSolutions="_completed_smooth_solutions"
     os.makedirs(completedSmoothSolutions)
     for i in range(depth, depth+len(fNames)):
         os.makedirs(completedSmoothSolutions+"/depth_%s"% i)
 # branch node outline
-
 
     global queue
     queue = mp.Manager().Queue() # a messege queue for the child
@@ -363,22 +398,25 @@ def outlineRegenerate(depth,G,B,bfe,P):
         print("Error: length of degree list does not coincide with the number of polynomials in the system. ")
 
     label = "unknown"
-    if depth<B and depth < len(fNames):
-        # determine isVanishes value.
-#        print("bfe %s" %bfe)
+    # if depth isn't too large then
+    if depth < B and depth < len(fNames):
+        # # (1) we create a directory to test if the next polynomial vanishes at point P.
         dirVanish = directoryNameIsVanishing(depth, P)
         M = degrees[depth]
         try:
             os.makedirs(dirVanish)
         except:
             pass
-        isVanishes="unknown"
         if verbose > 1:
           print("directory before isEvaluateZero is", os.getcwd())
+        isVanishes="unknown"
+        # # (2) evaluate the next polynomial at the point P to to determine isVanishes (Boolean)
         isVanishes=isEvaluateZero(dirVanish,depth,P)
         if verbose > 1:
           print("directory after isEvaluateZero is", os.getcwd())
+        # # (3) if the next polynomial does not vanish at P then we need to branch with edges with weight one.
         if not(isVanishes):
+            startHash=hashPoint(P)
             if verbose > 1:
               print("Branch out")
             for i in range(len(bfe)):
@@ -392,13 +430,10 @@ def outlineRegenerate(depth,G,B,bfe,P):
                         b2 = sum(bfePrime) - sum(dim) <= len(fNames)-depth
                         canReach.append(b1 and b2)
                     prune = not any(canReach)
-                if symmetric: #right now it looks for diheadral symetry
-                    # if verbose > 1:
-                    #     print("bfe is nonDecreasing:", nonDecreasing(bfe))
-                    # prune = prune or not nonDecreasing(bfe)
-                    if verbose > 1:
-                        print("first is min in bfe", firstIsMin(bfe))
-                    prune = prune or not firstIsMin(bfe)
+                # dimGroupAction returns False as the default.
+                # Redfine this function in inputFile.py as you like.
+                if not prune:
+                    prune = dimGroupAction(bfePrime)
                 if not prune:
                     for j in range(M[i]):
                         label="unknown"
@@ -415,9 +450,9 @@ def outlineRegenerate(depth,G,B,bfe,P):
                         # TODO: Check if this agrees with our vision of what the code should do.
                         count = 0
                         if len(algebraicTorusVariableGroups)>0 and len(PPrime)>0: # Prune if not in the algebraic torus based on algebraicTorusVariableGroups
-                            for i in range(len(variables)):
-                                for j in range(len(variables[i])):
-                                    if (i in algebraicTorusVariableGroups):
+                            for a in range(len(variables)):
+                                for b in range(len(variables[a])):
+                                    if (a in algebraicTorusVariableGroups):
 #                                        print(count)
 #                                        print(PPrime[count])
                                         if coordinateLineIsZero(PPrime[count], logTolerance): # What should the logTolerance be here?
@@ -434,28 +469,48 @@ def outlineRegenerate(depth,G,B,bfe,P):
                                     count = count +1;
                         if label=="smooth" and len(PPrime)>1:
                             completedSmoothSolutions = "_completed_smooth_solutions"
-                            solText = "\n"
-                            for line in PPrime:
-                                solText += line+"\n"
-                            solName = directoryNameTrackingSolution(depth, G, bfePrime, i, j, PPrime)
-                            try:
-                              startFile = open(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName), "w")
-                              startFile.write(solText)
-                              startFile.close()
-                              if verbose > 1:
-                                print("wrote file",
-                                    completedSmoothSolutions+"/depth_%s/%s"
-                                    %(depth,solName),
-                                    "at node",
-                                    [depth,G,B,bfe,P])
-                            except:
-                              print("error writing file",
-                                  completedSmoothSolutions+"/depth_%s/%s"
-                                  %(depth,solName))
-                            if verbose > 1:
-                              print("queueing node",
-                                  [depth+1,G+[True],B,bfePrime,PPrime])
-                            queue.put([depth+1,G+[True],B,bfePrime,PPrime])
+                            # TODO: have a group action to find additional solutions
+                            PPi=[]
+                            for i in range(len(variables)):
+                                ppGroup = []
+                                for j in range(len(variables[i])):
+                                    ppGroup.append(PPrime[count])
+                                    count = count +1;
+                                PPi.append(ppGroup)
+                            #print("PPi")
+                            #print(PPi)
+                            LP = pointGroupAction(bfePrime,i,PPi)
+                            for PPi in LP:
+                                #print("ppi2")
+                                #print(PPi)
+                                PPrime = []
+                                for i in range(len(PPi)):
+                                    for j in range(len(PPi[i])):
+                                        PPrime.append(PPi[i][j])
+                                #print(PPrime)
+                                #print(len(PPrime))
+                                solText = "\n"
+                                for line in PPrime:
+                                    solText += line+"\n"
+                                solName = directoryNameTrackingSolution(depth, G, bfePrime, i, j, PPrime, startHash)
+                                try:
+                                  startFile = open(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName), "w")
+                                  startFile.write(solText)
+                                  startFile.close()
+                                  if verbose > 1:
+                                    print("wrote file",
+                                        completedSmoothSolutions+"/depth_%s/%s"
+                                        %(depth,solName),
+                                        "at node",
+                                        [depth,G,B,bfe,P])
+                                except:
+                                  print("error writing file",
+                                      completedSmoothSolutions+"/depth_%s/%s"
+                                      %(depth,solName))
+                                if verbose > 1:
+                                  print("queueing node",
+                                      [depth+1,G+[True],B,bfePrime,PPrime])
+                                queue.put([depth+1,G+[True],B,bfePrime,PPrime])
                         # elif label=="singular":
                         #     print(" We prune because the endpoint is singular")
                         # elif label=="infinity":
@@ -467,14 +522,13 @@ def outlineRegenerate(depth,G,B,bfe,P):
                   if verbose > 1:
                     print("We prune at depth %s variable group %s" %(depth,i))
                   label="prune"
+        # # (4) if the next polynomial vanishes at P then we need to branch with edges with weight zero.
         elif isVanishes: # isVanishes is true
-            if verbose > 1:
-              print("We  oneEdgeHomotopy at depth %s" %depth)
             if label!="error":
                 completedSmoothSolutions = "_completed_smooth_solutions"
                 if verbose > 1:
                   print("vanishes!")
-                solName = directoryNameImmediateSolution(depth, P)
+                solName = directoryNameImmediateSolution(depth, G, bfe, P)
                 solText = "\n"
                 for line in P:
                     solText += line+"\n"
@@ -504,7 +558,7 @@ def outlineRegenerate(depth,G,B,bfe,P):
 
 
 def hashPoint(P):
-    return(abs(hash("_".join(P))) % (10 ** 8))
+    return(abs(hash("_".join(P))) % (10 ** 12))
 #    return(random.randint(1,1000000)+abs(hash("_".join(P))) % (10 ** 8))
 
 
@@ -614,7 +668,6 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
     if verbose > 1:
       print("changing to directory", dirTracking)
     os.chdir(dirTracking)
-    label = "Missing"
     m=M[vg]
     vg=str(vg)
     rg=str(rg)
@@ -630,7 +683,8 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
     for i in range(len(bfe)):
         for j in range(bfe[i]):
             ellText += "l_%d_%d" % (i,j)+" = "+l[i][j]+" ; \n"
-#    ellText += "l_%s_%d" % (vg, bfePrime[eval(vg)]) +" = "+l[eval(vg)][bfePrime[eval(vg)]]+" ; \n"
+    print(bfe,ellText)
+#    ellText += "l_%s_%dl_" % (vg, bfePrime[eval(vg)]) +" = "+l[eval(vg)][bfePrime[eval(vg)]]+" ; \n"
     rText = "\n % rText\n"
     for i in range(len(bfe)):
         for j in range(M[i]):
@@ -657,7 +711,7 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
     successPQ=False
     errorCountPQ=0
     foundQ =0
-    while not(errorCountPQ>3 or (successPQ==True)): # We give Bertini three chances to find Q.
+    while not(errorCountPQ>1 or (successPQ==True)): # We give Bertini one chance to find Q.
         label="unknown"
         try:
             bertiniCommand = "/Applications/bertini-serial inputPQ"
@@ -679,7 +733,10 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
                 errorCountPQ+=1
         else:
             errorCountPQ += 1
+            print(errorCountPQ)
+            print(label)
             label="error"
+            print(bfe,bfePrime,i)
             print("error (Count %d) (Branch) nonsingular_solutions does not exist in %s" %(errorCountPQ,dirTracking))
 ### Now we go from Q to p.
     # print("Rename")
@@ -829,6 +886,45 @@ def getLinearsThroughPoint(variables):
             ell[i].append(linearString)
     return (ell, startSolution)
 
+def getRealValuedLinearsThroughPoint(variables):
+    spoint = []
+    for i in range(len(variables)):
+        spoint += [[]]
+        for j in range(len(variables[i])):
+            spoint[i]+=[[str(randomNumberGenerator()),str(0.0)]]
+    startSolution = []
+    for i in range(len(spoint)):
+        for j in range(len(spoint[i])):
+            startSolution+=[spoint[i][j][0]+" "+spoint[i][j][1]]
+    ell = []
+    for i in range(len(variables)):
+        ell.append([])
+        isAffGroup=1
+        if i in projectiveVariableGroups:
+            isAffGroup = 0
+        terms = [None for x in range(len(variables[i])+isAffGroup-1)]
+        for j in range(len(variables[i])+isAffGroup-1):
+            linearString=""
+            for x in range(len(variables[i])+isAffGroup-1):
+                if isAffGroup:
+                    terms[x]="(%s)*(%s-(%s))"%(
+                        str(randomNumberGenerator()),
+                        str(variables[i][x]),
+                        spoint[i][x][0]
+                        )
+                else:
+                    terms[x]="(%s)*((%s)*%s-(%s)*%s)"%(
+                        str(randomNumberGenerator()),
+                        str(spoint[i][-1][0]), #real  part of last coordinate of spoint
+                        str(variables[i][x]), # a variable in group i
+                        str(spoint[i][x][0]),
+                        str(variables[i][-1])) # last variable in group i
+            linearString = "+".join(terms)
+            ell[i].append(linearString)
+    return (ell, startSolution)
+
+
+
 def getLinearsThroughSymmetricPoint(variables):
     spoint = [[]]
     for j in range(len(variables[0])):
@@ -898,12 +994,23 @@ def directoryNameIsVanishing(depth, P):
     dirName = "homotopy_vanishing/depth_%s/pointId_%s"%(depth,hashPoint(P))
     return dirName
 
+#
+# def directoryNameImmediateSolution(depth, P):
+# #    print(useFunction)
+#     dirName = "solution_vanishing_depth_%s_pointId_%s"%(depth,hashPoint(P))
+#     return dirName
 
-def directoryNameImmediateSolution(depth, P):
-#    print(useFunction)
-    dirName = "solution_vanishing_depth_%s_pointId_%s"%(depth,hashPoint(P))
+
+def directoryNameImmediateSolution(depth, G, bfe, P):
+    useFunction = "_".join(map(lambda b: "1" if b else "0", G+[0]))
+    hashP=hashPoint(P)
+    dirName = "solution_vanishing_depth_%d_gens_%s_dim_%s_pointId_%s_%s"%(depth,
+        useFunction,
+        "_".join(map(str, bfe)),
+        hashP,
+        hashP
+        )
     return dirName
-
 
 # Makes the directory for each process.
 def directoryNameTracking(depth, G, bfe, varGroup, regenLinear, P):
@@ -920,15 +1027,16 @@ def directoryNameTracking(depth, G, bfe, varGroup, regenLinear, P):
     return dirName
 
 
-def directoryNameTrackingSolution(depth, G, bfe, varGroup, regenLinear, P):
+def directoryNameTrackingSolution(depth, G, bfe, varGroup, regenLinear, P, startHash):
 #    print("This is G: %s" % G)
     useFunction = "_".join(map(lambda b: "1" if b else "0", G+[1]))
 #    print(useFunction)
-    dirName = "solution_tracking_depth_%d_gens_%s_dim_%s_varGroup_%d_regenLinear_%d_pointId_%s"%(depth,
+    dirName = "solution_tracking_depth_%d_gens_%s_dim_%s_varGroup_%d_regenLinear_%d_pointId_%s_%s"%(depth,
         useFunction,
         "_".join(map(str, bfe)),
         varGroup,
         regenLinear,
+        startHash,
         hashPoint(P)
         )
     return dirName
