@@ -221,14 +221,15 @@ global pointGroupAction
         if i in projectiveVariableGroups:
             isProjectiveGroup = 1
         bfe.append(len(variables[i])-isProjectiveGroup)
-    print("Ambient space dimension ")
-    print(bfe)
-    print("variables")
-    print(variables)
-    print("projectiveVariableGroups")
-    print(projectiveVariableGroups)
-    print("variableGroupText")
-    print(variableGroupText)
+    if verbose > 1:
+        print("Ambient space dimension ")
+        print(bfe)
+        print("variables")
+        print(variables)
+        print("projectiveVariableGroups")
+        print(projectiveVariableGroups)
+        print("variableGroupText")
+        print(variableGroupText)
 # set up function names and revisedEquationsText
     revisedEquationsText = ""
     lines = bertiniEquations.splitlines()
@@ -239,10 +240,12 @@ global pointGroupAction
             fNames += lines[i][lines[i].find(" "):].replace(" ","").replace(";", "").split(",")
         else:
             revisedEquationsText += lines[i]+"\n"
-    print("G")
-    print(G)
-    print("revisedEquationsText")
-    print(revisedEquationsText)
+    if verbose > 1:
+        print("G")
+        print(G)
+        print("revisedEquationsText")
+        print(revisedEquationsText)
+
     exec(setVariablesToGlobal + open("inputFile.py").read())
 # set degrees TODO
 
