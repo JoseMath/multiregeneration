@@ -439,6 +439,8 @@ def outlineRegenerate(depth,G,B,bfe,P):
                     prune = dimGroupAction(bfePrime)
                 if not prune:
                     for j in range(M[i]):
+                        if verbose > 1:
+                            print "M[i] = %d, j = %d"%(M[i],j)
                         label="unknown"
 #                        print("We parentHomotopy at depth %s variable group %s degree %s and point %s" %(depth,i,j,hashPoint(P)))
                         dirTracking = directoryNameTracking(depth, G, bfePrime, i, j, P)
@@ -447,6 +449,8 @@ def outlineRegenerate(depth,G,B,bfe,P):
                                 os.makedirs(dirTracking)
                         if verbose > 1:
                           print("directory before branchHomotopy is", os.getcwd())
+                        if verbose > 1:
+                            print "Calling branch homotopy with vg = %d, rg = %d, M[vg] = %d"%(i,j,M[i])
                         (PPrime,label) = branchHomotopy(dirTracking, depth, G, bfePrime,bfe, i, j, M, P)
                         if verbose > 1:
                           print("directory after branchHomotopy is", os.getcwd())
@@ -474,28 +478,28 @@ def outlineRegenerate(depth,G,B,bfe,P):
                             completedSmoothSolutions = "_completed_smooth_solutions"
                             # TODO: have a group action to find additional solutions
                             PPi=[]
-                            for i in range(len(variables)):
+                            for i2 in range(len(variables)):
                                 ppGroup = []
-                                for j in range(len(variables[i])):
+                                for j2 in range(len(variables[i2])):
                                     ppGroup.append(PPrime[count])
                                     count = count +1;
                                 PPi.append(ppGroup)
                             #print("PPi")
                             #print(PPi)
-                            LP = pointGroupAction(bfePrime,i,PPi)
+                            LP = pointGroupAction(bfePrime,i2,PPi)
                             for PPi in LP:
                                 #print("ppi2")
                                 #print(PPi)
                                 PPrime = []
-                                for i in range(len(PPi)):
-                                    for j in range(len(PPi[i])):
-                                        PPrime.append(PPi[i][j])
+                                for i3 in range(len(PPi)):
+                                    for j3 in range(len(PPi[i])):
+                                        PPrime.append(PPi[i3][j3])
                                 #print(PPrime)
                                 #print(len(PPrime))
                                 solText = "\n"
                                 for line in PPrime:
                                     solText += line+"\n"
-                                solName = directoryNameTrackingSolution(depth, G, bfePrime, i, j, PPrime, startHash)
+                                solName = directoryNameTrackingSolution(depth, G, bfePrime, i3, j3, PPrime, startHash)
                                 try:
                                   startFile = open(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName), "w")
                                   startFile.write(solText)
@@ -698,6 +702,9 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
     writePStart(P,"P")
     writeParameters()
     ## Now we do PQ
+    if verbose > 1:
+        print "vg = %s, rg = %s, bfePrime[eval(vg)] = %d"%(
+            vg,rg,bfePrime[eval(vg)])
     sfPQ="l_%s_%d" %(vg,bfePrime[eval(vg)])
     tfPQ="r_%s_%s" %(vg,rg)
     inputTextPQ = bertiniParameterHomotopyTwoTemplate %(bertiniTrackingOptionsText,
