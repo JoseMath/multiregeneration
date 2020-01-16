@@ -194,7 +194,7 @@ global pointGroupAction
 #            bertiniDegrees = f.read()
         with open("bertiniInput_equations", "r") as f:
             bertiniEquations = f.read()
-            print("found bertiniInput_equations")
+            # print("found bertiniInput_equations")
     except:
         print("Exiting due to incomplete input. Please include the following files:")
         print("\t" + "bertiniInput_variables")
@@ -290,8 +290,6 @@ global pointGroupAction
             maxdeg= 0
             for s in range(len(fNames)):
                 maxdeg= max(maxdeg,degrees[s][i])
-            print("%s is the maximum degree in variable group %s. "%(maxdeg,i))
-            print(getGenericLinearInVariableGroup(i))
             for d in range(maxdeg):
                 r[i].append(getGenericLinearInVariableGroup(i))
     elif loadDegreeLinears:
@@ -301,20 +299,19 @@ global pointGroupAction
             maxdeg= 0
             for s in range(len(fNames)):
                 maxdeg= max(maxdeg,degrees[s][i])
-            print("%s is the maximum degree in variable group %s. "%(maxdeg,i))
             with open("degreeLinears_%s" %i, "r") as f:
                 A = (line.rstrip() for line in f)
                 A = list(line for line in A if line)
             r.append(A)
     if verbose > 0:
-        print("Using degree linears")
-    for i in range(len(variables)):
-        for j in range(len(r[i])):
-            print("r[%s][%s]"%(i,j))
-            print(r[i][j])
+        print("\nUsing degree linears")
+        for i in range(len(variables)):
+            for j in range(len(r[i])):
+                print(r[i][j])
     if B== None:
         B=len(fNames)  # TODO: check that this is not off by one.
-        print("B is set to %d" % B)
+        if verbose > 1:
+            print("B is set to %d" % B)
     if verbose > 0:
         print("exploring tree in order", explorationOrder)
         #    return(random.randint(1,1000000)+abs(hash("_".join(P))) % (10 ** 8))
@@ -383,7 +380,8 @@ global pointGroupAction
                       jobsInPool.value)
 
     pool.close()
-    print("Done.")
+    if verbose > 0:
+        print("Done.")
 
 
 def processNode(args): # a wrapper funcion to catch error. This is
