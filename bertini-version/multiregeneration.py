@@ -188,8 +188,11 @@ global pointGroupAction
     try:
         with open("bertiniInput_variables", "r") as f:
             bertiniVariablesAndConstants = f.read()
-        with open("bertiniInput_trackingOptions", "r") as f:
-            bertiniTrackingOptionsText = f.read()
+        if os.path.exists("bertiniInput_trackingOptions"):
+            with open("bertiniInput_trackingOptions", "r") as f:
+                bertiniTrackingOptionsText = f.read()
+        else:
+            bertiniInput_trackingOptions = ""
 # TODO:       with open("bertiniInput_degrees", "r") as f:
 #            bertiniDegrees = f.read()
         with open("bertiniInput_equations", "r") as f:
