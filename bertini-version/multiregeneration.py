@@ -260,7 +260,7 @@ global pointGroupAction
         print("Solutions in a 'linearProduct' directory and :")
         for c, f in enumerate(fNames): # 0 is the depth we start with
             if c >= depth:
-                print("depth > "+str(c)+" satisfy "+ f+" = 0")
+                print("depth >= "+str(c)+" satisfy "+ f+" = 0")
 # Determine random linear polynomials l[i][j] and start solution
     if loadDimensionLinearsAndStartSolution:
         l = []
