@@ -1,3 +1,0 @@
-FinalTol : 1e-12;
-CONDNUMTHRESHOLD : 1e10 ;
-MPTYPE:2;

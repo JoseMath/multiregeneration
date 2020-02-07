@@ -1,6 +1,0 @@
-variable_group g1,g1bar;
-variable_group z1,z1bar;
-variable_group g2,g2bar;
-variable_group z2,z2bar;
-variable_group d1d,d2d,d3d,d4d,d5d,d1dbar,d2dbar,d3dbar,d4dbar,d5dbar;
-variable_group theta1d,theta2d,theta3d,theta4d,theta5d,theta1dbar,theta2dbar,theta3dbar,theta4dbar,theta5dbar;

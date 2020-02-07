@@ -1,3 +1,0 @@
-FinalTol : 1e-8;
-CONDNUMTHRESHOLD : 1e8 ;
-MaxNorm : 1e8 ;
