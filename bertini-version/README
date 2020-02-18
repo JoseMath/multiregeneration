@@ -1,12 +1,9 @@
-TODO: Write a friendly introduction
-
-
 (1) Example: Run the following commands
 
-    cd _tests-standard/first-test
-    python ../multiregeneration.py
+    cd Tests/Example-p10a
+    python2 ../../multiregeneration.py
 
-The data of the run will be stored in _tests-standard/first-test/run
+The data of the run will be stored in Tests/Example-p10a/run
 
 (2) Our implementation has one main input file (inputFile.py) to specify the multiregeneration
 solving settings and three tracking input files:
@@ -42,7 +39,7 @@ where --a list of symbols -- could be taken as
 (2iii) tracking_options specifies how the path tracking is done.
 For a detailed list of these options see the Bertini user manual. 
 
-(3) To run our implementation Python and Bertini must be installed.
+(3) To run our implementation Python2 and Bertini must be installed.
 
 (3a) Python is an interpreted high-level programming language for
 general-purpose programming. For more information see
