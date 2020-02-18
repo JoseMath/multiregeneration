@@ -1,3 +1,8 @@
+Bertini version of multiregeneration with regeneration graphs
+=============================================================
+
+For a more detailed account of how to use this software, see the tutorial [here](https://github.com/colinwcrowley/multiregeneration-tutorial).
+
 (1) Example: Run the following commands
 
     cd Tests/Example-p10a
