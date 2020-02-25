@@ -1,59 +1,52 @@
 Bertini version of multiregeneration with regeneration graphs
 =============================================================
 
-For a more detailed account of how to use this software, see the tutorial [here](https://github.com/colinwcrowley/multiregeneration-tutorial).
+For how to use this software, see the tutorial [here](https://github.com/colinwcrowley/multiregeneration-tutorial).
 
-(1) Example: Run the following commands
+To run this script, Bertini and Python2 must be installed.
+
+Example: Run the following commands
 
     cd Tests/Example-p10a
     python2 ../../multiregeneration.py
 
 The data of the run will be stored in Tests/Example-p10a/run
 
-(2) Our implementation has one main input file (inputFile.py) to specify the multiregeneration
-solving settings and three tracking input files:
+Purpose
+-------
 
-(2i) tracking_equations sets the polynomial system we are solving
-This file must contain the line:
+This script has two main purposes: to implement multihomogenious 
+regeneration as described [here](), and to implement a "Depth First" 
+version of regeneration as described [here]().
 
-function f_1, f_2, ..., f_n;
+Our implementation is written in python, and uses Bertini to track 
+individual paths.
 
-and lines
-
-f_1 = --a polynomial expression-- ;
-f_2 = --a polynomial expression-- ;
-...
-f_n = --a polynomial expression-- ;
-
-where f_i denotes a symbol and --a polynomial expression --
-is a polynomial expression in the variables.
-The syntax follows that of Bertini and a line should end with a semicolon.
-
-(2ii) tracking_variables sets the variable groups
-Each line of this file must be of the form
-
-hom_variable_group --a list of symbols -- ;
-
-or
-
-variable_group --a list of symbols -- ;
-
-where --a list of symbols -- could be taken as
-"x, y, z"
-
-(2iii) tracking_options specifies how the path tracking is done.
-For a detailed list of these options see the Bertini user manual. 
-
-(3) To run our implementation Python2 and Bertini must be installed.
-
-(3a) Python is an interpreted high-level programming language for
-general-purpose programming. For more information see
-https://www.python.org/
-
-(3b) Bertini is a general-purpose solver, written in C, that was created by
+Bertini is a general-purpose solver, written in C, that was created by
 Daniel J. Bates, Jonathan D. Hauenstein, Andrew J. Sommese, and Charles W. Wampler
  for research about polynomial continuation. For more information see
 https://bertini.nd.edu/
 
-[Caution] A frequently reported issue for Mac users: the first time Bertini
-is called an error regarding mpfr is displayed.
+Input format
+------------
+
+A complete input for our software consists of three files named 
+`inputFile.py`, `bertiniInput_variables`, and `bertiniInput_equations` 
+in the same directory.
+
+ - The file `inputFile.py` is written in python. The python script 
+   `multiregeneration.py` needs to know the multidegrees of the 
+   equations to solve, which should be defined in `inputFile.py`. See, 
+   for example, `Tests/Example-p10a`.
+
+ - The file `bertiniInput_equations` should contain the declaration of 
+   several functions, and the definition of those functions, in the same 
+   syntax that is used to define functions in Bertini.
+
+ - The file `bertiniInput_variables` should contain the declaration of 
+   several variable group in the same 
+   syntax that is used to define them in Bertini. Our script works with 
+   either affine or projective variable groups.
+
+In addition, the user can include a file `bertiniInput_trackingOptions`, 
+which will be passed to Bertini when it tracks each path.

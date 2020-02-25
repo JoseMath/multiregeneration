@@ -1,15 +1,3 @@
-#TODO: Think about the hypothesis that would
-# ensure the following: if a point gets thrown out along the way,
-# then that point
-
-# Caveat: Bertini input file style assumptions
-# # 'variable group ...;' is one line
-# # 'hom_variable group ...;' is one line
-# # function ...;  is one line
-# # Lines after the second CONFIG not defining an equation or constant value
-# # must begin with 'function', 'constant', 'hom_variable_group', or 'variable_group'
-
-
 import traceback
 import shutil
 import sys
@@ -22,22 +10,6 @@ import multiprocessing as mp
 from multiprocessing.sharedctypes import Value
 from os import path
 from Queue import PriorityQueue
-# pip install networkx
-#import networkx as nx # TODO
-# variables = [["x1", "x2"], ["y1", "y2"]]
-# len(variables)
-# degrees = [[2, 0], [0,2]] # degree of the s'th function in the i'th variable group
-# n = [len(l) for l in variables]
-# maxDegree = [2, 2] # the largest degree of any function in the ith variable group
-# G = ["f1", "f2"]
-# tolerance = 1e-10
-# # The l_i,j  are the dimention linears in the variables i the i'th group
-# l = [["234*x2 - x1 - 234.2341", "x2 + 2*x1 - 1231"], ["19*y2 - y1 - 1123.235",
-#     "y2 + 393*y1 - 12"]]
-# # The r_i,d are the regeneration linears in the i'th variable group.
-# # For fixed i, there are maxDegree[i] - 1
-# r = [[None, "x1 - 2*x2 + 2.1"], [None, "5*y1 + y2 - 25"]] #So that the
-# # indexing matches the write up, we want the r to start at 1.
 
 
 ### Configuration ###
@@ -49,7 +21,6 @@ nonzeroCoordinates = []
 def randomNumberGenerator():
     rho = random.uniform(-1,1)
     return rho
-# TODO: Restart mode.
 depth = 0  # Begin the computation at a different depth index
 bfe = []
 verbose = 0  # Integer that is larger if we want to print more
@@ -57,8 +28,6 @@ verbose = 0  # Integer that is larger if we want to print more
 # Level 1 messages we would usually like printed
 # Level 2 for debugging
 
-#TODO: instead of setting global variables with an eval, read a json
-# file to a python object
 variables = None
 fNames = None
 degrees = None
@@ -112,7 +81,8 @@ def decJobsInPool(out):
         print("new vaule is jobsInPool = ", jobsInPool.value)
 
 def main():
-    # Set global configuration variables in the inputFile
+    # We make these variables global so that inputFile.py can set them. 
+    # After this they are never modified.
     global variables
     global depth
     global bfe # bold font e
@@ -180,11 +150,6 @@ global loadDegreeLinears
 global dimGroupAction
 global pointGroupAction
 """
-# exec(setVariablesToGlobal + open("inputFile.py").read())
-# Our input will consist of four text files and a main input file.
-# bertiniInput_variables
-# bertiniInput_trackingOptions
-# bertiniInput_equations
     try:
         with open("bertiniInput_variables", "r") as f:
             bertiniVariablesAndConstants = f.read()
@@ -193,8 +158,6 @@ global pointGroupAction
                 bertiniTrackingOptionsText = f.read()
         else:
             bertiniInput_trackingOptions = ""
-# TODO:       with open("bertiniInput_degrees", "r") as f:
-#            bertiniDegrees = f.read()
         with open("bertiniInput_equations", "r") as f:
             bertiniEquations = f.read()
             # print("found bertiniInput_equations")
@@ -250,7 +213,6 @@ global pointGroupAction
         print(revisedEquationsText)
 
     exec(setVariablesToGlobal + open("inputFile.py").read())
-# set degrees TODO
 
 
 # print to screen system summary.
@@ -296,8 +258,6 @@ global pointGroupAction
             for d in range(maxdeg):
                 r[i].append(getGenericLinearInVariableGroup(i))
     elif loadDegreeLinears:
-        #TODO: check that the degrees, types, and number of variables match
-        # across all variable groups.
         for i in range(len(variables)):
             maxdeg= 0
             for s in range(len(fNames)):
@@ -312,7 +272,7 @@ global pointGroupAction
             for j in range(len(r[i])):
                 print(r[i][j])
     if B== None:
-        B=len(fNames)  # TODO: check that this is not off by one.
+        B=len(fNames)
         if verbose > 1:
             print("B is set to %d" % B)
     if verbose > 0:
@@ -455,7 +415,6 @@ def outlineRegenerate(depth,G,B,bfe,P):
                         (PPrime,label) = branchHomotopy(dirTracking, depth, G, bfePrime,bfe, i, j, M, P)
                         if verbose > 1:
                           print("directory after branchHomotopy is", os.getcwd())
-                        # TODO: Check if this agrees with our vision of what the code should do.
                         count = 0
                         if len(algebraicTorusVariableGroups)>0 and len(PPrime)>0: # Prune if not in the algebraic torus based on algebraicTorusVariableGroups
                             for a in range(len(variables)):
@@ -477,7 +436,6 @@ def outlineRegenerate(depth,G,B,bfe,P):
                                     count = count +1;
                         if label=="smooth" and len(PPrime)>1:
                             completedSmoothSolutions = "_completed_smooth_solutions"
-                            # TODO: have a group action to find additional solutions
                             PPi=[]
                             for i2 in range(len(variables)):
                                 ppGroup = []
@@ -1066,8 +1024,6 @@ def directoryNameTracking(depth, G, bfe, varGroup, regenLinear, P):
         hashPoint(P)
         )
     return dirName
-
-# TODO: directory to store completed solutions, singular solutions, saturated saturated solutions, etc.
 
 
 if __name__== "__main__":
