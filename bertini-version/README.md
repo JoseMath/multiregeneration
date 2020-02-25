@@ -16,8 +16,8 @@ Purpose
 -------
 
 This script has two main purposes: to implement multihomogenious 
-regeneration as described [here](), and to implement a "Depth First" 
-version of regeneration as described [here]().
+regeneration as described [here](https://www3.nd.edu/~jhauenst/preprints/hrMultiHom.pdf), and to implement a "Depth First" 
+version of regeneration as described [here](https://arxiv.org/abs/1912.04394).
 
 Our implementation is written in python, and uses Bertini to track 
 individual paths.
