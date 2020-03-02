@@ -451,7 +451,7 @@ def outlineRegenerate(depth,G,B,bfe,P):
                                 #print(PPi)
                                 PPrime = []
                                 for i3 in range(len(PPi)):
-                                    for j3 in range(len(PPi[i])):
+                                    for j3 in range(len(PPi[i3])):
                                         PPrime.append(PPi[i3][j3])
                                 #print(PPrime)
                                 #print(len(PPrime))
