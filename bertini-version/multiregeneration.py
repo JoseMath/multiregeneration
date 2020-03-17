@@ -80,10 +80,10 @@ def decJobsInPool(out):
             jobsInPool.value)
       jobsInPool.value-=1
       if verbose > 1:
-        print("new vaule is jobsInPool = ", jobsInPool.value)
+        print("new value is jobsInPool = ", jobsInPool.value)
 
 def main():
-    # We make these variables global so that inputFile.py can set them. 
+    # We make these variables global so that inputFile.py can set them.
     # After this they are never modified.
     global variables
     global depth
@@ -244,7 +244,7 @@ global pointGroupAction
         print("\nUsing start solution")
         for i in startSolution:
             print(i)
-        print("\nUsing dimesion linears")
+        print("\nUsing dimension linears")
         for i in range(len(variables)):
             for j in range(len(l[i])):
                 print("l[%s][%s]"%(i,j))
@@ -299,7 +299,7 @@ global pointGroupAction
 # branch node outline
 
     global queue
-    queue = mp.Manager().Queue() # a messege queue for the child
+    queue = mp.Manager().Queue() # a message queue for the child
     #processes to comunication with this one
     global priorityQueue
     priorityQueue = PriorityQueue() # where this process, which is the
@@ -316,7 +316,7 @@ global pointGroupAction
       pool.apply_async(updateProgressInfo)
 
 
-    #This loop looks for messeges from the child processes in the queue,
+    #This loop looks for messages from the child processes in the queue,
     # then puts them in the priority queue. When there is space for more
     # jobs, explore nodes in the priority queue.
     while True:
@@ -349,15 +349,14 @@ global pointGroupAction
                       priorityQueue.qsize(), "jobsInPool =",
                       jobsInPool.value)
 
-    
+
     pool.close()
     if verbose >=1:
       updateProgressDisplay(cursorLeftAtBotten=True)
       print("Done.")
 
 
-def processNode(args): # a wrapper funcion to catch error. This is
-#                           stupid, but it's a way to see when there is
+def processNode(args): # a wrapper function to catch error.  It's a way to see when there is
 #                           an error in one of the child processes.
   try:
     outlineRegenerate(args[0], args[1], args[2], args[3], args[4])
@@ -1040,7 +1039,7 @@ def updateProgressDisplay(cursorLeftAtBotten = False):
     solsAtDepth = [os.listdir("_completed_smooth_solutions/"\
         +directory) for directory in currentDepths]
 
-    currentDisplay ="PROGRESS" + "\n" 
+    currentDisplay ="PROGRESS" + "\n"
     for i in range(len(currentDepths)):
       currentDisplay+=("%s: %d\n"%(currentDepths[i],\
         len(solsAtDepth[i])))
@@ -1051,7 +1050,7 @@ def updateProgressDisplay(cursorLeftAtBotten = False):
            fullDepthDims.append(s.split("dim")[1].split("varGroup")[0])
         else:
            fullDepthDims.append(s.split("dim")[1].split("pointId")[0])
-            
+
 
     currentMultidegreeBound = Counter(fullDepthDims)
     for d in currentMultidegreeBound.keys():
