@@ -12,3 +12,5 @@ degrees = [[3], [2]]
 # its homotopy continuations. If the specified directory already exists,
 # it will be deleted when the script is run.
 workingDirectory = "run"
+
+verbose = 1

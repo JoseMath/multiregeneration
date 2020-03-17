@@ -1,4 +1,6 @@
 import traceback
+import time
+from collections import Counter
 import shutil
 import sys
 import subprocess
@@ -299,6 +301,7 @@ global pointGroupAction
     global queue
     queue = mp.Manager().Queue() # a messege queue for the child
     #processes to comunication with this one
+    global priorityQueue
     priorityQueue = PriorityQueue() # where this process, which is the
     #queue manager, stores the jobs that need to be done
 
@@ -308,6 +311,10 @@ global pointGroupAction
 
     with jobsInPool.get_lock():
       jobsInPool.value = 0
+
+    if verbose >= 1:
+      pool.apply_async(updateProgressInfo)
+
 
     #This loop looks for messeges from the child processes in the queue,
     # then puts them in the priority queue. When there is space for more
@@ -342,9 +349,11 @@ global pointGroupAction
                       priorityQueue.qsize(), "jobsInPool =",
                       jobsInPool.value)
 
+    
     pool.close()
-    if verbose > 0:
-        print("Done.")
+    if verbose >=1:
+      updateProgressDisplay(cursorLeftAtBotten=True)
+      print("Done.")
 
 
 def processNode(args): # a wrapper funcion to catch error. This is
@@ -1024,6 +1033,45 @@ def directoryNameTracking(depth, G, bfe, varGroup, regenLinear, P):
         hashPoint(P)
         )
     return dirName
+
+def updateProgressDisplay(cursorLeftAtBotten = False):
+    currentDepths = os.listdir("_completed_smooth_solutions")
+    currentDepths.sort()
+    solsAtDepth = [os.listdir("_completed_smooth_solutions/"\
+        +directory) for directory in currentDepths]
+
+    currentDisplay ="PROGRESS" + "\n" 
+    for i in range(len(currentDepths)):
+      currentDisplay+=("%s: %d\n"%(currentDepths[i],\
+        len(solsAtDepth[i])))
+
+    fullDepthDims = []
+    for s in solsAtDepth[-1]:
+        if "tracking" in s:
+           fullDepthDims.append(s.split("dim")[1].split("varGroup")[0])
+        else:
+           fullDepthDims.append(s.split("dim")[1].split("pointId")[0])
+            
+
+    currentMultidegreeBound = Counter(fullDepthDims)
+    for d in currentMultidegreeBound.keys():
+      currentDisplay += "Found components of multidimension (%s)\n"%(",".join(d.split("_")))
+      currentDisplay +=\
+          "Total degree of these components is >= %d\n"%currentMultidegreeBound[d]
+      currentDisplay += "\n\n"
+
+    sys.stdout.write(currentDisplay)
+    sys.stdout.flush()
+    if not cursorLeftAtBotten:
+        sys.stdout.write("\033[F"*len(currentDisplay.splitlines()))
+        sys.stdout.flush()
+
+def updateProgressInfo():
+  while True:
+    updateProgressDisplay()
+    time.sleep(0.4)
+
+
 
 
 if __name__== "__main__":
