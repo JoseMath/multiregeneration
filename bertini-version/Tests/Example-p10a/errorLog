@@ -1,0 +1,43 @@
+
+################### Setup multiregeneration ####################
+
+These variable groups have been selected:
+variable_group x,y;
+
+Solutions in a 'linearProduct' directory and :
+depth >= 0 satisfy f1 = 0
+depth >= 1 satisfy f2 = 0
+
+Using start solution
+-0.164674486448 0.234178774493
+-0.806521236622 0.584277652069
+
+Using dimesion linears
+l[0][0]
+(-0.0764924226759+I*-0.719647134194)*(x-(-0.164674486448+I*0.234178774493))+(0.137756198296+I*0.438247665991)*(y-(-0.806521236622+I*0.584277652069))
+l[0][1]
+(-0.3860598857+I*-0.0563801725093)*(x-(-0.164674486448+I*0.234178774493))+(-0.430654074361+I*-0.817704482176)*(y-(-0.806521236622+I*0.584277652069))
+
+Using degree linears
+(-0.148092714319 + I*0.213740257056)*x+(-0.846407080714 + I*-0.318926256792)*y+(-0.898102000292 + I*0.521754481751)
+(-0.114737619963 + I*-0.508864598927)*x+(0.728658151434 + I*-0.56367425048)*y+(0.532309129286 + I*-0.836019946653)
+('exploring tree in order', 'breadthFirst')
+
+################### Starting multiregeneration ####################
+
+Error: could not evaulate f1 using Bertini.
+Ope! Error opening file 'function'
+Bertini error likely: check bertiniInput_...
+There was an error in a child process.
+local variable 'solutionsLines' referenced before assignment
+Traceback (most recent call last):
+  File "../../multiregeneration.py", line 363, in processNode
+  File "../../multiregeneration.py", line 387, in outlineRegenerate
+  File "../../multiregeneration.py", line 589, in isEvaluateZero
+UnboundLocalError: local variable 'solutionsLines' referenced before assignment
+
+PROGRESS
+depth_0: 0
+depth_1: 0
+Done.
+Jos-iMac:Example-p10a turtle$ 
