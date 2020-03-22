@@ -307,7 +307,11 @@ global pointGroupAction
 
     priorityQueue.put((0,[depth, G, B, bfe, startSolution]))
 
-    pool = mp.Pool(maxProcesses)
+    # One extra process for the progress updater
+    if verbose >= 1:
+        pool = mp.Pool(maxProcesses+1)
+    else:
+        pool = mp.Pool(maxProcesses)
 
     with jobsInPool.get_lock():
       jobsInPool.value = 0
@@ -1034,15 +1038,17 @@ def directoryNameTracking(depth, G, bfe, varGroup, regenLinear, P):
     return dirName
 
 def updateProgressDisplay(cursorLeftAtBotten = False):
-    currentDepths = os.listdir("_completed_smooth_solutions")
-    currentDepths.sort()
-    solsAtDepth = [os.listdir("_completed_smooth_solutions/"\
-        +directory) for directory in currentDepths]
+    maxDepth = len(os.listdir("_completed_smooth_solutions"))
+    # currentDepths = [int(s.split("_")[1]) for s in \
+    #     os.listdir("_completed_smooth_solutions")]
+    # currentDepths.sort()
+    solsAtDepth = \
+    [os.listdir("_completed_smooth_solutions/depth_"+str(depth))\
+      for depth in range(maxDepth)]
 
     currentDisplay ="PROGRESS" + "\n"
-    for i in range(len(currentDepths)):
-      currentDisplay+=("%s: %d\n"%(currentDepths[i],\
-        len(solsAtDepth[i])))
+    for depth in range(maxDepth):
+      currentDisplay+=("Depth %d: %d\n"%(depth,len(solsAtDepth[depth])))
 
     fullDepthDims = []
     for s in solsAtDepth[-1]:
@@ -1052,12 +1058,26 @@ def updateProgressDisplay(cursorLeftAtBotten = False):
            fullDepthDims.append(s.split("dim")[1].split("pointId")[0])
 
 
+    currentDisplay += """
+----------------------------------------------------------------
+| # smooth isolated solutions  | # of general linear equations |
+| found                        | added with variables in group |
+----------------------------------------------------------------
+                               | %s
+----------------------------------------------------------------
+"""%("  ".join([str(i) for i in range(len(variables))]))
     currentMultidegreeBound = Counter(fullDepthDims)
     for d in currentMultidegreeBound.keys():
-      currentDisplay += "Found components of multidimension (%s)\n"%(",".join(d.split("_")))
-      currentDisplay +=\
-          "Total degree of these components is >= %d\n"%currentMultidegreeBound[d]
-      currentDisplay += "\n\n"
+      dimension = d.split("_")[1:-1]
+      # if all([i=="0" for i in dimension]):
+      #     currentDisplay += \
+      #         "Found %d isolated smooth solutions\n"%currentMultidegreeBound[d]
+      # else:
+      currentDisplay += "  "\
+          + str(currentMultidegreeBound[d])\
+          + " "*(31-len(str(currentMultidegreeBound[d])))\
+          + "".join([str(i) + " "*(3-len(str(i))) for i in dimension])\
+          + "\n"
 
     sys.stdout.write(currentDisplay)
     sys.stdout.flush()
