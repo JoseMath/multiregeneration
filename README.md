@@ -21,6 +21,13 @@ Example
 
 For a more complete description on how to use this software, see the tutorial [here](https://github.com/colinwcrowley/multiregeneration-tutorial).
 
+Say that we are given the following two polynomials in the variables
+$x,y$. $$\begin{aligned}
+    f_1 &= (x-1)(y-3)\\
+    f_2 &= (x-2)(y-4)\end{aligned}$$ By inspection, we see that the set
+of solutions consists of two points $\{ (1,4), (2,3)\}$. To solve the
+system above using the multiregeneration software, let's change into the
+folder "getting-started", which contains the following three files.\
 
 Input format
 ------------
