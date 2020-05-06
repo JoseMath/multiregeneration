@@ -1,17 +1,6 @@
 Bertini version of multiregeneration with regeneration graphs
 =============================================================
 
-For how to use this software, see the tutorial [here](https://github.com/colinwcrowley/multiregeneration-tutorial).
-
-To run this script, Bertini and Python2 must be installed.
-
-Example: Run the following commands
-
-    cd Tests/Example-p10a
-    python2 ../../multiregeneration.py
-
-The data of the run will be stored in Tests/Example-p10a/run
-
 Purpose
 -------
 
@@ -26,6 +15,12 @@ Bertini is a general-purpose solver, written in C, that was created by
 Daniel J. Bates, Jonathan D. Hauenstein, Andrew J. Sommese, and Charles W. Wampler
  for research about polynomial continuation. For more information see
 https://bertini.nd.edu/
+
+Example
+-------
+
+For a more complete description on how to use this software, see the tutorial [here](https://github.com/colinwcrowley/multiregeneration-tutorial).
+
 
 Input format
 ------------
