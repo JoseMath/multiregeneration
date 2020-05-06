@@ -4,7 +4,7 @@ abstract: |
   solving polynomial systems and numerical algebraic geometry.
 bibliography:
 - tutorial.bib
-title:  Multiregeneration Tutorial
+title: Multiregeneration Tutorial
 ---
 
 Getting Started
@@ -37,11 +37,11 @@ folder "getting-started", which contains the following three files.\
 The first two files (those with the prefix "bertiniInput") are written
 in the C-like syntax used by the Bertini software. In the
 "bertiniInput\_variables\" file, the unknowns of our system of
-polynomials are described as variable groups with one per line. In the
-"bertiniInput\_equations\" file, our system of polynomials is described
-by a line beginning with \"function\" to set the polynomials whose
-common roots we aim to describe followed by one equation per line to
-define the polynomials in an expression of the unknowns.
+polynomials are described as variable groups with one per line. In
+the"bertiniInput\_equations\" file, our system of polynomials is
+described by a line beginning with \"function\" to set the polynomials
+whose common roots we aim to describe followed by one equation per line
+to define the polynomials in an expression of the unknowns.
 
 The last file, "inputFile.py", contains the additional data that this
 program needs, namely degree information. The variable "degrees" must be
@@ -60,7 +60,7 @@ Bertini user manual for more details.
 
 Bertini uses "I\" to denote $\sqrt{-1}$. The use of this symbol as a
 variable is not allowed. To specify the value of a constant, say $c$ is
-$2.2$, put in a single line in the "bertiniInput\_equations\" file "c =
+$2.2$, put in a single line in the"bertiniInput\_equations\" file \"c =
 2.2\".
 
 Solving
@@ -86,7 +86,7 @@ depth $n$ the first $n+1$ equations have been solved, so for this
 example we look at depth 1. Later we will say more about why this is,
 but for the moment, know that the solutions are always in the folder
 corresponding to the last depth. Returning to our example, there are two
-files that begin with "solution\_tracking\_\":
+files that begin with \"solution\_tracking\_\":
 
     solution_tracking_depth_1_gens_1_1_dim_0_varGroup_0_regenLinear_1
     _pointId_326664877375_788310760051
@@ -143,29 +143,26 @@ is a consequence of the Multi-homogeneous Bézout Theorem, which we state
 below.
 
 Say that for each $1 \leq i \leq k$ we have a group of variables
-$\mathbf{x}_i = (x_{i,1}, \ldots, x_{i,n_i})$, for a total of $n := n_1 
-+ \ldots + n_k$ variables. Let $f(\mathbf{x}_1, \ldots, 
-\mathbf{x}_k)$ denote a polynomial in all $n$ variables. We define the
-*multidegree* of $f$ to be the integer vector $\text{Deg}(f) = 
-(\text{Deg}_1(f), \ldots, \text{Deg}_k(f))$ where $\text{Deg}_i(f)$ is
-the degree of $f$ treating all variables except for $\mathbf{x}_i$ as
-constants.
+$\mathbf{x}_i = (x_{i,1}, \ldots, x_{i,n_i})$, for a total of
+$n := n_1 + \ldots + n_k$ variables. Let
+$f(\mathbf{x}_1, \ldots, \mathbf{x}_k)$ denote a polynomial in all $n$
+variables. We define the *multidegree* of $f$ to be the integer vector
+$\text{Deg}(f) = (\text{Deg}_1(f), \ldots, \text{Deg}_k(f))$ where
+$\text{Deg}_i(f)$ is the degree of $f$ treating all variables except for
+$\mathbf{x}_i$ as constants.
 
 Let $f_1, \ldots, f_N$ be polynomials with complex coefficients in the
-variables $\mathbf{x}_1, 
-\ldots, \mathbf{x}_n$. Consider the formal expression $\prod_{s = 1}^N 
-\sum_{i = 1}^{k} \text{Deg}_i(f_s) \alpha_i$ in indeterminants
-$\alpha_1, 
-\ldots, \alpha_k$, and let $B$ denote the coefficient of the monomial
-$\alpha_1^{n_1}\ldots \alpha_k^{n_k}$. If
+variables $\mathbf{x}_1, \ldots, \mathbf{x}_n$. Consider the formal
+expression $\prod_{s = 1}^N \sum_{i = 1}^{k} \text{Deg}_i(f_s) \alpha_i$
+in indeterminants $\alpha_1, \ldots, \alpha_k$, and let $B$ denote the
+coefficient of the monomial $\alpha_1^{n_1}\ldots \alpha_k^{n_k}$. If
 $\mathcal{V}(f_1, \ldots, f_N)$ is finite, than its size is at most $B$.
 
 The number $B$ is called the *multi-homogeneous Bézout number*.
 
-Returning to our example, let us define variable groups $\mathbf{x}_1 = 
-(x), \mathbf{x}_2 = (y)$. Then $\text{Deg}(f_1) = (1,1)$ and
-$\text{Deg}(f_2) = 
-(1,1)$. From the expression
+Returning to our example, let us define variable groups
+$\mathbf{x}_1 = (x), \mathbf{x}_2 = (y)$. Then $\text{Deg}(f_1) = (1,1)$
+and $\text{Deg}(f_2) = (1,1)$. From the expression
 $$(\alpha_1 + \alpha_2)(\alpha_1 + \alpha_2) = \alpha_1^2 + 
    2\alpha_1\alpha_2 + \alpha_2^2$$ we see that $B = 2$. So if
 $\mathcal{V}(f_1, f_2)$ is finite, its size is at most two. By grouping
@@ -319,19 +316,18 @@ some language from numerical algebraic geometry [@BertiniBook; @SWBook].
 
 By a *hyperplane in $\mathbb{C}^n$*, we mean a variety of the form
 $\mathcal{V}(a_0 + a_1x_1 + \ldots + a_nx_n)$ where one of
-$a_1, \ldots, 
-a_n$ is not zero. By a *hyperplane in $\mathbb{P}^n$* we mean a variety
-of the form $\mathcal{V}(a_0x_0 + a_1x_1 
-+ \ldots + a_nx_n)$ where one of $a_0, \ldots, a_n$ is not zero.
-Intuitively, a *general hyperplane* is a hyperplane where the parameters
-$a_i$ are chosen at random, and satisfy no special relations. The
-program chooses "generic hyperplanes" by picking coefficients the
-coefficients $a_i$ to be uniform random complex numbers with real and
-imaginary parts in $(-1, 1)$. If coefficients are chosen randomly in
-this way, then it is a fact that anything true of a "generic hyperplane"
-will be true of a random hyperplane with probability one. For those
-familiar with projective geometry who would like a more rigourous
-definition of generic, see [@SWBook].
+$a_1, \ldots, a_n$ is not zero. By a *hyperplane in $\mathbb{P}^n$* we
+mean a variety of the form
+$\mathcal{V}(a_0x_0 + a_1x_1 + \ldots + a_nx_n)$ where one of
+$a_0, \ldots, a_n$ is not zero. Intuitively, a *general hyperplane* is a
+hyperplane where the parameters $a_i$ are chosen at random, and satisfy
+no special relations. The program chooses "generic hyperplanes" by
+picking coefficients the coefficients $a_i$ to be uniform random complex
+numbers with real and imaginary parts in $(-1, 1)$. If coefficients are
+chosen randomly in this way, then it is a fact that anything true of a
+"generic hyperplane" will be true of a random hyperplane with
+probability one. For those familiar with projective geometry who would
+like a more rigourous definition of generic, see [@SWBook].
 
 The following fact is often proved with the use of more powerful
 theorems such as Bertini's theorem and Bezout's theorem, but we want to
