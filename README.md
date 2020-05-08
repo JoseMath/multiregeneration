@@ -6,7 +6,7 @@ This script implements the algorithm described in the paper
 solving](https://arxiv.org/abs/1912.04394), which finds all smooth and 
 isolated complex solutions to a square system of polynomial equations. 
 
-A tutorial on how to use this software can be found here [here](https://github.com/colinwcrowley/multiregeneration-tutorial).
+A tutorial on how to use this software can be found [here](https://github.com/colinwcrowley/multiregeneration-tutorial).
 
 Our implementaion has two main purposes: 
 
