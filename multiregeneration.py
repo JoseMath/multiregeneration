@@ -59,15 +59,13 @@ explorationOrder = "breadthFirst" #TODO: I thought we agreed the default should 
 loadDimensionLinearsAndStartSolution = False
 loadDegreeLinears = False
 
-dimGroupAction = None
-def dimGroupAction(bfePrime):
+pruneByDimension = None #  define a function that returns true to prune the point if it has the given dimension.
+def pruneByDimension(bfePrime):
     return(False)
 
-pointGroupAction = None
-def pointGroupAction(bfePrime,i,PPi):
+pruneByPoint = None  #  define a function that returns true if a point from an edge satisfies a property..
+def pruneByPoint(bfePrime,i,PPi):
     return([PPi])
-
-symmetric = False
 
 pool = None
 jobsInPool = Value('i', 0)
@@ -120,10 +118,9 @@ def main():
 
     global loadDimensionLinearsAndStartSolution
     global loadDegreeLinears
-    global dimGroupAction
-    global pointGroupAction
+    global pruneByDimension
+    global pruneByPoint
 
-    global symmetric
     setVariablesToGlobal = """
 global variables
 global depth
@@ -145,11 +142,10 @@ global maxProcesses
 global realDimensionLinears
 global targetDimensions
 global explorationOrder
-global symmetric
 global loadDimensionLinearsAndStartSolution
 global loadDegreeLinears
-global dimGroupAction
-global pointGroupAction
+global pruneByDimension
+global pruneByPoint
 """
     try:
         with open("bertiniInput_variables", "r") as f:
@@ -405,10 +401,10 @@ def outlineRegenerate(depth,G,B,bfe,P):
                         b2 = sum(bfePrime) - sum(dim) <= len(fNames)-depth
                         canReach.append(b1 and b2)
                     prune = not any(canReach)
-                # dimGroupAction returns False as the default.
+                # pruneByDimension returns False as the default.
                 # Redfine this function in inputFile.py as you like.
                 if not prune:
-                    prune = dimGroupAction(bfePrime)
+                    prune = pruneByDimension(bfePrime)
                 if not prune:
                     for j in range(M[i]):
                         if verbose > 1:
@@ -456,7 +452,7 @@ def outlineRegenerate(depth,G,B,bfe,P):
                                 PPi.append(ppGroup)
                             #print("PPi")
                             #print(PPi)
-                            LP = pointGroupAction(bfePrime,i2,PPi)
+                            LP = pruneByPoint(bfePrime,i2,PPi)
                             for PPi in LP:
                                 #print("ppi2")
                                 #print(PPi)
@@ -806,24 +802,6 @@ def getGenericLinearInVariableGroup(variableGroup):
         str(randomNumberGenerator())))
     return "+".join(terms)
 
-# used for the symmetric case, where the coefficients need to be the same
-# accross variable groups. Takes a list of coefficients as input.
-def getSymGenericLinearInVariableGroup(variableGroup, coefficients):
-    terms = []
-    seed = 0
-    if variableGroup in projectiveVariableGroups and len(coefficients) < 2*len(variables[variableGroup]):
-        print("Error: not enough coefficients given")
-        sys.exit(0)
-    elif variableGroup not in projectiveVariableGroups and len(coefficients) < 2*len(variables[variableGroup])+2:
-        print("Error: not enough coefficients given")
-        sys.exit(0)
-    for var in variables[variableGroup]:
-        terms.append("(%s + I*%s)*%s"%(coefficients[seed], coefficients[seed+1], var))
-        seed += 2
-    if not variableGroup in projectiveVariableGroups:
-      terms.append("(%s + I*%s)"%(coefficients[seed], coefficients[seed+1]))
-      seed+=2
-    return "+".join(terms)
 
 # used to get generic linears (B)
 def getLinearsThroughPoint(variables):
@@ -905,56 +883,6 @@ def getRealValuedLinearsThroughPoint(variables):
             ell[i].append(linearString)
     return (ell, startSolution)
 
-
-
-def getLinearsThroughSymmetricPoint(variables):
-    spoint = [[]]
-    for j in range(len(variables[0])):
-        spoint[0]+=[[str(randomNumberGenerator()),str(randomNumberGenerator())]]
-    for i in range(1, len(variables)):
-        spoint += [[]]
-        for j in range(len(variables[i])):
-            spoint[i]+=[[spoint[0][j][0],spoint[0][j][1]]]
-    startSolution = []
-    for i in range(len(spoint)):
-        for j in range(len(spoint[i])):
-            startSolution+=[spoint[i][j][0]+" "+spoint[i][j][1]]
-    ell = []
-    for i in range(len(variables)):
-        ell.append([])
-        isAffGroup=1
-        if i in projectiveVariableGroups:
-            isAffGroup = 0
-        terms = [None for x in range(len(variables[i])+isAffGroup-1)]
-        for j in range(len(variables[i])+isAffGroup-1):
-            linearString=""
-            coefficients = []
-            coefficients.append([str(randomNumberGenerator()), str(randomNumberGenerator())])
-            for x in range(1, len(variables[i])+isAffGroup-1):
-                coefficients.append([coefficients[0][0], coefficients[0][1]])
-
-            for x in range(len(variables[i])+isAffGroup-1):
-                if isAffGroup:
-                    terms[x]="(%s+I*%s)*(%s-(%s+I*%s))"%(
-                        coefficients[x][0],
-                        coefficients[x][1],
-                        str(variables[i][x]),
-                        spoint[i][x][0],
-                        spoint[i][x][1],
-                        )
-                else:
-                    terms[x]="(%s+I*%s)*((%s+I*%s)*%s-(%s+I*%s)*%s)"%(
-                        coefficients[x][0],
-                        coefficients[x][1],
-                        str(spoint[i][-1][0]), #real  part of last coordinate of spoint
-                        str(spoint[i][-1][1]),  # imaginary part of last coordinate of spoint
-                        str(variables[i][x]), # a variable in group i
-                        str(spoint[i][x][0]),
-                        str(spoint[i][x][1]),
-                        str(variables[i][-1])) # last variable in group i
-            linearString = "+".join(terms)
-            ell[i].append(linearString)
-    return (ell, startSolution)
 
 def nonDecreasing(l):
     return all(l[i] <= l[i+1] for i in range(len(l)-1))
