@@ -1,3 +1,4 @@
+# TODO: Describe why each of these is imported.
 import traceback
 import time
 from collections import Counter
@@ -17,8 +18,10 @@ from Queue import PriorityQueue
 ### Configuration ###
 # Optional inputs # This can be specified in the inputFile
 projectiveVariableGroups = []  # This can be specified in the inputFile # We don't need this nay more right?
-algebraicTorusVariableGroups = []
-nonzeroCoordinates = []
+algebraicTorusVariableGroups = []  # Example: [0,2] sets the implementation to disregard solutions
+# with a zero as a coordinate in the 0th or 2nd variable group.
+nonzeroCoordinates = []  # Example: [0,3] sets the implementation to disregard
+#solutions with a zero in the 0th or 3rd coordinate.
 #randomNumberGenerator = random.random
 def randomNumberGenerator():
     rho = random.uniform(-1,1)
@@ -30,6 +33,7 @@ verbose = 0  # Integer that is larger if we want to print more
 # Level 1 messages we would usually like printed
 # Level 2 for debugging
 
+# TODO: Document the next 10 lines.
 variables = None
 fNames = None
 degrees = None
@@ -42,17 +46,15 @@ workingDirectory = "run"
 logTolerance = -10
 bertiniVariableGroupString = None
 
-useBertiniInputStyle = False
 bertiniTrackingOptionsText = ""
-bertiniVariablesAndConstants = None
-bertiniFunctionNames = None
+bertiniVariables = None
 bertiniEquations = None
 revisedEquationsText = None
 variableGroupText = None
 realDimensionLinears = False
 targetDimensions = None
 
-explorationOrder = "breadthFirst"
+explorationOrder = "breadthFirst" #TODO: I thought we agreed the default should be depthFirst?
 
 loadDimensionLinearsAndStartSolution = False
 loadDegreeLinears = False
@@ -104,9 +106,7 @@ def main():
     global bertiniVariableGroupString
 
 
-    global useBertiniInputStyle
-    global bertiniVariablesAndConstants
-    global bertiniFunctionNames
+    global bertiniVariables
     global revisedEquationsText
     global variableGroupText
     global bertiniTrackingOptionsText
@@ -141,7 +141,6 @@ global verbose
 global projectiveVariableGroups
 global algebraicTorusVariableGroups
 global nonzeroCoordinates
-global useBertiniInputStyle
 global maxProcesses
 global realDimensionLinears
 global targetDimensions
@@ -154,7 +153,7 @@ global pointGroupAction
 """
     try:
         with open("bertiniInput_variables", "r") as f:
-            bertiniVariablesAndConstants = f.read()
+            bertiniVariables = f.read()
         if os.path.exists("bertiniInput_trackingOptions"):
             with open("bertiniInput_trackingOptions", "r") as f:
                 bertiniTrackingOptionsText = f.read()
@@ -170,10 +169,10 @@ global pointGroupAction
 #            print("\t" + "bertiniInput_G")
         print("\t" + "bertiniInput_equations")
         # sys.exit(1)
-# Set up variables
+# Set up variables #TODO: Fix the bug where a blank line causes an error.
     variableGroupText = ""
     variables = []
-    lines = bertiniVariablesAndConstants.splitlines()
+    lines = bertiniVariables.splitlines()
     for i in range(len(lines)):
         variableGroupType = lines[i].split(" ")[0]
         if not (variableGroupType == "variable_group" or variableGroupType == "hom_variable_group"):
@@ -600,6 +599,8 @@ END;
 
 bertiniParameterHomotopyTwoTemplate='''
 CONFIG
+TRACKTOLBEFOREEG : 1e-8;
+TRACKTOLDURINGEG : 1e-11;
 %s
 ParameterHomotopy : 2;
 END;
