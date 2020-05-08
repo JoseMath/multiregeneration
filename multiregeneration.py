@@ -85,6 +85,7 @@ def decJobsInPool(out):
 def main():
     # We make these variables global so that inputFile.py can set them.
     # After this they are never modified.
+    # TODO: DOcument what each of these mean. 
     global variables
     global depth
     global bfe # bold font e
@@ -783,12 +784,7 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
     os.chdir(cwd)
     return (PPrime, label)
 
-
-
-
-
 #    regenerateSolving(depth, G, B, bfe, startSolution,"smooth")
-
 
 # used to get generic linears (A)
 def getGenericLinearInVariableGroup(variableGroup):
@@ -903,13 +899,6 @@ def directoryNameIsVanishing(depth, P):
 #    print(useFunction)
     dirName = "homotopy_vanishing/depth_%s/pointId_%s"%(depth,hashPoint(P))
     return dirName
-
-#
-# def directoryNameImmediateSolution(depth, P):
-# #    print(useFunction)
-#     dirName = "solution_vanishing_depth_%s_pointId_%s"%(depth,hashPoint(P))
-#     return dirName
-
 
 def directoryNameImmediateSolution(depth, G, bfe, P):
     useFunction = "_".join(map(lambda b: "1" if b else "0", G+[0]))
