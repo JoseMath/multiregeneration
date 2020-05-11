@@ -1,3 +1,6 @@
+#For exiting on errors, and printing the progress graphic
+import sys
+
 #For formatting and printing Bertini exceptions
 import traceback
 
@@ -9,9 +12,6 @@ from collections import Counter
 
 #For deleting directories
 import shutil
-
-#For exiting on errors, and printing the progress graphic
-import sys
 
 #For starting a subprocess which runs bertini
 import subprocess
@@ -128,6 +128,7 @@ def decJobsInPool(out):
         print("new value is jobsInPool = ", jobsInPool.value)
 
 def main():
+
     # We make these variables global so that inputFile.py can set them.
     # After this they are never modified.
     global variables
