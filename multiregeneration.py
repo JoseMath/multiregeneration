@@ -948,9 +948,7 @@ def directoryNameImmediateSolution(depth, G, bfe, P):
 
 # Makes the directory for each process.
 def directoryNameTracking(depth, G, bfe, varGroup, regenLinear, P):
-#    print("This is G: %s" % G)
     useFunction = "_".join(map(lambda b: "1" if b else "0", G+[1]))
-#    print(useFunction)
     dirName = "homotopy_tracking/depth_%d/gens_%s/dim_%s/varGroup_%d/regenLinear_%d/pointId_%s"%(depth,
         useFunction,
         "_".join(map(str, bfe)),
@@ -962,9 +960,7 @@ def directoryNameTracking(depth, G, bfe, varGroup, regenLinear, P):
 
 
 def directoryNameTrackingSolution(depth, G, bfe, varGroup, regenLinear, P, startHash):
-#    print("This is G: %s" % G)
     useFunction = "_".join(map(lambda b: "1" if b else "0", G+[1]))
-#    print(useFunction)
     dirName = "solution_tracking_depth_%d_gens_%s_dim_%s_varGroup_%d_regenLinear_%d_pointId_%s_%s"%(depth,
         useFunction,
         "_".join(map(str, bfe)),
@@ -978,9 +974,7 @@ def directoryNameTrackingSolution(depth, G, bfe, varGroup, regenLinear, P, start
 
 
 def directoryNameTracking(depth, G, bfe, varGroup, regenLinear, P):
-#    print("This is G: %s" % G)
     useFunction = "_".join(map(lambda b: "1" if b else "0", G+[1]))
-#    print(useFunction)
     dirName = "homotopy_tracking/depth_%d/gens_%s/dim_%s/varGroup_%d/regenLinear_%d/pointId_%s"%(depth,
         useFunction,
         "_".join(map(str, bfe)),
