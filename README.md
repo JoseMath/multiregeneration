@@ -24,11 +24,11 @@ Daniel J. Bates, Jonathan D. Hauenstein, Andrew J. Sommese, and Charles W. Wampl
  for research about polynomial continuation. For more information see
 https://bertini.nd.edu/.
 
-Running examples
-----------------
+Running an example
+------------------
 
 Here we include an example of how to run our implementation on the 
-examples and test that are included in this repository.
+examples and tests that are included in this repository.
 
 After cloning this repository, change into the directory 
 `CyclicRoots`. Included in this directory are the following four 
@@ -69,7 +69,7 @@ python2 ../multiregeneration.py
 **Note that our script only works with python version 2, so make sure that 
 you use that and not a different version of python.**
 
-You will see the followint output
+You will see the following output
 ```
 ################### Setup multiregeneration ####################
 
@@ -149,4 +149,13 @@ and the solutions at each regeneration level can be found in
 `run/_completed_smooth_solutions`. Therefore the solutions to the system 
 in this example can be found in `run/_completed_smooth_solutions/depth_4`.
 
-
+Included examples
+-----------------
+Included in this repository are several examples from our paper. The 
+examples of section 5 are in the directories `NashEuilibria` and 
+`DeepLinear`. To run these examples, run the script 
+`multiregeneration.py` as above. For instance 
+```bash
+cd DeepLinear/D_2_2_2_2_TorusOnly_false_Regularize_false
+python2 ../../multiregeneration.py
+```
