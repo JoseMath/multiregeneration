@@ -1,17 +1,35 @@
-# TODO: Describe why each of these is imported.
+#For formatting and printing Bertini exceptions
 import traceback
+
+#For sleeping the process which updates the progress graphic
 import time
+
+#For counting solutions when generating the progress graphic
 from collections import Counter
+
+#For deleting directories
 import shutil
+
+#For exiting on errors, and printing the progress graphic
 import sys
+
+#For starting a subprocess which runs bertini
 import subprocess
+
+#For generating "pointIDs" to append to filenames
 import hashlib
+
+#For basic file manipulation
 import os
+
+#For generating random linear equations
 import random
-import os.path
+
+#For managing a pool of processes which track paths
 import multiprocessing as mp
 from multiprocessing.sharedctypes import Value
-from os import path
+
+#For managing the order in which edges are explored
 from Queue import PriorityQueue
 
 
@@ -165,7 +183,6 @@ global pruneByPoint
         print("\t" + "bertiniInput_trackingOptions")
 #            print("\t" + "bertiniInput_G")
         print("\t" + "bertiniInput_equations")
-        # sys.exit(1)
 # Set up variables #TODO: Fix the bug where a blank line causes an error.
     variableGroupText = ""
     variables = []
@@ -174,7 +191,6 @@ global pruneByPoint
         variableGroupType = lines[i].split(" ")[0]
         if not (variableGroupType == "variable_group" or variableGroupType == "hom_variable_group"):
             print("Exiting because a variable group other that 'variable_group' or 'hom_variable_group' was declared.")
-            # sys.exit(1)
         if variableGroupType == "hom_variable_group":
             projectiveVariableGroups.append(i)
         variableGroupText+=lines[i]+"\n"
@@ -275,7 +291,6 @@ global pruneByPoint
             print("B is set to %d" % B)
     if verbose > 0:
         print("exploring tree in order", explorationOrder)
-        #    return(random.randint(1,1000000)+abs(hash("_".join(P))) % (10 ** 8))
 
     if verbose > 0:
         print("\n################### Starting multiregeneration ####################\n")
@@ -533,7 +548,6 @@ def outlineRegenerate(depth,G,B,bfe,P):
 
 def hashPoint(P):
     return(abs(hash("_".join(P))) % (10 ** 12))
-#    return(random.randint(1,1000000)+abs(hash("_".join(P))) % (10 ** 8))
 
 
 def isEvaluateZero(dirVanish,depth,P):
@@ -581,9 +595,7 @@ END;
         # print("..success likely")
     except:
         print("Ope! Error opening file 'function'")
-#    if not solutionsFile:
         print("Bertini error likely: check bertiniInput_...")
-#        sys.exit(1) # the one is for error and 0 is for everyhting is fine.
         isVanishing="error"
     value = solutionsLines[2].split(' ')
     # print("Value of the function at the point: %s" % value)
@@ -702,7 +714,7 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
                 following' error. Make sure you have bertini installed.")
             print("error (branch PQ): %s" %dirTracking)
             label = "error"
-        if label != "error" and path.exists("nonsingular_solutions"):
+        if label != "error" and os.path.exists("nonsingular_solutions"):
             with open('nonsingular_solutions') as f:
             	foundQ = eval(f.readline()) # first line is number of solutions and should be one or zero.
             if foundQ==1:
@@ -739,13 +751,12 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
         inputQP.close()
         try:
             bertiniCommand = "bertini inputQP"
-            process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)  #What is going on here?
-#                process = subprocess.Popen(bertiniCommand, stdout=subprocess.PIPE)  #What is going on here?
+            process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)
             output, errors = process.communicate()
         except:
             print("error (branch QP): %s" %dirTracking)
             label = "error"
-        if label != "error" and path.exists("nonsingular_solutions"):
+        if label != "error" and os.path.exists("nonsingular_solutions"):
             with open("nonsingular_solutions") as f_in:
                 PPrime = (line.rstrip() for line in f_in)
                 PPrime = list(line for line in PPrime if line)
