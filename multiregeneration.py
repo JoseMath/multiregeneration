@@ -51,17 +51,44 @@ verbose = 0  # Integer that is larger if we want to print more
 # Level 1 messages we would usually like printed
 # Level 2 for debugging
 
-# TODO: Document the next 10 lines.
+
+#The following variable will be initialized to the following values:
+
 variables = None
+# A list of "variable groups", where each variable group is a list of 
+# variable names
+
 fNames = None
+# A list of names for the given polynomial functions, to be used by 
+# Bertini
+
 degrees = None
+# A 2D list such that degrees[s][i] is the degree of the s'th function 
+# in the i'th variable group
+
 G = []
+# A list of booleans which determine if the i'th equation is used
+
 l = None
+# A 2D list of random linear equations, where l[i][j] has variables in 
+# group i
+
 r = None
+# A 2D list of random linear equations, where r[i][a] has variables in 
+# group i
+
 B= None
+# An integer, such that only the first B equations are used
+
 startSolution = None
+# A solution to the equations contained in l
+
 workingDirectory = "run"
+# The subdirectory where the data of the computation will be stored
+
 logTolerance = -10
+# Any number less that 10^logTolerance is considered to be zero
+
 bertiniVariableGroupString = None
 
 bertiniTrackingOptionsText = ""
