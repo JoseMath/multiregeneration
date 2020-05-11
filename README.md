@@ -25,6 +25,7 @@ Daniel J. Bates, Jonathan D. Hauenstein, Andrew J. Sommese, and Charles W. Wampl
 https://bertini.nd.edu/.
 
 
+
 <!-- Input format -->
 <!-- ------------ -->
 
