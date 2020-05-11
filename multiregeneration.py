@@ -1,3 +1,4 @@
+# TODO: Describe why each of these is imported.
 import traceback
 import time
 from collections import Counter
@@ -17,8 +18,10 @@ from Queue import PriorityQueue
 ### Configuration ###
 # Optional inputs # This can be specified in the inputFile
 projectiveVariableGroups = []  # This can be specified in the inputFile # We don't need this nay more right?
-algebraicTorusVariableGroups = []
-nonzeroCoordinates = []
+algebraicTorusVariableGroups = []  # Example: [0,2] sets the implementation to disregard solutions
+# with a zero as a coordinate in the 0th or 2nd variable group.
+nonzeroCoordinates = []  # Example: [0,3] sets the implementation to disregard
+#solutions with a zero in the 0th or 3rd coordinate.
 #randomNumberGenerator = random.random
 def randomNumberGenerator():
     rho = random.uniform(-1,1)
@@ -30,6 +33,7 @@ verbose = 0  # Integer that is larger if we want to print more
 # Level 1 messages we would usually like printed
 # Level 2 for debugging
 
+# TODO: Document the next 10 lines.
 variables = None
 fNames = None
 degrees = None
@@ -42,30 +46,26 @@ workingDirectory = "run"
 logTolerance = -10
 bertiniVariableGroupString = None
 
-useBertiniInputStyle = False
 bertiniTrackingOptionsText = ""
-bertiniVariablesAndConstants = None
-bertiniFunctionNames = None
+bertiniVariables = None
 bertiniEquations = None
 revisedEquationsText = None
 variableGroupText = None
 realDimensionLinears = False
 targetDimensions = None
 
-explorationOrder = "breadthFirst"
+explorationOrder = "breadthFirst" #TODO: I thought we agreed the default should be depthFirst?
 
 loadDimensionLinearsAndStartSolution = False
 loadDegreeLinears = False
 
-dimGroupAction = None
-def dimGroupAction(bfePrime):
+pruneByDimension = None #  define a function that returns true to prune the point if it has the given dimension.
+def pruneByDimension(bfePrime):
     return(False)
 
-pointGroupAction = None
-def pointGroupAction(bfePrime,i,PPi):
+pruneByPoint = None  #  define a function that returns true if a point from an edge satisfies a property..
+def pruneByPoint(bfePrime,i,PPi):
     return([PPi])
-
-symmetric = False
 
 pool = None
 jobsInPool = Value('i', 0)
@@ -85,6 +85,7 @@ def decJobsInPool(out):
 def main():
     # We make these variables global so that inputFile.py can set them.
     # After this they are never modified.
+    # TODO: DOcument what each of these mean. 
     global variables
     global depth
     global bfe # bold font e
@@ -104,9 +105,7 @@ def main():
     global bertiniVariableGroupString
 
 
-    global useBertiniInputStyle
-    global bertiniVariablesAndConstants
-    global bertiniFunctionNames
+    global bertiniVariables
     global revisedEquationsText
     global variableGroupText
     global bertiniTrackingOptionsText
@@ -120,10 +119,9 @@ def main():
 
     global loadDimensionLinearsAndStartSolution
     global loadDegreeLinears
-    global dimGroupAction
-    global pointGroupAction
+    global pruneByDimension
+    global pruneByPoint
 
-    global symmetric
     setVariablesToGlobal = """
 global variables
 global depth
@@ -141,20 +139,18 @@ global verbose
 global projectiveVariableGroups
 global algebraicTorusVariableGroups
 global nonzeroCoordinates
-global useBertiniInputStyle
 global maxProcesses
 global realDimensionLinears
 global targetDimensions
 global explorationOrder
-global symmetric
 global loadDimensionLinearsAndStartSolution
 global loadDegreeLinears
-global dimGroupAction
-global pointGroupAction
+global pruneByDimension
+global pruneByPoint
 """
     try:
         with open("bertiniInput_variables", "r") as f:
-            bertiniVariablesAndConstants = f.read()
+            bertiniVariables = f.read()
         if os.path.exists("bertiniInput_trackingOptions"):
             with open("bertiniInput_trackingOptions", "r") as f:
                 bertiniTrackingOptionsText = f.read()
@@ -170,10 +166,10 @@ global pointGroupAction
 #            print("\t" + "bertiniInput_G")
         print("\t" + "bertiniInput_equations")
         # sys.exit(1)
-# Set up variables
+# Set up variables #TODO: Fix the bug where a blank line causes an error.
     variableGroupText = ""
     variables = []
-    lines = bertiniVariablesAndConstants.splitlines()
+    lines = bertiniVariables.splitlines()
     for i in range(len(lines)):
         variableGroupType = lines[i].split(" ")[0]
         if not (variableGroupType == "variable_group" or variableGroupType == "hom_variable_group"):
@@ -406,10 +402,10 @@ def outlineRegenerate(depth,G,B,bfe,P):
                         b2 = sum(bfePrime) - sum(dim) <= len(fNames)-depth
                         canReach.append(b1 and b2)
                     prune = not any(canReach)
-                # dimGroupAction returns False as the default.
+                # pruneByDimension returns False as the default.
                 # Redfine this function in inputFile.py as you like.
                 if not prune:
-                    prune = dimGroupAction(bfePrime)
+                    prune = pruneByDimension(bfePrime)
                 if not prune:
                     for j in range(M[i]):
                         if verbose > 1:
@@ -457,7 +453,7 @@ def outlineRegenerate(depth,G,B,bfe,P):
                                 PPi.append(ppGroup)
                             #print("PPi")
                             #print(PPi)
-                            LP = pointGroupAction(bfePrime,i2,PPi)
+                            LP = pruneByPoint(bfePrime,i2,PPi)
                             for PPi in LP:
                                 #print("ppi2")
                                 #print(PPi)
@@ -600,6 +596,8 @@ END;
 
 bertiniParameterHomotopyTwoTemplate='''
 CONFIG
+TRACKTOLBEFOREEG : 1e-8;
+TRACKTOLDURINGEG : 1e-11;
 %s
 ParameterHomotopy : 2;
 END;
@@ -786,12 +784,7 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
     os.chdir(cwd)
     return (PPrime, label)
 
-
-
-
-
 #    regenerateSolving(depth, G, B, bfe, startSolution,"smooth")
-
 
 # used to get generic linears (A)
 def getGenericLinearInVariableGroup(variableGroup):
@@ -805,24 +798,6 @@ def getGenericLinearInVariableGroup(variableGroup):
         str(randomNumberGenerator())))
     return "+".join(terms)
 
-# used for the symmetric case, where the coefficients need to be the same
-# accross variable groups. Takes a list of coefficients as input.
-def getSymGenericLinearInVariableGroup(variableGroup, coefficients):
-    terms = []
-    seed = 0
-    if variableGroup in projectiveVariableGroups and len(coefficients) < 2*len(variables[variableGroup]):
-        print("Error: not enough coefficients given")
-        sys.exit(0)
-    elif variableGroup not in projectiveVariableGroups and len(coefficients) < 2*len(variables[variableGroup])+2:
-        print("Error: not enough coefficients given")
-        sys.exit(0)
-    for var in variables[variableGroup]:
-        terms.append("(%s + I*%s)*%s"%(coefficients[seed], coefficients[seed+1], var))
-        seed += 2
-    if not variableGroup in projectiveVariableGroups:
-      terms.append("(%s + I*%s)"%(coefficients[seed], coefficients[seed+1]))
-      seed+=2
-    return "+".join(terms)
 
 # used to get generic linears (B)
 def getLinearsThroughPoint(variables):
@@ -905,56 +880,6 @@ def getRealValuedLinearsThroughPoint(variables):
     return (ell, startSolution)
 
 
-
-def getLinearsThroughSymmetricPoint(variables):
-    spoint = [[]]
-    for j in range(len(variables[0])):
-        spoint[0]+=[[str(randomNumberGenerator()),str(randomNumberGenerator())]]
-    for i in range(1, len(variables)):
-        spoint += [[]]
-        for j in range(len(variables[i])):
-            spoint[i]+=[[spoint[0][j][0],spoint[0][j][1]]]
-    startSolution = []
-    for i in range(len(spoint)):
-        for j in range(len(spoint[i])):
-            startSolution+=[spoint[i][j][0]+" "+spoint[i][j][1]]
-    ell = []
-    for i in range(len(variables)):
-        ell.append([])
-        isAffGroup=1
-        if i in projectiveVariableGroups:
-            isAffGroup = 0
-        terms = [None for x in range(len(variables[i])+isAffGroup-1)]
-        for j in range(len(variables[i])+isAffGroup-1):
-            linearString=""
-            coefficients = []
-            coefficients.append([str(randomNumberGenerator()), str(randomNumberGenerator())])
-            for x in range(1, len(variables[i])+isAffGroup-1):
-                coefficients.append([coefficients[0][0], coefficients[0][1]])
-
-            for x in range(len(variables[i])+isAffGroup-1):
-                if isAffGroup:
-                    terms[x]="(%s+I*%s)*(%s-(%s+I*%s))"%(
-                        coefficients[x][0],
-                        coefficients[x][1],
-                        str(variables[i][x]),
-                        spoint[i][x][0],
-                        spoint[i][x][1],
-                        )
-                else:
-                    terms[x]="(%s+I*%s)*((%s+I*%s)*%s-(%s+I*%s)*%s)"%(
-                        coefficients[x][0],
-                        coefficients[x][1],
-                        str(spoint[i][-1][0]), #real  part of last coordinate of spoint
-                        str(spoint[i][-1][1]),  # imaginary part of last coordinate of spoint
-                        str(variables[i][x]), # a variable in group i
-                        str(spoint[i][x][0]),
-                        str(spoint[i][x][1]),
-                        str(variables[i][-1])) # last variable in group i
-            linearString = "+".join(terms)
-            ell[i].append(linearString)
-    return (ell, startSolution)
-
 def nonDecreasing(l):
     return all(l[i] <= l[i+1] for i in range(len(l)-1))
 def firstIsMin(l):
@@ -974,13 +899,6 @@ def directoryNameIsVanishing(depth, P):
 #    print(useFunction)
     dirName = "homotopy_vanishing/depth_%s/pointId_%s"%(depth,hashPoint(P))
     return dirName
-
-#
-# def directoryNameImmediateSolution(depth, P):
-# #    print(useFunction)
-#     dirName = "solution_vanishing_depth_%s_pointId_%s"%(depth,hashPoint(P))
-#     return dirName
-
 
 def directoryNameImmediateSolution(depth, G, bfe, P):
     useFunction = "_".join(map(lambda b: "1" if b else "0", G+[0]))
