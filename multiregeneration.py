@@ -99,7 +99,7 @@ variableGroupText = None
 realDimensionLinears = False
 targetDimensions = None
 
-explorationOrder = "breadthFirst" #TODO: I thought we agreed the default should be depthFirst?
+explorationOrder = "depthFirst"
 
 loadDimensionLinearsAndStartSolution = False
 loadDegreeLinears = False
@@ -130,7 +130,6 @@ def decJobsInPool(out):
 def main():
     # We make these variables global so that inputFile.py can set them.
     # After this they are never modified.
-    # TODO: DOcument what each of these mean. 
     global variables
     global depth
     global bfe # bold font e
@@ -195,22 +194,20 @@ global pruneByPoint
 """
     try:
         with open("bertiniInput_variables", "r") as f:
-            bertiniVariables = f.read()
+            bertiniVariables = f.read().strip()
         if os.path.exists("bertiniInput_trackingOptions"):
             with open("bertiniInput_trackingOptions", "r") as f:
-                bertiniTrackingOptionsText = f.read()
+                bertiniTrackingOptionsText = f.read().strip()
         else:
             bertiniInput_trackingOptions = ""
         with open("bertiniInput_equations", "r") as f:
-            bertiniEquations = f.read()
+            bertiniEquations = f.read().strip()
             # print("found bertiniInput_equations")
     except:
         print("Exiting due to incomplete input. Please include the following files:")
         print("\t" + "bertiniInput_variables")
         print("\t" + "bertiniInput_trackingOptions")
-#            print("\t" + "bertiniInput_G")
         print("\t" + "bertiniInput_equations")
-# Set up variables #TODO: Fix the bug where a blank line causes an error.
     variableGroupText = ""
     variables = []
     lines = bertiniVariables.splitlines()
