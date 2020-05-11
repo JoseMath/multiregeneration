@@ -66,8 +66,8 @@ directory `CyclicRoots`.
 python2 ../multiregeneration.py
 ```
 
-Note that our script only works with python version 2, so make sure that 
-use use that and not a different version of python.
+**Note that our script only works with python version 2, so make sure that 
+you use that and not a different version of python.**
 
 You will see the followint output
 ```
