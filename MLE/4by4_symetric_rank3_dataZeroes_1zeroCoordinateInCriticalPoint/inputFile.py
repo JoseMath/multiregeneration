@@ -3,3 +3,4 @@ logTolerance = -10
 maxProcesses = 1
 targetDimensions = [[0,0,0]]
 algebraicTorusVariableGroups = [0,1,2]
+verbose = 1
