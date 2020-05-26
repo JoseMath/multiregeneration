@@ -35,12 +35,11 @@ from Queue import PriorityQueue
 
 ### Configuration ###
 # Optional inputs # This can be specified in the inputFile
-projectiveVariableGroups = []  # This can be specified in the inputFile # We don't need this nay more right?
 algebraicTorusVariableGroups = []  # Example: [0,2] sets the implementation to disregard solutions
 # with a zero as a coordinate in the 0th or 2nd variable group.
 nonzeroCoordinates = []  # Example: [0,3] sets the implementation to disregard
 #solutions with a zero in the 0th or 3rd coordinate.
-#randomNumberGenerator = random.random
+#randomNumberGenerator = random.random #JIR: Why isn't this deleted?
 def randomNumberGenerator():
     rho = random.uniform(-1,1)
     return rho
@@ -67,7 +66,7 @@ degrees = None
 # in the i'th variable group
 
 G = []
-# A list of booleans which determine if the i'th equation is used
+# A list of booleans which determine if the i'th equation is used # JIR: sentence incomplete
 
 l = None
 # A 2D list of random linear equations, where l[i][j] has variables in 
@@ -78,7 +77,7 @@ r = None
 # group i
 
 B= None
-# An integer, such that only the first B equations are used
+# An integer, such that only the first B equations are used #JIR: Sentence incomplete
 
 startSolution = None
 # A solution to the equations contained in l
@@ -104,11 +103,11 @@ explorationOrder = "depthFirst"
 loadDimensionLinearsAndStartSolution = False
 loadDegreeLinears = False
 
-pruneByDimension = None #  define a function that returns true to prune the point if it has the given dimension.
+pruneByDimension = None #  define a function that returns true to prune the point if it has the given dimension. #TODO: Example of this
 def pruneByDimension(bfePrime):
     return(False)
 
-pruneByPoint = None  #  define a function that returns true if a point from an edge satisfies a property..
+pruneByPoint = None  #  define a function that returns true if a point from an edge satisfies a property.. #TODO: Example of this
 def pruneByPoint(bfePrime,i,PPi):
     return([PPi])
 
@@ -145,7 +144,9 @@ def main():
     global logTolerance
     global verbose
     global projectiveVariableGroups
+    #TODO: example of this
     global algebraicTorusVariableGroups
+    #TODO: example of this
     global nonzeroCoordinates
     global bertiniVariableGroupString
 
