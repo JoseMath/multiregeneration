@@ -35,17 +35,30 @@ from Queue import PriorityQueue
 
 ### Configuration ###
 # Optional inputs # This can be specified in the inputFile
-algebraicTorusVariableGroups = []  # Example: [0,2] sets the implementation to disregard solutions
+
+# Example: [0,2] sets the implementation to disregard solutions
 # with a zero as a coordinate in the 0th or 2nd variable group.
-nonzeroCoordinates = []  # Example: [0,3] sets the implementation to disregard
+algebraicTorusVariableGroups = []
+
+# Example: [0,3] sets the implementation to disregard
 #solutions with a zero in the 0th or 3rd coordinate.
+nonzeroCoordinates = []
+
 #randomNumberGenerator = random.random #JIR: Why isn't this deleted?
+
+# Comment misisng.
 def randomNumberGenerator():
     rho = random.uniform(-1,1)
     return rho
-depth = 0  # Begin the computation at a different depth index
+
+# Begin the computation at a different depth index
+depth = 0
+
+# Comment missing
 bfe = []
-verbose = 0  # Integer that is larger if we want to print more
+
+# Integer that is larger if we want to print more
+verbose = 0
 # Level 0 for nothing except errors
 # Level 1 messages we would usually like printed
 # Level 2 for debugging
@@ -53,68 +66,90 @@ verbose = 0  # Integer that is larger if we want to print more
 
 #The following variable will be initialized to the following values:
 
-variables = None
-# A list of "variable groups", where each variable group is a list of 
+# A list of "variable groups", where each variable group is a list of
 # variable names
+variables = None
 
+# A list of names for the given polynomial functions, to be used by
+# Bertini. E.g. ["f1","f2"]
 fNames = None
-# A list of names for the given polynomial functions, to be used by 
-# Bertini
 
-degrees = None
-# A 2D list such that degrees[s][i] is the degree of the s'th function 
+# A 2D list such that degrees[s][i] is the degree of the s'th function
 # in the i'th variable group
+degrees = None
 
-G = []
 # A list of booleans which determine if the i'th equation is used # JIR: sentence incomplete
+G = []
 
+# A 2D list of random linear equations, where l[i][j] has variables in
+# group i
 l = None
-# A 2D list of random linear equations, where l[i][j] has variables in 
-# group i
 
+# A 2D list of random linear equations, where r[i][a] has variables in
+# group i
 r = None
-# A 2D list of random linear equations, where r[i][a] has variables in 
-# group i
 
-B= None
 # An integer, such that only the first B equations are used #JIR: Sentence incomplete
+B= None
 
+# A solution to the equations contained in l # JIR: But l is None
 startSolution = None
-# A solution to the equations contained in l
 
-workingDirectory = "run"
 # The subdirectory where the data of the computation will be stored
+workingDirectory = "run"
 
+# Any number with absolute value less than 10^logTolerance is considered to be zero
 logTolerance = -10
-# Any number less that 10^logTolerance is considered to be zero
 
+# Comment missing
 bertiniVariableGroupString = None
 
+# Comment missing
 bertiniTrackingOptionsText = ""
+
+# Comment missing
 bertiniVariables = None
+
+# Comment missing
 bertiniEquations = None
+
+# Comment missing
 revisedEquationsText = None
+
+# Comment missing
 variableGroupText = None
+
+# Comment missing
 targetDimensions = None
 
+# Comment missing
 explorationOrder = "depthFirst"
 
+# Comment missing
 loadDimensionLinearsAndStartSolution = False
+
+# Comment missing
 loadDegreeLinears = False
 
-pruneByDimension = None #  define a function that returns true to prune the point if it has the given dimension. #TODO: Example of this
+#  define a function that returns true to prune the point if it has the given dimension.
+#TODO: Example of this
+pruneByDimension = None
 def pruneByDimension(bfePrime):
     return(False)
 
-pruneByPoint = None  #  define a function that returns true if a point from an edge satisfies a property.. #TODO: Example of this
+#  define a function that returns true if a point from an edge satisfies a property..
+# TODO: Example of this
+pruneByPoint = None
 def pruneByPoint(bfePrime,i,PPi):
     return([PPi])
 
+# Comment missing.
 pool = None
 jobsInPool = Value('i', 0)
 maxProcesses = mp.cpu_count()
 queue = None
 
+# Comment missing.
 def decJobsInPool(out):
   global jobsInPool
   with jobsInPool.get_lock():
@@ -125,6 +160,7 @@ def decJobsInPool(out):
       if verbose > 1:
         print("new value is jobsInPool = ", jobsInPool.value)
 
+# Comment missing.
 def main():
 
     # We make these variables global so that inputFile.py can set them.
@@ -166,6 +202,7 @@ def main():
     global pruneByDimension
     global pruneByPoint
 
+    # Comment missing.
     setVariablesToGlobal = """
 global variables
 global depth
@@ -191,6 +228,7 @@ global loadDegreeLinears
 global pruneByDimension
 global pruneByPoint
 """
+    # Comment missing.
     try:
         with open("bertiniInput_variables", "r") as f:
             bertiniVariables = f.read().strip()
@@ -201,12 +239,13 @@ global pruneByPoint
             bertiniInput_trackingOptions = ""
         with open("bertiniInput_equations", "r") as f:
             bertiniEquations = f.read().strip()
-            # print("found bertiniInput_equations")
+    # Comment missing.
     except:
         print("Exiting due to incomplete input. Please include the following files:")
         print("\t" + "bertiniInput_variables")
         print("\t" + "bertiniInput_trackingOptions")
         print("\t" + "bertiniInput_equations")
+    # Comment missing. Setting variable groups?
     variableGroupText = ""
     variables = []
     lines = bertiniVariables.splitlines()
@@ -218,12 +257,14 @@ global pruneByPoint
             projectiveVariableGroups.append(i)
         variableGroupText+=lines[i]+"\n"
         variables.append(lines[i][lines[i].find(" "):].replace(" ","").replace(";", "").split(","))
+    # Comment missing. Setting ambient dimension?
     bfe=[]
     for i in range(len(variables)):
         isProjectiveGroup = 0
         if i in projectiveVariableGroups:
             isProjectiveGroup = 1
         bfe.append(len(variables[i])-isProjectiveGroup)
+    # Comment missing..
     if verbose > 1:
         print("Ambient space dimension ")
         print(bfe)
@@ -234,6 +275,7 @@ global pruneByPoint
         print("variableGroupText")
         print(variableGroupText)
 # set up function names and revisedEquationsText
+# Revised how?
     revisedEquationsText = ""
     lines = bertiniEquations.splitlines()
     fNames=[]
@@ -249,6 +291,7 @@ global pruneByPoint
         print("revisedEquationsText")
         print(revisedEquationsText)
 
+    # Comment missing.
     exec(setVariablesToGlobal + open("inputFile.py").read())
 
 
@@ -284,6 +327,7 @@ global pruneByPoint
                 print(l[i][j])
     # Determine random linear polynomials r[i][j] degree linears
     r = []
+    # Comment missing.
     if not loadDegreeLinears:
         for i in range(len(variables)):
             r.append([])
@@ -292,6 +336,7 @@ global pruneByPoint
                 maxdeg= max(maxdeg,degrees[s][i])
             for d in range(maxdeg):
                 r[i].append(getGenericLinearInVariableGroup(i))
+    # Comment missing.
     elif loadDegreeLinears:
         for i in range(len(variables)):
             maxdeg= 0
@@ -301,11 +346,13 @@ global pruneByPoint
                 A = (line.rstrip() for line in f)
                 A = list(line for line in A if line)
             r.append(A)
+    # Comment missing.
     if verbose > 0:
         print("\nUsing degree linears")
         for i in range(len(variables)):
             for j in range(len(r[i])):
                 print(r[i][j])
+    # Comment missing.
     if B== None:
         B=len(fNames)
         if verbose > 1:
@@ -401,6 +448,7 @@ def processNode(args): # a wrapper function to catch error.  It's a way to see w
     print(e)
     print(traceback.format_exc())
 
+# Comment missing.
 def outlineRegenerate(depth,G,B,bfe,P):
     if len(degrees)!=len(fNames):
         print("Error: length of degree list does not coincide with the number of polynomials in the system. ")
@@ -487,18 +535,12 @@ def outlineRegenerate(depth,G,B,bfe,P):
                                     ppGroup.append(PPrime[count])
                                     count = count +1;
                                 PPi.append(ppGroup)
-                            #print("PPi")
-                            #print(PPi)
                             LP = pruneByPoint(bfePrime,i2,PPi)
                             for PPi in LP:
-                                #print("ppi2")
-                                #print(PPi)
                                 PPrime = []
                                 for i3 in range(len(PPi)):
                                     for j3 in range(len(PPi[i3])):
                                         PPrime.append(PPi[i3][j3])
-                                #print(PPrime)
-                                #print(len(PPrime))
                                 solText = "\n"
                                 for line in PPrime:
                                     solText += line+"\n"
@@ -521,10 +563,6 @@ def outlineRegenerate(depth,G,B,bfe,P):
                                   print("queueing node",
                                       [depth+1,G+[True],B,bfePrime,PPrime])
                                 queue.put([depth+1,G+[True],B,bfePrime,PPrime])
-                        # elif label=="singular":
-                        #     print(" We prune because the endpoint is singular")
-                        # elif label=="infinity":
-                        #     print(" We prune because the endpoint is at infinity")
                         else:
                           if verbose > 1:
                             print(" label is %s at directory %s" % (label,dirTracking))
@@ -566,11 +604,11 @@ def outlineRegenerate(depth,G,B,bfe,P):
           print("We reached depth %s" %depth)
 #    return("success2")
 
-
+# Comment missing.
 def hashPoint(P):
     return(abs(hash("_".join(P))) % (10 ** 12))
 
-
+# Comment missing.
 def isEvaluateZero(dirVanish,depth,P):
     fTarget = fNames[depth]
     inputText = '''
@@ -626,7 +664,7 @@ END;
     os.chdir(cwd)
     return(isVanishing)
 
-
+# Template for Bertini file that we fill in.
 bertiniParameterHomotopyTwoTemplate='''
 CONFIG
 TRACKTOLBEFOREEG : 1e-8;
@@ -646,7 +684,7 @@ HF = Tpath*(%s)+(1-Tpath)*(%s);
 END;
         '''
 
-
+# Comment missing.
 def writePStart(P,fn):
     startText = "1\n\n"
     for line in P:
@@ -656,6 +694,7 @@ def writePStart(P,fn):
     startFile.close()
     return()
 
+# Comment missing.
 def writeParameters():
     parametersFile = open("start_parameters", "w")
     parametersFile.write("1\n1 0")
@@ -667,7 +706,7 @@ def writeParameters():
 
 
 
-
+# Comment missing.
 def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
     if verbose > 1:
       print("function 'branchHomotopy' starting in directory",
@@ -875,12 +914,14 @@ def getLinearsThroughPoint(variables):
     return (ell, startSolution)
 
 
-
+# Comment missing.
 def nonDecreasing(l):
     return all(l[i] <= l[i+1] for i in range(len(l)-1))
+
 def firstIsMin(l):
     return l[0] == min(l)
 # helper function to determine if a value is zero.
+
 def isZero(s, logTolerance):
   if all([not str(i) in s for i in range(1, 10)]):
     return True
