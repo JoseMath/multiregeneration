@@ -95,7 +95,6 @@ bertiniVariables = None
 bertiniEquations = None
 revisedEquationsText = None
 variableGroupText = None
-realDimensionLinears = False
 targetDimensions = None
 
 explorationOrder = "depthFirst"
@@ -161,7 +160,6 @@ def main():
     global explorationOrder
 
     global targetDimensions # a list of multidimensions
-    global realDimensionLinears
 
     global loadDimensionLinearsAndStartSolution
     global loadDegreeLinears
@@ -186,7 +184,6 @@ global projectiveVariableGroups
 global algebraicTorusVariableGroups
 global nonzeroCoordinates
 global maxProcesses
-global realDimensionLinears
 global targetDimensions
 global explorationOrder
 global loadDimensionLinearsAndStartSolution
@@ -274,8 +271,6 @@ global pruneByPoint
         with open("startSolution", "r") as f:
             startSolution = (line.rstrip() for line in f)
             startSolution = list(line for line in startSolution if line)
-    elif realDimensionLinears:
-        (l, startSolution) = getRealValuedLinearsThroughPoint(variables)
     else:
         (l, startSolution) = getLinearsThroughPoint(variables)
     if verbose > 0:
@@ -879,42 +874,6 @@ def getLinearsThroughPoint(variables):
             ell[i].append(linearString)
     return (ell, startSolution)
 
-def getRealValuedLinearsThroughPoint(variables):
-    spoint = []
-    for i in range(len(variables)):
-        spoint += [[]]
-        for j in range(len(variables[i])):
-            spoint[i]+=[[str(randomNumberGenerator()),str(0.0)]]
-    startSolution = []
-    for i in range(len(spoint)):
-        for j in range(len(spoint[i])):
-            startSolution+=[spoint[i][j][0]+" "+spoint[i][j][1]]
-    ell = []
-    for i in range(len(variables)):
-        ell.append([])
-        isAffGroup=1
-        if i in projectiveVariableGroups:
-            isAffGroup = 0
-        terms = [None for x in range(len(variables[i])+isAffGroup-1)]
-        for j in range(len(variables[i])+isAffGroup-1):
-            linearString=""
-            for x in range(len(variables[i])+isAffGroup-1):
-                if isAffGroup:
-                    terms[x]="(%s)*(%s-(%s))"%(
-                        str(randomNumberGenerator()),
-                        str(variables[i][x]),
-                        spoint[i][x][0]
-                        )
-                else:
-                    terms[x]="(%s)*((%s)*%s-(%s)*%s)"%(
-                        str(randomNumberGenerator()),
-                        str(spoint[i][-1][0]), #real  part of last coordinate of spoint
-                        str(variables[i][x]), # a variable in group i
-                        str(spoint[i][x][0]),
-                        str(variables[i][-1])) # last variable in group i
-            linearString = "+".join(terms)
-            ell[i].append(linearString)
-    return (ell, startSolution)
 
 
 def nonDecreasing(l):
