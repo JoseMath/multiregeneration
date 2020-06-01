@@ -36,6 +36,8 @@ from Queue import PriorityQueue
 ### Configuration ###
 # Optional inputs # This can be specified in the inputFile
 
+projectiveVariableGroups = []
+
 # Example: [0,2] sets the implementation to disregard solutions
 # with a zero as a coordinate in the 0th or 2nd variable group.
 algebraicTorusVariableGroups = []
@@ -497,13 +499,13 @@ def outlineRegenerate(depth,G,B,bfe,P):
                         label="unknown"
 #                        print("We parentHomotopy at depth %s variable group %s degree %s and point %s" %(depth,i,j,hashPoint(P)))
                         dirTracking = directoryNameTracking(depth, G, bfePrime, i, j, P)
-#                        print(dirTracking)
                         if not os.path.exists(dirTracking):
                                 os.makedirs(dirTracking)
                         if verbose > 1:
                           print("directory before branchHomotopy is", os.getcwd())
                         if verbose > 1:
                             print "Calling branch homotopy with vg = %d, rg = %d, M[vg] = %d"%(i,j,M[i])
+                        # Comment missing.
                         (PPrime,label) = branchHomotopy(dirTracking, depth, G, bfePrime,bfe, i, j, M, P)
                         if verbose > 1:
                           print("directory after branchHomotopy is", os.getcwd())
@@ -512,20 +514,20 @@ def outlineRegenerate(depth,G,B,bfe,P):
                             for a in range(len(variables)):
                                 for b in range(len(variables[a])):
                                     if (a in algebraicTorusVariableGroups):
-#                                        print(count)
-#                                        print(PPrime[count])
                                         if coordinateLineIsZero(PPrime[count], logTolerance): # What should the logTolerance be here?
                                             label="prune"
                                     count = count +1;
                         # Check if coordinates are nonzero
                         count = 0
-                        if len(nonzeroCoordinates)>0 and len(PPrime)>0: # Prune if not in the algebraic torus based on algebraicTorusVariableGroups
+                        # Prune if not in the algebraic torus based on algebraicTorusVariableGroups
+                        if len(nonzeroCoordinates)>0 and len(PPrime)>0:
                             for i in range(len(variables)):
                                 for j in range(len(variables[i])):
                                     if (count in nonzeroCoordinates):
                                         if coordinateLineIsZero(PPrime[count], logTolerance): # What should the logTolerance be here?
                                             label="prune"
                                     count = count +1;
+                        # Comment missing.
                         if label=="smooth" and len(PPrime)>1:
                             completedSmoothSolutions = "_completed_smooth_solutions"
                             PPi=[]
@@ -739,6 +741,7 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
             rText += "r_%s_%s" %(i,j)+" = "+r[i][j]+" ; \n"
     if len(P)<2:
         print(" ##### error %s" %dirTracking)
+    # Comment missing.
     writePStart(P,"start")
     writePStart(P,"P")
     writeParameters()
