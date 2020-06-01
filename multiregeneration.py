@@ -42,13 +42,20 @@ projectiveVariableGroups = []
 # with a zero as a coordinate in the 0th or 2nd variable group.
 algebraicTorusVariableGroups = []
 
-# Example: [0,3] sets the implementation to disregard
+
+# Colin: we seem to only need either 
+# 'nonzeroCoordinates' or 
+# 'algebraicTorusVariableGroups', so I'll 
+# comment out 'nonzeroCoordinates' since it is 
+# older.
+
+#Example: [0,3] sets the implementation to disregard
 #solutions with a zero in the 0th or 3rd coordinate.
-nonzeroCoordinates = []
+#nonzeroCoordinates = []
 
-#randomNumberGenerator = random.random #JIR: Why isn't this deleted?
-
-# Comment misisng.
+# All random comlex numbers that we generate
+# have real and imaginary part uniform random in
+# (-1, 1)
 def randomNumberGenerator():
     rho = random.uniform(-1,1)
     return rho
@@ -56,10 +63,13 @@ def randomNumberGenerator():
 # Begin the computation at a different depth index
 depth = 0
 
-# Comment missing
+# This will be initialized to a list of integers
+# representing the multidimension of the ambient
+# product of projective space.
 bfe = []
 
 # Integer that is larger if we want to print more
+# information to be printed
 verbose = 0
 # Level 0 for nothing except errors
 # Level 1 messages we would usually like printed
@@ -103,55 +113,68 @@ workingDirectory = "run"
 # Any number with absolute value less than 10^logTolerance is considered to be zero
 logTolerance = -10
 
-# Comment missing
-bertiniVariableGroupString = None
+# Colin: I think that this variable is old and unnecessary
+# bertiniVariableGroupString = None
 
-# Comment missing
+# Initialized to the contents of bertiniInput_trackingOptions
+# and passed to each bertini call
 bertiniTrackingOptionsText = ""
 
-# Comment missing
+# Initialized to the contents of bertiniInput_variables
+# and used to set up the variable groups
 bertiniVariables = None
 
-# Comment missing
+# Initialized to the contents of bertiniInput_equations
 bertiniEquations = None
 
-# Comment missing
+# Initialized to the defining equations of the functions
+# in bertiniInput_equation (i.e. does not include the declarations
+# of functions.
 revisedEquationsText = None
 
-# Comment missing
+# Passed as the variable groups in each bertini call
 variableGroupText = None
 
-# Comment missing
+# Initialized by user to a list of relevant multidimensions
 targetDimensions = None
 
-# Comment missing
+# Can be changed by user to "breadthFirst"
 explorationOrder = "depthFirst"
 
-# Comment missing
+# Can be changed by user to True, and then
+# the variables 'startSolutions' and 'l' are
+# set by the user
 loadDimensionLinearsAndStartSolution = False
 
-# Comment missing
+# Can be changed by user to True, and then
+# the variable 'r' is set by the user
 loadDegreeLinears = False
 
-#  define a function that returns true to prune the point if it has the given dimension.
-#TODO: Example of this
+# Colin: we never use this, so I think we could just get rid of it.
+##  define a function that returns true to prune the point if it has the given dimension.
 pruneByDimension = None
 def pruneByDimension(bfePrime):
     return(False)
 
-#  define a function that returns true if a point from an edge satisfies a property..
+# Define a function that returns true if a point from an edge satisfies a property..
 # TODO: Example of this
-pruneByPoint = None
 def pruneByPoint(bfePrime,i,PPi):
     return([PPi])
+pruneByPoint = pruneByPoint
 
-# Comment missing.
+# We use the 'multiprocessing' python module. There is
+# a pool of processes of size maxProcesses, each of which
+# removes jobs from 'queue', does them, and then adds any resulting new 
+# jobs to the queue as well. The variable 'jobsInPool' keeps track of 
+# how many jobs are in 'queue' so that multiregeneration.py knows when 
+# the algorithm has terminated.
 pool = None
 jobsInPool = Value('i', 0)
 maxProcesses = mp.cpu_count()
 queue = None
 
-# Comment missing.
+# Safely decrements the variable 'jobsInPool', which is shared amoung 
+# multiple processes.
 def decJobsInPool(out):
   global jobsInPool
   with jobsInPool.get_lock():
@@ -162,7 +185,6 @@ def decJobsInPool(out):
       if verbose > 1:
         print("new value is jobsInPool = ", jobsInPool.value)
 
-# Comment missing.
 def main():
 
     # We make these variables global so that inputFile.py can set them.
@@ -181,10 +203,11 @@ def main():
     global logTolerance
     global verbose
     global projectiveVariableGroups
-    #TODO: example of this
+
+    # See the initialization above for an example of how to use this 
+    # variable
     global algebraicTorusVariableGroups
-    #TODO: example of this
-    global nonzeroCoordinates
+
     global bertiniVariableGroupString
 
 
@@ -204,7 +227,8 @@ def main():
     global pruneByDimension
     global pruneByPoint
 
-    # Comment missing.
+    # We read in the users configuration by evaluating the following 
+    # string appended with the file 'inputFile.py'. 
     setVariablesToGlobal = """
 global variables
 global depth
@@ -221,7 +245,6 @@ global logTolerance
 global verbose
 global projectiveVariableGroups
 global algebraicTorusVariableGroups
-global nonzeroCoordinates
 global maxProcesses
 global targetDimensions
 global explorationOrder
@@ -230,7 +253,7 @@ global loadDegreeLinears
 global pruneByDimension
 global pruneByPoint
 """
-    # Comment missing.
+    # Read in the user's input frim the files 'bertiniInput_*'
     try:
         with open("bertiniInput_variables", "r") as f:
             bertiniVariables = f.read().strip()
@@ -241,14 +264,17 @@ global pruneByPoint
             bertiniInput_trackingOptions = ""
         with open("bertiniInput_equations", "r") as f:
             bertiniEquations = f.read().strip()
-    # Comment missing.
+    # If anything goes wrong with reading in this input, then exit
     except:
         print("Exiting due to incomplete input. Please include the following files:")
         print("\t" + "bertiniInput_variables")
         print("\t" + "bertiniInput_trackingOptions")
         print("\t" + "bertiniInput_equations")
-    # Comment missing. Setting variable groups?
+
+    # Set the string variableGroupText which is passed to bertini
     variableGroupText = ""
+
+    # Set the list variable which is used by multiregeneration.py
     variables = []
     lines = bertiniVariables.splitlines()
     for i in range(len(lines)):
@@ -259,14 +285,16 @@ global pruneByPoint
             projectiveVariableGroups.append(i)
         variableGroupText+=lines[i]+"\n"
         variables.append(lines[i][lines[i].find(" "):].replace(" ","").replace(";", "").split(","))
-    # Comment missing. Setting ambient dimension?
+    # Initialize bfe to the dimension of the ambient product of 
+    # projective spaces.
+
     bfe=[]
     for i in range(len(variables)):
         isProjectiveGroup = 0
         if i in projectiveVariableGroups:
             isProjectiveGroup = 1
         bfe.append(len(variables[i])-isProjectiveGroup)
-    # Comment missing..
+    # Show 
     if verbose > 1:
         print("Ambient space dimension ")
         print(bfe)
@@ -276,10 +304,14 @@ global pruneByPoint
         print(projectiveVariableGroups)
         print("variableGroupText")
         print(variableGroupText)
-# set up function names and revisedEquationsText
-# Revised how?
+
+    # A string which stores the defining equations of the user inputed 
+    # functions
     revisedEquationsText = ""
+
     lines = bertiniEquations.splitlines()
+
+    # A list which stores the user inputed names of the functions
     fNames=[]
     for i in range(len(lines)):
         functionLine = lines[i].split(" ")[0]
@@ -293,7 +325,8 @@ global pruneByPoint
         print("revisedEquationsText")
         print(revisedEquationsText)
 
-    # Comment missing.
+    #We read in the user's input from 'inputFile.py' by executing the 
+    #following 
     exec(setVariablesToGlobal + open("inputFile.py").read())
 
 
@@ -329,7 +362,8 @@ global pruneByPoint
                 print(l[i][j])
     # Determine random linear polynomials r[i][j] degree linears
     r = []
-    # Comment missing.
+    # Populate the 2D list 'r' with random linear equations, unless the 
+    # user has specified their own
     if not loadDegreeLinears:
         for i in range(len(variables)):
             r.append([])
@@ -338,7 +372,6 @@ global pruneByPoint
                 maxdeg= max(maxdeg,degrees[s][i])
             for d in range(maxdeg):
                 r[i].append(getGenericLinearInVariableGroup(i))
-    # Comment missing.
     elif loadDegreeLinears:
         for i in range(len(variables)):
             maxdeg= 0
@@ -348,13 +381,15 @@ global pruneByPoint
                 A = (line.rstrip() for line in f)
                 A = list(line for line in A if line)
             r.append(A)
-    # Comment missing.
+    # Display the linear equations to the user
     if verbose > 0:
         print("\nUsing degree linears")
         for i in range(len(variables)):
             for j in range(len(r[i])):
                 print(r[i][j])
-    # Comment missing.
+    # The variable B specifies how many of the inputed equations to use. 
+    # If the user has not specified a value, then assume that all 
+    # equations are to be used.
     if B== None:
         B=len(fNames)
         if verbose > 1:
@@ -441,8 +476,9 @@ global pruneByPoint
       print("Done.")
 
 
-def processNode(args): # a wrapper function to catch error.  It's a way to see when there is
-#                           an error in one of the child processes.
+# A wrapper function around 'outlineRegenerate', which catches errors in 
+# subprocesses.
+def processNode(args): 
   try:
     outlineRegenerate(args[0], args[1], args[2], args[3], args[4])
   except Exception as e:
@@ -450,10 +486,24 @@ def processNode(args): # a wrapper function to catch error.  It's a way to see w
     print(e)
     print(traceback.format_exc())
 
-# Comment missing.
+# The function which each worker process calls. The input consists of:
+
+# depth = The number of user inputed equations that the point P 
+# satisfies
+
+# G = A witness system. (i.e. a subset of the first 'depth' many 
+# equations which suffice to specify the irreducible component of P on 
+# the variety defined by the first 'depth' many equations.)
+
+# B = The number of user inputed equations to consider.
+
+# bfe = The dimension of the irreducible component of P on the variety 
+# defined by the first 'depth' many equations.
+
+# P = The coordinates of a point
 def outlineRegenerate(depth,G,B,bfe,P):
     if len(degrees)!=len(fNames):
-        print("Error: length of degree list does not coincide with the number of polynomials in the system. ")
+        print("Error: length of degree list does not coincide with the number of polynomials in the system.")
 
     label = "unknown"
     # if depth isn't too large then
@@ -505,7 +555,8 @@ def outlineRegenerate(depth,G,B,bfe,P):
                           print("directory before branchHomotopy is", os.getcwd())
                         if verbose > 1:
                             print "Calling branch homotopy with vg = %d, rg = %d, M[vg] = %d"%(i,j,M[i])
-                        # Comment missing.
+                        # For each i and j, the function 'branchHomotopy' track the two 
+                        # path necessary
                         (PPrime,label) = branchHomotopy(dirTracking, depth, G, bfePrime,bfe, i, j, M, P)
                         if verbose > 1:
                           print("directory after branchHomotopy is", os.getcwd())
@@ -517,17 +568,25 @@ def outlineRegenerate(depth,G,B,bfe,P):
                                         if coordinateLineIsZero(PPrime[count], logTolerance): # What should the logTolerance be here?
                                             label="prune"
                                     count = count +1;
-                        # Check if coordinates are nonzero
-                        count = 0
-                        # Prune if not in the algebraic torus based on algebraicTorusVariableGroups
-                        if len(nonzeroCoordinates)>0 and len(PPrime)>0:
-                            for i in range(len(variables)):
-                                for j in range(len(variables[i])):
-                                    if (count in nonzeroCoordinates):
-                                        if coordinateLineIsZero(PPrime[count], logTolerance): # What should the logTolerance be here?
-                                            label="prune"
-                                    count = count +1;
-                        # Comment missing.
+
+                        # Colin: we seem to only need either 
+                        # 'nonzeroCoordinates' or 
+                        # 'algebraicTorusVariableGroups', so I'll 
+                        # comment out 'nonzeroCoordinates' since it is 
+                        # older.
+
+                        # # Check if coordinates are nonzero
+                        # count = 0
+                        # # Prune if not in the algebraic torus based on algebraicTorusVariableGroups
+                        # if len(nonzeroCoordinates)>0 and len(PPrime)>0:
+                        #     for i in range(len(variables)):
+                        #         for j in range(len(variables[i])):
+                        #             if (count in nonzeroCoordinates):
+                        #                 if coordinateLineIsZero(PPrime[count], logTolerance): # What should the logTolerance be here?
+                        #                     label="prune"
+                        #             count = count +1;
+
+                        # Proceed if the endpoing is smooth and nonempty
                         if label=="smooth" and len(PPrime)>1:
                             completedSmoothSolutions = "_completed_smooth_solutions"
                             PPi=[]
@@ -606,11 +665,13 @@ def outlineRegenerate(depth,G,B,bfe,P):
           print("We reached depth %s" %depth)
 #    return("success2")
 
-# Comment missing.
+# Hash the coordinates of a point to a string of numbers, which can be 
+# appended to filenames to avoid collisions.
 def hashPoint(P):
     return(abs(hash("_".join(P))) % (10 ** 12))
 
-# Comment missing.
+# A function which calls bertini to decide whether the next function 
+# (index = depth) vanishes on the point P
 def isEvaluateZero(dirVanish,depth,P):
     fTarget = fNames[depth]
     inputText = '''
@@ -686,7 +747,7 @@ HF = Tpath*(%s)+(1-Tpath)*(%s);
 END;
         '''
 
-# Comment missing.
+# Write the coordinates of a point to a bertini readable file
 def writePStart(P,fn):
     startText = "1\n\n"
     for line in P:
@@ -696,7 +757,8 @@ def writePStart(P,fn):
     startFile.close()
     return()
 
-# Comment missing.
+# Writes the initial and final values of the homotopy parameters to a 
+# bertini readable file
 def writeParameters():
     parametersFile = open("start_parameters", "w")
     parametersFile.write("1\n1 0")
@@ -708,7 +770,34 @@ def writeParameters():
 
 
 
-# Comment missing.
+# This function tracks the two paths associated to each job in the pool. 
+# The input data is:
+
+# dirTracking = The directory in which to store the bertini files
+
+# depth = The number of user inputed equations that are satisfied by the 
+# point P
+
+# G = A witness system. (i.e. a subset of the first 'depth' many 
+# equations which suffice to specify the irreducible component of P on 
+# the variety defined by the first 'depth' many equations.)
+
+# bfe = The dimension of the irreducible component of P on the variety 
+# defined by the first 'depth' many equations.
+
+# bfePrime = The new dimension of the irreducible component of P, after 
+# P is tracked to satisfy the linear equation in variable group vg of 
+# index rg.
+
+# vg = the index of a variable group
+
+# rg = the index of a linear equation (from 'r') in variable group vg
+
+# M = a list of integers that stores the degree of the next equation 
+# (index = depth) in the variable group vg.
+
+# P = The coordinates of a point
+
 def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
     if verbose > 1:
       print("function 'branchHomotopy' starting in directory",
@@ -741,7 +830,7 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
             rText += "r_%s_%s" %(i,j)+" = "+r[i][j]+" ; \n"
     if len(P)<2:
         print(" ##### error %s" %dirTracking)
-    # Comment missing.
+    # Setup the input for calling bertini
     writePStart(P,"start")
     writePStart(P,"P")
     writeParameters()
@@ -917,14 +1006,15 @@ def getLinearsThroughPoint(variables):
     return (ell, startSolution)
 
 
-# Comment missing.
-def nonDecreasing(l):
-    return all(l[i] <= l[i+1] for i in range(len(l)-1))
+# Colin: we don't seem to use this, so I'll comment it out.
+# def nonDecreasing(l):
+#     return all(l[i] <= l[i+1] for i in range(len(l)-1))
 
-def firstIsMin(l):
-    return l[0] == min(l)
-# helper function to determine if a value is zero.
+# Colin: we don't seem to use this, so I'll comment it out.
+# def firstIsMin(l):
+#     return l[0] == min(l)
 
+# A helper function to determine if a value is zero.
 def isZero(s, logTolerance):
   if all([not str(i) in s for i in range(1, 10)]):
     return True
