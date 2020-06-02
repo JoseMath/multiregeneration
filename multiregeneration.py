@@ -30,7 +30,7 @@ import multiprocessing as mp
 from multiprocessing.sharedctypes import Value
 
 #For managing the order in which edges are explored
-from Queue import PriorityQueue
+from queue import PriorityQueue
 
 
 ### Configuration ###
@@ -470,6 +470,7 @@ global pruneByPoint
                       jobsInPool.value)
 
 
+    pool.terminate()
     pool.close()
     if verbose >=1:
       updateProgressDisplay(cursorLeftAtBotten=True)
@@ -545,7 +546,7 @@ def outlineRegenerate(depth,G,B,bfe,P):
                 if not prune:
                     for j in range(M[i]):
                         if verbose > 1:
-                            print "M[i] = %d, j = %d"%(M[i],j)
+                            print("M[i] = %d, j = %d"%(M[i],j))
                         label="unknown"
 #                        print("We parentHomotopy at depth %s variable group %s degree %s and point %s" %(depth,i,j,hashPoint(P)))
                         dirTracking = directoryNameTracking(depth, G, bfePrime, i, j, P)
@@ -554,7 +555,7 @@ def outlineRegenerate(depth,G,B,bfe,P):
                         if verbose > 1:
                           print("directory before branchHomotopy is", os.getcwd())
                         if verbose > 1:
-                            print "Calling branch homotopy with vg = %d, rg = %d, M[vg] = %d"%(i,j,M[i])
+                            print("Calling branch homotopy with vg = %d, rg = %d, M[vg] = %d"%(i,j,M[i]))
                         # For each i and j, the function 'branchHomotopy' track the two 
                         # path necessary
                         (PPrime,label) = branchHomotopy(dirTracking, depth, G, bfePrime,bfe, i, j, M, P)
@@ -836,8 +837,7 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
     writeParameters()
     ## Now we do PQ
     if verbose > 1:
-        print "vg = %s, rg = %s, bfePrime[eval(vg)] = %d"%(
-            vg,rg,bfePrime[eval(vg)])
+        print("vg = %s, rg = %s, bfePrime[eval(vg)] = %d"%(vg,rg,bfePrime[eval(vg)]))
     sfPQ="l_%s_%d" %(vg,bfePrime[eval(vg)])
     tfPQ="r_%s_%s" %(vg,rg)
     inputTextPQ = bertiniParameterHomotopyTwoTemplate %(bertiniTrackingOptionsText,
