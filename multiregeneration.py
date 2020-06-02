@@ -43,15 +43,9 @@ projectiveVariableGroups = []
 algebraicTorusVariableGroups = []
 
 
-# Colin: we seem to only need either 
-# 'nonzeroCoordinates' or 
-# 'algebraicTorusVariableGroups', so I'll 
-# comment out 'nonzeroCoordinates' since it is 
-# older.
-
 #Example: [0,3] sets the implementation to disregard
 #solutions with a zero in the 0th or 3rd coordinate.
-#nonzeroCoordinates = []
+nonzeroCoordinates = []
 
 # All random comlex numbers that we generate
 # have real and imaginary part uniform random in
@@ -113,9 +107,6 @@ workingDirectory = "run"
 # Any number with absolute value less than 10^logTolerance is considered to be zero
 logTolerance = -10
 
-# Colin: I think that this variable is old and unnecessary
-# bertiniVariableGroupString = None
-
 # Initialized to the contents of bertiniInput_trackingOptions
 # and passed to each bertini call
 bertiniTrackingOptionsText = ""
@@ -150,17 +141,36 @@ loadDimensionLinearsAndStartSolution = False
 # the variable 'r' is set by the user
 loadDegreeLinears = False
 
-# Colin: we never use this, so I think we could just get rid of it.
-##  define a function that returns true to prune the point if it has the given dimension.
-pruneByDimension = None
 def pruneByDimension(bfePrime):
     return(False)
 
-# Define a function that returns true if a point from an edge satisfies a property..
-# TODO: Example of this
+# Define a function that returns true if a point should be 'thrown 
+# away'. The coordinates of the point are stored in a 2D list of strings 
+# PPi.
+
+# For example:
+# Say there is one homogeneous variable group, and you would like to 
+# throw a point away if it's second or third coordinate is zero. (This 
+# could also be accomplished via 'nonzeroCoordinate')
+
+# def pruneByPoint(bfePrime, i, PPi):
+#     # The complex coordinates (in variable group 0) of the point PPi
+#     coordinates = \
+#         [complex(s.replace(" -","-").replace(" ", "+") +"j") for \
+#         s in PPi[0]]
+
+#     # If either x_1=0 or x_2=0 is satisfied to within a 
+#     # tolerance of 1e-16, then the point will lie on the 'extra' 
+#     # component, and should be pruned.
+
+#     if abs(coordinates[1]) < 1e-16  or \
+#             abs(coordinates[2]) < 1e-16:
+#       return True
+#     else:
+#       return False
+
 def pruneByPoint(bfePrime,i,PPi):
-    return([PPi])
-pruneByPoint = pruneByPoint
+    return False
 
 # We use the 'multiprocessing' python module. There is
 # a pool of processes of size maxProcesses, each of which
@@ -570,22 +580,17 @@ def outlineRegenerate(depth,G,B,bfe,P):
                                             label="prune"
                                     count = count +1;
 
-                        # Colin: we seem to only need either 
-                        # 'nonzeroCoordinates' or 
-                        # 'algebraicTorusVariableGroups', so I'll 
-                        # comment out 'nonzeroCoordinates' since it is 
-                        # older.
 
-                        # # Check if coordinates are nonzero
-                        # count = 0
-                        # # Prune if not in the algebraic torus based on algebraicTorusVariableGroups
-                        # if len(nonzeroCoordinates)>0 and len(PPrime)>0:
-                        #     for i in range(len(variables)):
-                        #         for j in range(len(variables[i])):
-                        #             if (count in nonzeroCoordinates):
-                        #                 if coordinateLineIsZero(PPrime[count], logTolerance): # What should the logTolerance be here?
-                        #                     label="prune"
-                        #             count = count +1;
+                        # Check if coordinates are nonzero
+                        count = 0
+                        # Prune if not in the algebraic torus based on algebraicTorusVariableGroups
+                        if len(nonzeroCoordinates)>0 and len(PPrime)>0:
+                            for i in range(len(variables)):
+                                for j in range(len(variables[i])):
+                                    if (count in nonzeroCoordinates):
+                                        if coordinateLineIsZero(PPrime[count], logTolerance): # What should the logTolerance be here?
+                                            label="prune"
+                                    count = count +1;
 
                         # Proceed if the endpoing is smooth and nonempty
                         if label=="smooth" and len(PPrime)>1:
@@ -597,8 +602,7 @@ def outlineRegenerate(depth,G,B,bfe,P):
                                     ppGroup.append(PPrime[count])
                                     count = count +1;
                                 PPi.append(ppGroup)
-                            LP = pruneByPoint(bfePrime,i2,PPi)
-                            for PPi in LP:
+                            if not pruneByPoint(bfePrime,i2,PPi):
                                 PPrime = []
                                 for i3 in range(len(PPi)):
                                     for j3 in range(len(PPi[i3])):
@@ -1005,14 +1009,6 @@ def getLinearsThroughPoint(variables):
             ell[i].append(linearString)
     return (ell, startSolution)
 
-
-# Colin: we don't seem to use this, so I'll comment it out.
-# def nonDecreasing(l):
-#     return all(l[i] <= l[i+1] for i in range(len(l)-1))
-
-# Colin: we don't seem to use this, so I'll comment it out.
-# def firstIsMin(l):
-#     return l[0] == min(l)
 
 # A helper function to determine if a value is zero.
 def isZero(s, logTolerance):
