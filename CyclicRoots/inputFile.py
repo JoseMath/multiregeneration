@@ -6,4 +6,3 @@ verbose = 1
 
 #The maximum number of processes to use
 maxProcesses = 3
-

@@ -141,6 +141,9 @@ loadDimensionLinearsAndStartSolution = False
 # the variable 'r' is set by the user
 loadDegreeLinears = False
 
+# User inputs location of bertini executible
+pathToBertini = None
+
 def pruneByDimension(bfePrime):
     return(False)
 
@@ -236,6 +239,7 @@ def main():
     global loadDegreeLinears
     global pruneByDimension
     global pruneByPoint
+    global pathToBertini
 
     # We read in the users configuration by evaluating the following 
     # string appended with the file 'inputFile.py'. 
@@ -262,6 +266,7 @@ global loadDimensionLinearsAndStartSolution
 global loadDegreeLinears
 global pruneByDimension
 global pruneByPoint
+global pathToBertini
 """
     # Read in the user's input frim the files 'bertiniInput_*'
     try:
@@ -706,7 +711,10 @@ END;
     os.chdir(dirVanish)
     # print("Try bertini inputEval..")
     try:
-        bertiniCommand = "bertini inputEval"
+        if pathToBertini is not None:
+            bertiniCommand = pathToBertini + " inputEval"
+        else:
+            bertiniCommand = "bertini inputEval"
         process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)
         output, error = process.communicate()
         # print("..success likely")
@@ -861,7 +869,10 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
     while not(errorCountPQ>1 or (successPQ==True)): # We give Bertini one chance to find Q.
         label="unknown"
         try:
-            bertiniCommand = "bertini inputPQ"
+            if pathToBertini is not None:
+                bertiniCommand = pathToBertini + " inputPQ"
+            else:
+                bertiniCommand = "bertini inputPQ"
             process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)
             output, error = process.communicate()
         except:
@@ -906,7 +917,10 @@ def branchHomotopy(dirTracking,depth, G, bfePrime,bfe, vg, rg, M, P):
         inputQP.write(inputTextQP)
         inputQP.close()
         try:
-            bertiniCommand = "bertini inputQP"
+            if pathToBertini is not None:
+                bertiniCommand = pathToBertini + " inputQP"
+            else:
+                bertiniCommand = "bertini inputQP"
             process = subprocess.Popen(bertiniCommand.split(), stdout=subprocess.PIPE)
             output, errors = process.communicate()
         except:
