@@ -221,6 +221,8 @@ def main():
     # variable
     global algebraicTorusVariableGroups
 
+    global nonzeroCoordinate
+
     global bertiniVariableGroupString
 
 
@@ -259,6 +261,7 @@ global logTolerance
 global verbose
 global projectiveVariableGroups
 global algebraicTorusVariableGroups
+global nonzeroCoordinates
 global maxProcesses
 global targetDimensions
 global explorationOrder
@@ -455,14 +458,14 @@ global pathToBertini
     # then puts them in the priority queue. When there is space for more
     # jobs, explore nodes in the priority queue.
     while True:
-        if priorityQueue.empty() and queue.empty() and jobsInPool.value is 0:
+        if priorityQueue.empty() and queue.empty() and jobsInPool.value == 0:
             break
         if not queue.empty():
             job = queue.get()
-            if explorationOrder is "breadthFirst":
+            if explorationOrder == "breadthFirst":
                 priority = job[0]
                 priorityQueue.put((priority,job)) #depth is first in tuple, will process lower depth jobs first
-            elif explorationOrder is "depthFirst":
+            elif explorationOrder == "depthFirst":
                 priority = -1*job[0]
                 priorityQueue.put((priority,job))
             else:
@@ -546,7 +549,7 @@ def outlineRegenerate(depth,G,B,bfe,P):
             for i in range(len(bfe)):
                 bfePrime = list(bfe)
                 bfePrime[i] = bfe[i]-1
-                prune = bfe[i] is 0
+                prune = bfe[i] == 0
                 if targetDimensions:
                     canReach = []
                     for dim in targetDimensions:
@@ -593,10 +596,11 @@ def outlineRegenerate(depth,G,B,bfe,P):
                             for i in range(len(variables)):
                                 for j in range(len(variables[i])):
                                     if (count in nonzeroCoordinates):
-                                        if coordinateLineIsZero(PPrime[count], logTolerance): # What should the logTolerance be here?
+                                        if coordinateLineIsZero(PPrime[count], logTolerance):
                                             label="prune"
                                     count = count +1;
 
+                        count = 0
                         # Proceed if the endpoing is smooth and nonempty
                         if label=="smooth" and len(PPrime)>1:
                             completedSmoothSolutions = "_completed_smooth_solutions"
