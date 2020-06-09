@@ -30,7 +30,10 @@ import multiprocessing as mp
 from multiprocessing.sharedctypes import Value
 
 #For managing the order in which edges are explored
-from queue import PriorityQueue
+if sys.version_info >= (3,0):
+    from queue import PriorityQueue
+else:
+    from Queue import PriorityQueue
 
 
 ### Configuration ###
