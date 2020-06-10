@@ -350,7 +350,7 @@ global pathToBertini
     if verbose > 0:
         print("\n################### Setup multiregeneration ####################\n")
         print("These variable groups have been selected:\n"+variableGroupText)
-        print("Solutions in a 'linearProduct' directory and :")
+        print("Solutions are found in run/_completed_smooth_solutions and:")
         for c, f in enumerate(fNames): # 0 is the depth we start with
             if c >= depth:
                 print("depth >= "+str(c)+" satisfy "+ f+" = 0")
@@ -396,7 +396,7 @@ global pathToBertini
         if verbose > 1:
             print("B is set to %d" % B)
     if verbose > 0:
-        print("exploring tree in order", explorationOrder)
+        print("\nExploring tree in order", explorationOrder)
 
     if verbose > 0:
         print("\n################### Starting multiregeneration ####################\n")
@@ -1121,11 +1121,11 @@ def updateProgressDisplay(cursorLeftAtBotten = False):
 
 
     currentDisplay += """
-----------------------------------------------------------------
-| # smooth isolated solutions  | # of general linear equations |
-| found                        | added with variables in group |
-----------------------------------------------------------------
-                               | %s
+------------------------------------------------------------------
+| # of smooth isolated solutions | # of general linear equations |
+| found                          | added with variables in group |
+------------------------------------------------------------------
+                                 | %s
 ----------------------------------------------------------------
 """%("  ".join([str(i) for i in range(len(variables))]))
     currentMultidegreeBound = Counter(fullDepthDims)
@@ -1137,7 +1137,7 @@ def updateProgressDisplay(cursorLeftAtBotten = False):
       # else:
       currentDisplay += "  "\
           + str(currentMultidegreeBound[d])\
-          + " "*(31-len(str(currentMultidegreeBound[d])))\
+          + " "*(33-len(str(currentMultidegreeBound[d])))\
           + "".join([str(i) + " "*(3-len(str(i))) for i in dimension])\
           + "\n"
 
