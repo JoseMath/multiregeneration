@@ -2,7 +2,7 @@ Multiregeneration with regeneration graphs
 =============================================================
 
 This script implements the algorithm described in the paper 
-[Regeneration graphs for polynomial system 
+[Multiregeneration for polynomial system 
 solving](https://arxiv.org/abs/1912.04394), which finds all smooth and 
 isolated complex solutions to a square system of polynomial equations. 
 
@@ -59,15 +59,13 @@ and `bertiniInput_trackingOptions`.
    and contains options which will be passed to Bertini when it tracks 
    each path.
 
-Now run the python script `multiregeneration.py` using python2 from the 
+Now run the python script `multiregeneration.py` using python (version 2 
+or 3) from the 
 directory `CyclicRoots`.
 
 ```bash
-python2 ../multiregeneration.py
+python ../multiregeneration.py
 ```
-
-**Note that our script only works with python version 2, so make sure that 
-you use that and not a different version of python.**
 
 You will see the following output
 ```
@@ -86,33 +84,7 @@ depth >= 1 satisfy f1 = 0
 depth >= 2 satisfy f2 = 0
 depth >= 3 satisfy f3 = 0
 depth >= 4 satisfy f4 = 0
-
-Using start solution
-0.175979100512 0.0825147051053
--0.5435463831 -0.230414218757
--0.00197023304276 -0.453423608565
-0.123956054991 0.318785398772
-0.348452718562 0.565381663207
-
-Using dimension linears
-l[0][0]
-(-0.0999627977332+I*0.849388083618)*(x0-(0.175979100512+I*0.0825147051053))
-l[1][0]
-(-0.241672517105+I*0.0596239238783)*(x1-(-0.5435463831+I*-0.230414218757))
-l[2][0]
-(-0.847001857551+I*0.860355744611)*(x2-(-0.00197023304276+I*-0.453423608565))
-l[3][0]
-(0.3380664192+I*0.781912837974)*(x3-(0.123956054991+I*0.318785398772))
-l[4][0]
-(-0.773638560574+I*-0.870334688591)*(x4-(0.348452718562+I*0.565381663207))
-
-Using degree linears
-(-0.731921310143 + I*0.257198955602)*x0+(-0.998773532849 + I*-0.420511605004)
-(0.071867153673 + I*-0.0700419949032)*x1+(-0.109716126039 + I*-0.70848225598)
-(-0.152686515584 + I*-0.434657524026)*x2+(0.0706917737894 + I*-0.290226307158)
-(-0.353225306789 + I*0.324872307361)*x3+(-0.0104252166896 + I*0.826363723515)
-(0.0513386900364 + I*-0.292984355599)*x4+(-0.474476845325 + I*-0.194325610374)
-('exploring tree in order', 'depthFirst')
+exploring tree in order depthFirst
 
 ################### Starting multiregeneration ####################
 
@@ -140,7 +112,7 @@ equations added, so each solution that is found is a solution to the
 original system.
 
 The default is to explore the tree in a "depth first" fashion as describe 
-in section 4 of [our paper](https://arxiv.org/abs/1912.04394), so 
+[here](https://arxiv.org/abs/1912.04394), so 
 solutions to the entire system will begin to appear before each 
 regeneration level has finished.
 
@@ -149,13 +121,20 @@ and the solutions at each regeneration level can be found in
 `run/_completed_smooth_solutions`. Therefore the solutions to the system 
 in this example can be found in `run/_completed_smooth_solutions/depth_4`.
 
-Included examples
+Example pages
 -----------------
-Included in this repository are several examples from our paper. The 
-examples of section 5 are in the directories `NashEuilibria` and 
-`DeepLinear`. To run these examples, run the script 
-`multiregeneration.py` as above. For instance 
-```bash
-cd DeepLinear/D_2_2_2_2_TorusOnly_false_Regularize_false
-python2 ../../multiregeneration.py
-```
+Here are several pages which demonstrate features and applications.
+
+ - Examples of computing witness sets: [here](https://colinwcrowley.github.io/multiregeneration-tutorial/example-pages/HR-example-4-12/HR-example-4-12.html) and also [here](https://colinwcrowley.github.io/multiregeneration-tutorial/example-pages/example-1-3/example-1-3.html).
+   
+ - [A witness set for a noncomplete intersection](https://colinwcrowley.github.io/multiregeneration-tutorial/example-pages/twisted-cubic/twisted-cubic.html)
+
+ - Excluding solutions with zero coordinates: [here](https://colinwcrowley.github.io/multiregeneration-tutorial/example-pages/nonzero-coordinates/nonzero-coordinates.html) and also [here.](https://colinwcrowley.github.io/multiregeneration-tutorial/example-pages/algebraic-torus-variable-groups/algebraic-torus-variable-groups.html)
+ 
+ - [Satruating by an equation](https://colinwcrowley.github.io/multiregeneration-tutorial/example-pages/prune-by-point/prune-by-point.html)
+ 
+ - [Computing multidegree coefficients in only certain dimensions](https://colinwcrowley.github.io/multiregeneration-tutorial/example-pages/target-dimensions/target-dimensions.html)
+
+ - [An application to deep linear networks](https://colinwcrowley.github.io/multiregeneration-tutorial/example-pages/deep-linear-networks/deep-linear-networks.html)
+
+ - [Computing Nash equilibria](https://colinwcrowley.github.io/multiregeneration-tutorial/example-pages/nash-equilibria/nash-equilibria.html)
