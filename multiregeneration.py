@@ -159,12 +159,7 @@ def pruneByDimension(bfePrime):
 # throw a point away if it's second or third coordinate is zero. (This 
 # could also be accomplished via 'nonzeroCoordinate')
 
-# def pruneByPoint(bfePrime, i, PPi):
-#     # The complex coordinates (in variable group 0) of the point PPi
-#     coordinates = \
-#         [complex(s.replace(" -","-").replace(" ", "+") +"j") for \
-#         s in PPi[0]]
-
+# def pruneByPoint(coordinates):
 #     # If either x_1=0 or x_2=0 is satisfied to within a 
 #     # tolerance of 1e-16, then the point will lie on the 'extra' 
 #     # component, and should be pruned.
@@ -175,7 +170,7 @@ def pruneByDimension(bfePrime):
 #     else:
 #       return False
 
-def pruneByPoint(bfePrime,i,PPi):
+def pruneByPoint(coordinates):
     return False
 
 # We use the 'multiprocessing' python module. There is
@@ -372,15 +367,6 @@ global pathToBertini
             startSolution = list(line for line in startSolution if line)
     else:
         (l, startSolution) = getLinearsThroughPoint(variables)
-    if verbose > 0:
-        print("\nUsing start solution")
-        for i in startSolution:
-            print(i)
-        print("\nUsing dimension linears")
-        for i in range(len(variables)):
-            for j in range(len(l[i])):
-                print("l[%s][%s]"%(i,j))
-                print(l[i][j])
     # Determine random linear polynomials r[i][j] degree linears
     r = []
     # Populate the 2D list 'r' with random linear equations, unless the 
@@ -402,12 +388,6 @@ global pathToBertini
                 A = (line.rstrip() for line in f)
                 A = list(line for line in A if line)
             r.append(A)
-    # Display the linear equations to the user
-    if verbose > 0:
-        print("\nUsing degree linears")
-        for i in range(len(variables)):
-            for j in range(len(r[i])):
-                print(r[i][j])
     # The variable B specifies how many of the inputed equations to use. 
     # If the user has not specified a value, then assume that all 
     # equations are to be used.
@@ -433,6 +413,25 @@ global pathToBertini
     os.makedirs(completedSmoothSolutions)
     for i in range(depth, depth+len(fNames)):
         os.makedirs(completedSmoothSolutions+"/depth_%s"% i)
+    # Write start solution and linears to a file which is availalbe to 
+    # the user
+    with open("_tracking_information", "w") as trackingInfo:
+        trackingInfo.write("\nUsing start solution\n")
+        for i in startSolution:
+            trackingInfo.write(i)
+            trackingInfo.write("\n")
+        trackingInfo.write("\nUsing dimension linears\n")
+        for i in range(len(variables)):
+            for j in range(len(l[i])):
+                trackingInfo.write("l[%s][%s]"%(i,j))
+                trackingInfo.write("\n")
+                trackingInfo.write(l[i][j])
+                trackingInfo.write("\n")
+        trackingInfo.write("\nUsing degree linears\n")
+        for i in range(len(variables)):
+            for j in range(len(r[i])):
+                trackingInfo.write(r[i][j])
+                trackingInfo.write("\n")
 # branch node outline
 
     global queue
@@ -614,7 +613,11 @@ def outlineRegenerate(depth,G,B,bfe,P):
                                     ppGroup.append(PPrime[count])
                                     count = count +1;
                                 PPi.append(ppGroup)
-                            if not pruneByPoint(bfePrime,i2,PPi):
+
+                            coordinates = \
+                                [complex(s.replace(" -","-").replace(" ", "+") +"j") for \
+                                group in PPi for s in group]
+                            if not pruneByPoint(coordinates):
                                 PPrime = []
                                 for i3 in range(len(PPi)):
                                     for j3 in range(len(PPi[i3])):
