@@ -1,11 +1,20 @@
 function f0, f1, f2, f3, f4;
 constant u0, u1, u2, u3, u4;
 
+%% This is a perturbed cyclic roots problem. 
 u0 = 0.952 + 0.523*I;
 u1 = 0.023 + 0.948*I;
 u2 = 0.898 + 0.617*I;
 u3 = 0.292 + 0.294*I;
 u4 = 0.988 + 0.181*I;
+
+%% Use this choice of u for the cyclic roots problem.
+% u0 = 0;
+% u1 = 0;
+% u2 = 0;
+% u3 = 0; 
+% u4 = -1;
+
 
 f0 = x0 + x1 + x2 + x3 + x4 + u0;
 f1 = x0*x1 + x1*x2 + x2*x3 + x3*x4 + x4*x0 + u1;
