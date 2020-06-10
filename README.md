@@ -10,7 +10,7 @@ A tutorial on how to use this software can be found [here](https://github.com/co
 
 Our implementation has two main purposes: 
 
- - The first purpose is to implement a multihomogenious regeneration 
+ - The first purpose is to implement a multihomogeneous regeneration 
    algorithm as described [here](https://www3.nd.edu/~jhauenst/preprints/hrMultiHom.pdf). 
 
  - The second purpose is to implement a "Depth First" version of 
