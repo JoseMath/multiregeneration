@@ -9,3 +9,6 @@ maxProcesses = 3
 
 #Uncomment and change to specify a different path to Bertini
 # pathToBertini = "/Users/Alice/Desktop/BertiniApple32_v1.5.1/bertini"
+
+#Uncomment to change solving strategy 
+# explorationOrder = "breadthFirst"
