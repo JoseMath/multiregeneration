@@ -131,7 +131,7 @@ Here are several pages which demonstrate features and applications.
 
  - Excluding solutions with zero coordinates: [here](https://colinwcrowley.github.io/multiregeneration-tutorial/example-pages/nonzero-coordinates/nonzero-coordinates.html) and also [here.](https://colinwcrowley.github.io/multiregeneration-tutorial/example-pages/algebraic-torus-variable-groups/algebraic-torus-variable-groups.html)
  
- - [Satruating by an equation](https://colinwcrowley.github.io/multiregeneration-tutorial/example-pages/prune-by-point/prune-by-point.html)
+ - [Saturating by an equation](https://colinwcrowley.github.io/multiregeneration-tutorial/example-pages/prune-by-point/prune-by-point.html)
  
  - [Computing multidegree coefficients in only certain dimensions](https://colinwcrowley.github.io/multiregeneration-tutorial/example-pages/target-dimensions/target-dimensions.html)
 
