@@ -556,7 +556,7 @@ def outlineRegenerate(depth,G,B,bfe,P):
                     canReach = []
                     for dim in targetDimensions:
                         b1 = all(dim[i] <= bfePrime[i] for i in range(len(dim)))
-                        b2 = sum(bfePrime) - sum(dim) <= len(fNames)-depth
+                        b2 = sum(bfePrime) - sum(dim) <= len(fNames)-depth-1
                         canReach.append(b1 and b2)
                     prune = not any(canReach)
                 # pruneByDimension returns False as the default.
@@ -653,33 +653,42 @@ def outlineRegenerate(depth,G,B,bfe,P):
                   label="prune"
         # # (4) if the next polynomial vanishes at P then we need to branch with edges with weight zero.
         elif isVanishes: # isVanishes is true
-            if label!="error":
-                completedSmoothSolutions = "_completed_smooth_solutions"
+            prune = False
+            if targetDimensions:
+                canReach = []
+                for dim in targetDimensions:
+                    b1 = all(dim[i] <= bfe[i] for i in range(len(dim)))
+                    b2 = sum(bfe) - sum(dim) <= len(fNames)-depth-1
+                    canReach.append(b1 and b2)
+                prune = not any(canReach)
+            if not prune:
+                if label!="error":
+                    completedSmoothSolutions = "_completed_smooth_solutions"
+                    if verbose > 1:
+                      print("vanishes!")
+                    solName = directoryNameImmediateSolution(depth, G, bfe, P)
+                    solText = "\n"
+                    for line in P:
+                        solText += line+"\n"
+                    if verbose > 1:
+                      print(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName))
+                    try:
+                      startFile = open(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName), "w")
+                      startFile.write(solText)
+                      startFile.close()
+                      if verbose > 1:
+                        print("wrote file", completedSmoothSolutions+"/depth_%s/%s"
+                            %(depth,solName))
+                    except:
+                      print("error writing file",
+                          completedSmoothSolutions+"/depth_%s/%s"
+                          %(depth,solName))
                 if verbose > 1:
-                  print("vanishes!")
-                solName = directoryNameImmediateSolution(depth, G, bfe, P)
-                solText = "\n"
-                for line in P:
-                    solText += line+"\n"
-                if verbose > 1:
-                  print(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName))
-                try:
-                  startFile = open(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName), "w")
-                  startFile.write(solText)
-                  startFile.close()
-                  if verbose > 1:
-                    print("wrote file", completedSmoothSolutions+"/depth_%s/%s"
-                        %(depth,solName))
-                except:
-                  print("error writing file",
-                      completedSmoothSolutions+"/depth_%s/%s"
-                      %(depth,solName))
-            if verbose > 1:
-                print("queueing node", [depth+1,G+[False],B,bfe,P])
-            queue.put([depth+1,G+[False],B,bfe,P])
-        else:
-          if verbose > 1:
-              print("isVanishes should be True or False and not %s" %isVanishes)
+                    print("queueing node", [depth+1,G+[False],B,bfe,P])
+                queue.put([depth+1,G+[False],B,bfe,P])
+            else:
+              if verbose > 1:
+                  print("isVanishes should be True or False and not %s" %isVanishes)
     else:
       if verbose > 1:
           print("We reached depth %s" %depth)
