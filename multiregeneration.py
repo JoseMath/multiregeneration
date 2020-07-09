@@ -173,6 +173,20 @@ def pruneByDimension(bfePrime):
 def pruneByPoint(coordinates):
     return False
 
+
+# Define a function that returns true if a point should be 'thrown
+# away' based on which generators are used.
+
+# For example:
+# If not all generators are used then we throw away a point.
+
+#def pruneBySelectedGenerators(G):
+#    min(G) == 0
+
+def pruneBySelectedGenerators(G):
+    return False
+
+
 # We use the 'multiprocessing' python module. There is
 # a pool of processes of size maxProcesses, each of which
 # removes jobs from 'queue', does them, and then adds any resulting new
@@ -239,6 +253,7 @@ def main():
     global loadDegreeLinears
     global pruneByDimension
     global pruneByPoint
+    global pruneBySelectedGenerators
     global pathToBertini
 
     # We read in the users configuration by evaluating the following
@@ -267,6 +282,7 @@ global loadDimensionLinearsAndStartSolution
 global loadDegreeLinears
 global pruneByDimension
 global pruneByPoint
+global pruneBySelectedGenerators
 global pathToBertini
 """
     # Read in the user's input frim the files 'bertiniInput_*'
@@ -563,6 +579,8 @@ def outlineRegenerate(depth,G,B,bfe,P):
                 # Redfine this function in inputFile.py as you like.
                 if not prune:
                     prune = pruneByDimension(bfePrime)
+                if not prune:
+                    prune = pruneBySelectedGenerators(G)
                 if not prune:
                     for j in range(M[i]):
                         if verbose > 1:
