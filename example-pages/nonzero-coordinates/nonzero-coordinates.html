@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>nonzero-coordinates</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<link rel="stylesheet" href="modest.css">
+<style>
+pre, code, pre code {
+  max-height: 400px;
+}
+</style>
+<h2 id="use-of-nonzerocoordinates">Use of <code>nonzeroCoordinates</code></h2>
+<h4 id="authors-colin-crowley-and-jose-israel-rodriguez">Authors: <a href="https://sites.google.com/view/colincrowley/home">Colin Crowley</a>, and <a href="https://www.math.wisc.edu/~jose/">Jose Israel Rodriguez</a></h4>
+<p>Here we demonstrate how to use the user defined variable <code>nonzeroCoordinates</code>. If, in the relevant application, solutions with zeros in certain coordinates should be ignored, the user may specify this and <code>multiregeneration.py</code> will save time by not tracking these points.</p>
+<h3 id="defining-equations">Defining equations</h3>
+<p>Consider the multiaffine variety consisting of points <span class="math inline">\((x,y,z) \in \mathbb{C} \times \mathbb{C}^2\)</span> defined by the following equation.</p>
+<p><span class="math display">\[
+x*y*z = 0
+\]</span></p>
+<p>This variety consists of the union of the three coordinate hyperplanes. Say we would like a witness set for all components which do not lie in either of the coordinate planes <span class="math inline">\(x = 0\)</span> and <span class="math inline">\(y = 0\)</span>.</p>
+<h3 id="input-format">Input format</h3>
+<p>There are four files that comprise the input to multiregeneration.py</p>
+<h4 id="inputfile.py">inputFile.py</h4>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a>degrees <span class="op">=</span> [[<span class="dv">1</span>,<span class="dv">2</span>]]</span>
+<span id="cb1-2"><a href="#cb1-2"></a>verbose <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a>nonzeroCoordinates <span class="op">=</span> [<span class="dv">0</span>,<span class="dv">1</span>]</span></code></pre></div>
+<p>This file contains the multidegrees of the defining equations, as well as additional options. The command <code>verbose=1</code> tells multiregeneration.py to display a progress update.</p>
+<p>The list <code>nonzeroCoordinates</code> tells <code>multiregeneration.py</code> that all points with zeros in the first two coordinates should be thrown away.</p>
+<h4 id="bertiniinput_variables">bertiniInput_variables</h4>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1"></a>variable_group x;</span>
+<span id="cb2-2"><a href="#cb2-2"></a>variable_group y,z;</span></code></pre></div>
+<h4 id="bertiniinput_equations">bertiniInput_equations</h4>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1"></a>function f;</span>
+<span id="cb3-2"><a href="#cb3-2"></a></span>
+<span id="cb3-3"><a href="#cb3-3"></a>f = x*y*z;</span></code></pre></div>
+<h4 id="bertiniinput_trackingoptions">bertiniInput_trackingOptions</h4>
+<pre><code>SecurityLevel:1;</code></pre>
+<h3 id="running-multiregeneration.py">Running multiregeneration.py</h3>
+<p>Make sure that the four files discussed above are in your current directory</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a>$ <span class="fu">ls</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="ex">bertiniInput_equations</span>  bertiniInput_trackingOptions  bertiniInput_variables  inputFile.py</span></code></pre></div>
+<p>and then run multiregeneration.py from this directory using python.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="ex">python</span> /path/to/multiregeneration.py</span></code></pre></div>
+<p>The output will look like the following.</p>
+<pre><code>################### Setup multiregeneration ####################
+
+These variable groups have been selected:
+variable_group x;
+variable_group y,z;
+
+Solutions are found in run/_completed_smooth_solutions and:
+depth &gt;= 0 satisfy f = 0
+
+Exploring tree in order depthFirst
+
+################### Starting multiregeneration ####################
+
+PROGRESS
+Depth 0: 1
+
+------------------------------------------------------------------
+| # of smooth isolated solutions | # of general linear equations |
+| found                          | added with variables in group |
+------------------------------------------------------------------
+                                 | 0  1
+----------------------------------------------------------------
+  1                                1  1  
+Done.</code></pre>
+<h3 id="a-witness-set">A witness set</h3>
+<p>While multiregeneration.py is running, it creates a directory called <code>run</code> where it stores the partial witness set data. This data is organized in the folder <code>run/_completed_smooth_solutions</code>.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1"></a>$ <span class="ex">tree</span> run/_completed_smooth_solutions/</span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="ex">run/_completed_smooth_solutions/</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a>└── <span class="ex">depth_0</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a>    └── <span class="ex">solution_tracking_depth_0_gens_1_dim_1_1_varGroup_1_regenLinear_1_pointId_420399841269_434492049963</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a></span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="ex">1</span> directory, 1 file</span></code></pre></div>
+<p>The folder <code>depth_0</code> contains the point of intersection of <span class="math inline">\(z = 0\)</span> and the linear equation <code>l[1][0]</code>, which can be found in <code>run/_tracking_information</code>. This point is the following.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1"></a>$ <span class="fu">cat</span> run/_completed_smooth_solutions/depth_0/*</span>
+<span id="cb9-2"><a href="#cb9-2"></a></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="ex">3.394525056706128e-01</span> 4.060281681158974e-01</span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="ex">1.326130072769161e-01</span> -3.428814811548347e-01</span>
+<span id="cb9-5"><a href="#cb9-5"></a><span class="ex">8.117682338556469e-17</span> 4.004079930720481e-17</span></code></pre></div>
+</body>
+</html>

@@ -1,0 +1,5 @@
+function f1,f2,f3;
+
+f1 = x0*y2 - x2*y1;
+f2 = x1*y2 - x2*y1;
+f3 = x0*y1*y2 - x1*y0*y2;

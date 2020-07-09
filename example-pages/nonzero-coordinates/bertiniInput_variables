@@ -1,0 +1,2 @@
+variable_group x;
+variable_group y,z;

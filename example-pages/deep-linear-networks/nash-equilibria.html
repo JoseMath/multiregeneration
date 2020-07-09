@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>deep-linear-networks</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<link rel="stylesheet" href="modest.css">
+<style>
+pre, code, pre code {
+  max-height: 400px;
+}
+</style>
+<h2 id="deep-linear-networks">Deep Linear Networks</h2>
+<p>One approach to gain a better theoretical understanding of deep neural networks is by characterizing the loss surface and regularizers. In particular, one might want to know how many of the local optimum are global optimum with a regularization.</p>
+<p>In this subsection we consider  which are specified by the weight matrices <span class="math inline">\(\mathbf{W}:=(W_1,\dots,W_{H+1})\)</span> with <span class="math inline">\(H\)</span> denoting the number of hidden layers and <span class="math inline">\(W_i \in \mathbb{R}^{d_{i}\times d_{i-1}}\)</span>. We study the usual squared Euclidean distance loss function  [ <em>{,}():= </em>{j=1}^m || W_{H+1}W_1 X_j -Y_j || ^2. ] and a  $ <em>():= </em>{i=1}^{H+1} || _i W_i||^2<br />
+$ where for <span class="math inline">\(i=1,\dots,H+1\)</span>, <span class="math inline">\(\Lambda_i\)</span> is a generic <span class="math inline">\(d_{i}\times d_{i-1}\)</span> matrix, <span class="math inline">\(X_j,Y_j\)</span> are constant vectors, and <span class="math inline">\(\star\)</span> denotes the Hadamard (coordinate wise) product. Given data <span class="math inline">\((\bfx,\mathbf{y})\)</span> one wishes to find a global minima of the loss function <span class="math inline">\(\mathcal{L}_{\mathbf{X},\mathbf{Y}}\)</span> and its regularization <span class="math inline">\(\mathcal{L}_{\mathbf{X},\mathbf{Y}}+\mathcal{R}_\Lambda\)</span>.</p>
+<p>\begin{samepage}</p>
+<p>After complexification, the variety of partial derivatives with respect to the weight indeterminants defines a set of critical points and a complex algebraic variety. The number of critical points and loss function are studied here . We apply our regeneration method to these problems and obtain the computational results on the right side of Table~. The number of critical points shown in the left side of the table were known already, but with our work, we discovered the explicit sparsity pattern structure. This sparsity structure coincides directly with the topology of the network as a zero corresponds to a missing edge in the network.</p>
+<h3 id="input-format">Input format</h3>
+<p>There are four files that comprise the input to multiregeneration.py</p>
+<h4 id="inputfile.py">inputFile.py</h4>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a>degrees <span class="op">=</span> [[<span class="dv">1</span>,<span class="dv">0</span>],[<span class="dv">0</span>,<span class="dv">1</span>],[<span class="dv">2</span>,<span class="dv">1</span>],[<span class="dv">2</span>,<span class="dv">1</span>],[<span class="dv">1</span>,<span class="dv">2</span>],[<span class="dv">1</span>,<span class="dv">2</span>]]</span>
+<span id="cb1-2"><a href="#cb1-2"></a>verbose <span class="op">=</span> <span class="dv">1</span></span></code></pre></div>
+<p>This file contains the multidegrees of the defining equations, as well as additional options. The command <code>verbose=1</code> tells multiregeneration.py to display a progress update.</p>
+<h4 id="bertiniinput_variables">bertiniInput_variables</h4>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1"></a>variable_group a_1,a_2 ;</span>
+<span id="cb2-2"><a href="#cb2-2"></a>variable_group b_1,b_2 ;</span></code></pre></div>
+<h4 id="bertiniinput_equations">bertiniInput_equations</h4>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1"></a>constant ii;</span>
+<span id="cb3-2"><a href="#cb3-2"></a>ii=I;</span>
+<span id="cb3-3"><a href="#cb3-3"></a>constant A_11,A_12,A_21,A_22;</span>
+<span id="cb3-4"><a href="#cb3-4"></a>constant B_11,B_12,B_21,B_22;</span>
+<span id="cb3-5"><a href="#cb3-5"></a></span>
+<span id="cb3-6"><a href="#cb3-6"></a>A_11 =<span class="dv">9</span>  ;</span>
+<span id="cb3-7"><a href="#cb3-7"></a>A_12 = <span class="dv">13</span>;</span>
+<span id="cb3-8"><a href="#cb3-8"></a>A_21 = <span class="dv">20</span>;</span>
+<span id="cb3-9"><a href="#cb3-9"></a>A_22 = <span class="dv">6</span>;</span>
+<span id="cb3-10"><a href="#cb3-10"></a></span>
+<span id="cb3-11"><a href="#cb3-11"></a>B_11 = <span class="dv">16</span>;</span>
+<span id="cb3-12"><a href="#cb3-12"></a>B_12 = <span class="dv">20</span>;</span>
+<span id="cb3-13"><a href="#cb3-13"></a>B_21 = <span class="dv">12</span>;</span>
+<span id="cb3-14"><a href="#cb3-14"></a>B_22 =  <span class="dv">11</span>;</span>
+<span id="cb3-15"><a href="#cb3-15"></a></span>
+<span id="cb3-16"><a href="#cb3-16"></a>function ga,gb,f0, f1, f2, f3;</span>
+<span id="cb3-17"><a href="#cb3-17"></a>ga= a_1+a_2-<span class="dv">1</span>;</span>
+<span id="cb3-18"><a href="#cb3-18"></a>gb= b_1+b_2-<span class="dv">1</span>;</span>
+<span id="cb3-19"><a href="#cb3-19"></a></span>
+<span id="cb3-20"><a href="#cb3-20"></a>f0 = a_1*(A_11*a_1*b_1+A_12*a_1*b_2+A_21*a_2*b_1+ A_22* a_2* b_2 - (A_11*b_1 + A_12*b_2) );</span>
+<span id="cb3-21"><a href="#cb3-21"></a>f1 = a_2*(A_11*a_1*b_1+A_12*a_1*b_2+A_21*a_2*b_1+ A_22* a_2* b_2 - (A_21*b_1 + A_22*b_2) );</span>
+<span id="cb3-22"><a href="#cb3-22"></a>f2 = b_1*(B_11*a_1*b_1+B_12*a_1*b_2+B_21*a_2*b_1+ B_22* a_2* b_2 - (B_11*a_1 + B_21*a_2) ) ;</span>
+<span id="cb3-23"><a href="#cb3-23"></a>f3 = b_2*(B_11*a_1*b_1+B_12*a_1*b_2+B_21*a_2*b_1+ B_22* a_2* b_2 - (B_12*a_1 + B_22*a_2) ) ;</span></code></pre></div>
+<h4 id="bertiniinput_trackingoptions">bertiniInput_trackingOptions</h4>
+<pre><code>SecurityLevel:1;</code></pre>
+<h3 id="running-multiregeneration.py">Running multiregeneration.py</h3>
+<p>Make sure that the four files discussed above are in your currnet directory</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a>$ <span class="fu">ls</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="ex">bertiniInput_equations</span>  bertiniInput_trackingOptions  bertiniInput_variables  inputFile.py</span></code></pre></div>
+<p>and then run multiregeneration.py from this directory using python.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="ex">python</span> /path/to/multiregeneration.py</span></code></pre></div>
+<p>The output will look like the following.</p>
+<pre><code>################### Setup multiregeneration ####################
+
+These variable groups have been selected:
+variable_group a_1,a_2 ;
+variable_group b_1,b_2 ;
+
+Solutions in a &#39;linearProduct&#39; directory and :
+depth &gt;= 0 satisfy ga = 0
+depth &gt;= 1 satisfy gb = 0
+depth &gt;= 2 satisfy f0 = 0
+depth &gt;= 3 satisfy f1 = 0
+depth &gt;= 4 satisfy f2 = 0
+depth &gt;= 5 satisfy f3 = 0
+
+Using start solution
+0.29704183012646856 -0.49335299107307695
+0.1783175949472342 0.19941718956743593
+0.06048819104517311 -0.2107056534515328
+-0.8438646437059505 -0.7954682322991802
+
+Using dimension linears
+l[0][0]
+(0.2585374601884747+I*0.9633912246781704)*(a_1-(0.29704183012646856+I*-0.49335299107307695))+(-0.01404528354010881+I*0.43896209014441046)*(a_2-(0.1783175949472342+I*0.19941718956743593))
+l[0][1]
+(-0.1723775344786631+I*-0.9638851103113628)*(a_1-(0.29704183012646856+I*-0.49335299107307695))+(0.49387237948662666+I*0.8504295826535218)*(a_2-(0.1783175949472342+I*0.19941718956743593))
+l[1][0]
+(-0.5141628339427617+I*0.7889931484511168)*(b_1-(0.06048819104517311+I*-0.2107056534515328))+(0.5564963134261249+I*-0.25906055695185826)*(b_2-(-0.8438646437059505+I*-0.7954682322991802))
+l[1][1]
+(0.2781761709219086+I*-0.21120951896437168)*(b_1-(0.06048819104517311+I*-0.2107056534515328))+(0.41809929700001147+I*-0.19264458450503752)*(b_2-(-0.8438646437059505+I*-0.7954682322991802))
+
+Using degree linears
+(0.22805827691445035 + I*0.8810463398474311)*a_1+(-0.4464479320395307 + I*0.5599990609543744)*a_2+(-0.8373451659784759 + I*0.28078955313164067)
+(0.9177448268164794 + I*-0.4824543070794738)*a_1+(-0.2879263338826379 + I*-0.9078391097328673)*a_2+(-0.5958521675380284 + I*0.5394692543127582)
+(0.07353010851731612 + I*-0.6309451816100575)*b_1+(0.2981466772195136 + I*0.5680786151770629)*b_2+(-0.23047680041048113 + I*0.4748886260384717)
+(0.9705631471879137 + I*-0.5820153201956337)*b_1+(-0.5129098919881647 + I*0.30606331965898637)*b_2+(-0.29154312082316447 + I*-0.19779137689827642)
+exploring tree in order depthFirst
+
+################### Starting multiregeneration ####################
+
+PROGRESS
+Depth 0: 1
+Depth 1: 1
+Depth 2: 3
+Depth 3: 3
+Depth 4: 5
+Depth 5: 5
+
+----------------------------------------------------------------
+| # smooth isolated solutions  | # of general linear equations |
+| found                        | added with variables in group |
+----------------------------------------------------------------
+                               | 0  1
+----------------------------------------------------------------
+  5                              0  0  
+Done.</code></pre>
+<h3 id="solutions">Solutions</h3>
+<p>While multiregeneration.py is running, it creates a directory called <code>run</code> where it stores the partial solution data. This data is organized in the folder <code>run/_completed_smooth_solutions</code>.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1"></a>$ <span class="ex">tree</span> run/_completed_smooth_solutions/</span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="ex">run/_completed_smooth_solutions/</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a>├── <span class="ex">depth_0</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a>│   └── <span class="ex">solution_tracking_depth_0_gens_1_dim_1_2_varGroup_1_regenLinear_1_pointId_999166306418_123674091215</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a>├── <span class="ex">depth_1</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a>│   └── <span class="ex">solution_tracking_depth_1_gens_1_1_dim_1_1_varGroup_1_regenLinear_1_pointId_123674091215_571837852155</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a>├── <span class="ex">depth_2</span></span>
+<span id="cb8-8"><a href="#cb8-8"></a>│   ├── <span class="ex">solution_tracking_depth_2_gens_1_1_1_dim_0_1_varGroup_1_regenLinear_1_pointId_571837852155_248959257075</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a>│   ├── <span class="ex">solution_tracking_depth_2_gens_1_1_1_dim_0_1_varGroup_1_regenLinear_1_pointId_571837852155_467837258827</span></span>
+<span id="cb8-10"><a href="#cb8-10"></a>│   └── <span class="ex">solution_tracking_depth_2_gens_1_1_1_dim_1_0_varGroup_1_regenLinear_1_pointId_571837852155_713170692613</span></span>
+<span id="cb8-11"><a href="#cb8-11"></a>├── <span class="ex">depth_3</span></span>
+<span id="cb8-12"><a href="#cb8-12"></a>│   ├── <span class="ex">solution_vanishing_depth_3_gens_1_1_1_0_dim_0_1_pointId_248959257075_248959257075</span></span>
+<span id="cb8-13"><a href="#cb8-13"></a>│   ├── <span class="ex">solution_vanishing_depth_3_gens_1_1_1_0_dim_0_1_pointId_467837258827_467837258827</span></span>
+<span id="cb8-14"><a href="#cb8-14"></a>│   └── <span class="ex">solution_vanishing_depth_3_gens_1_1_1_0_dim_1_0_pointId_713170692613_713170692613</span></span>
+<span id="cb8-15"><a href="#cb8-15"></a>├── <span class="ex">depth_4</span></span>
+<span id="cb8-16"><a href="#cb8-16"></a>│   ├── <span class="ex">solution_tracking_depth_4_gens_1_1_1_0_1_dim_0_0_varGroup_1_regenLinear_1_pointId_248959257075_473775690656</span></span>
+<span id="cb8-17"><a href="#cb8-17"></a>│   ├── <span class="ex">solution_tracking_depth_4_gens_1_1_1_0_1_dim_0_0_varGroup_1_regenLinear_1_pointId_248959257075_917556880335</span></span>
+<span id="cb8-18"><a href="#cb8-18"></a>│   ├── <span class="ex">solution_tracking_depth_4_gens_1_1_1_0_1_dim_0_0_varGroup_1_regenLinear_1_pointId_467837258827_132778330808</span></span>
+<span id="cb8-19"><a href="#cb8-19"></a>│   ├── <span class="ex">solution_tracking_depth_4_gens_1_1_1_0_1_dim_0_0_varGroup_1_regenLinear_1_pointId_467837258827_870108075393</span></span>
+<span id="cb8-20"><a href="#cb8-20"></a>│   └── <span class="ex">solution_tracking_depth_4_gens_1_1_1_0_1_dim_0_0_varGroup_1_regenLinear_1_pointId_713170692613_601058697586</span></span>
+<span id="cb8-21"><a href="#cb8-21"></a>└── <span class="ex">depth_5</span></span>
+<span id="cb8-22"><a href="#cb8-22"></a>    ├── <span class="ex">solution_vanishing_depth_5_gens_1_1_1_0_1_0_dim_0_0_pointId_132778330808_132778330808</span></span>
+<span id="cb8-23"><a href="#cb8-23"></a>    ├── <span class="ex">solution_vanishing_depth_5_gens_1_1_1_0_1_0_dim_0_0_pointId_473775690656_473775690656</span></span>
+<span id="cb8-24"><a href="#cb8-24"></a>    ├── <span class="ex">solution_vanishing_depth_5_gens_1_1_1_0_1_0_dim_0_0_pointId_601058697586_601058697586</span></span>
+<span id="cb8-25"><a href="#cb8-25"></a>    ├── <span class="ex">solution_vanishing_depth_5_gens_1_1_1_0_1_0_dim_0_0_pointId_870108075393_870108075393</span></span>
+<span id="cb8-26"><a href="#cb8-26"></a>    └── <span class="ex">solution_vanishing_depth_5_gens_1_1_1_0_1_0_dim_0_0_pointId_917556880335_917556880335</span></span>
+<span id="cb8-27"><a href="#cb8-27"></a></span>
+<span id="cb8-28"><a href="#cb8-28"></a><span class="ex">6</span> directories, 18 files</span></code></pre></div>
+<p>The folder <code>depth_5</code> contains the isolated solutions to the whole system, which are:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1"></a><span class="va">$cat</span> <span class="ex">run/_completed_smooth_solutions/depth_5/*</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="ex">3.027488683426075e-287</span> -4.713551932326410e-289</span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="ex">9.999999999999999e-01</span> 0.000000000000000e+00</span>
+<span id="cb9-5"><a href="#cb9-5"></a><span class="ex">5.043949224142953e-15</span> 5.031911447161615e-16</span>
+<span id="cb9-6"><a href="#cb9-6"></a><span class="ex">9.999999999999951e-01</span> -4.996003610813204e-16</span>
+<span id="cb9-7"><a href="#cb9-7"></a></span>
+<span id="cb9-8"><a href="#cb9-8"></a><span class="ex">1.000000000000000e+00</span> -1.110223024625157e-16</span>
+<span id="cb9-9"><a href="#cb9-9"></a><span class="ex">-5.091759685681027e-17</span> -2.225610541722674e-17</span>
+<span id="cb9-10"><a href="#cb9-10"></a><span class="ex">1.178176334919242e-13</span> -3.022904202283731e-13</span>
+<span id="cb9-11"><a href="#cb9-11"></a><span class="ex">9.999999999998821e-01</span> 3.022027073029676e-13</span>
+<span id="cb9-12"><a href="#cb9-12"></a></span>
+<span id="cb9-13"><a href="#cb9-13"></a><span class="ex">1.999999999999998e-01</span> 1.887379141862766e-15</span>
+<span id="cb9-14"><a href="#cb9-14"></a><span class="ex">8.000000000000002e-01</span> -1.915134717478395e-15</span>
+<span id="cb9-15"><a href="#cb9-15"></a><span class="ex">3.888888888888890e-01</span> 4.163336342344337e-17</span>
+<span id="cb9-16"><a href="#cb9-16"></a><span class="ex">6.111111111111109e-01</span> -2.775557561562891e-17</span>
+<span id="cb9-17"><a href="#cb9-17"></a></span>
+<span id="cb9-18"><a href="#cb9-18"></a><span class="ex">8.544437010279772e-186</span> -1.499077989632200e-185</span>
+<span id="cb9-19"><a href="#cb9-19"></a><span class="ex">9.999999999999999e-01</span> 0.000000000000000e+00</span>
+<span id="cb9-20"><a href="#cb9-20"></a><span class="ex">9.999999999998188e-01</span> -8.826273045769994e-15</span>
+<span id="cb9-21"><a href="#cb9-21"></a><span class="ex">1.810237935765253e-13</span> 8.792840477452395e-15</span>
+<span id="cb9-22"><a href="#cb9-22"></a></span>
+<span id="cb9-23"><a href="#cb9-23"></a><span class="ex">1.000000000000000e+00</span> 5.551115123125783e-17</span>
+<span id="cb9-24"><a href="#cb9-24"></a><span class="ex">-4.463139253907902e-17</span> -4.332714115960878e-17</span>
+<span id="cb9-25"><a href="#cb9-25"></a><span class="ex">1.000000000000009e+00</span> 3.103073353827313e-14</span>
+<span id="cb9-26"><a href="#cb9-26"></a><span class="ex">-9.040395543972030e-15</span> -3.085170806852074e-14</span></code></pre></div>
+<p>We see that there is one totally mixed nash equilibrium (i.e. an equilibrium with no zero coordinates). If we only want the totally mixed Nash equilibria, then we could add the line <code>algebraicTorusVariableGroups = [0,1]</code> to <code>inputFile.py</code>.</p>
+</body>
+</html>

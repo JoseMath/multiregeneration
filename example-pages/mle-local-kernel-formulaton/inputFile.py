@@ -1,0 +1,9 @@
+degrees = [[1, 2, 1], [1, 2, 1], [1, 2, 1], [1, 2, 1], [1, 2, 1], [1, 2, 1], [1, 2, 1], [1, 2, 1], [1, 2, 1], [1, 2, 1], [1, 2, 1], [1, 2, 1]]
+verbose = 1
+logTolerance = -10
+workingDirectory = "run"
+maxProcesses = 1
+#nonzeroCoordinates =[3,7,14]
+algebraicTorusVariableGroups = [0,1,2]
+explorationOrder ="breadthFirst"
+targetDimensions = [[0,0,0]]

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>example-1-3</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<link rel="stylesheet" href="modest.css">
+<style>
+pre, code, pre code {
+  max-height: 400px;
+}
+</style>
+<h2 id="regenerating-in-mathbbp3-times-mathbbp1">Regenerating in <span class="math inline">\(\mathbb{P}^3 \times \mathbb{P}^1\)</span></h2>
+<h4 id="authors-colin-crowley-and-jose-israel-rodriguez">Authors: <a href="https://sites.google.com/view/colincrowley/home">Colin Crowley</a>, and <a href="https://www.math.wisc.edu/~jose/">Jose Israel Rodriguez</a></h4>
+<!-- We will demonstrate how multiregeneration.py handles noncomplete -->
+<!-- intersections using the classical example of the twisted cubic. -->
+<p>Here we compute the multidegree of a specific curve in <span class="math inline">\(\mathbb{P}^3 \times \mathbb{P}^1\)</span>.</p>
+<h3 id="defining-equations">Defining equations</h3>
+<p>Consider the curve in <span class="math inline">\(\mathbb{P}^3 \times \mathbb{P}^1\)</span> given as the points <span class="math inline">\([x_0:x_1:x_2:x_3] \times [y_0:y_1]\)</span> which satisfy the following multihomogeneus equations. <span class="math display">\[
+\begin{align*}
+    f_0 &amp;= x_0y_0 + x_1y_1\\
+    f_1 &amp;= x_1y_0 + x_2y_1\\
+    f_2 &amp;= x_2y_0 + x_3y_1\\
+\end{align*}
+\]</span></p>
+<h3 id="input-format">Input format</h3>
+<p>There are four files that comprise the input to multiregeneration.py</p>
+<h4 id="inputfile.py">inputFile.py</h4>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a>degrees <span class="op">=</span> [[<span class="dv">1</span>,<span class="dv">1</span>], [<span class="dv">1</span>,<span class="dv">1</span>], [<span class="dv">1</span>,<span class="dv">1</span>]]</span>
+<span id="cb1-2"><a href="#cb1-2"></a>verbose <span class="op">=</span> <span class="dv">1</span></span></code></pre></div>
+<p>This file contains the multidegrees of the defining equations, as well as additional options.</p>
+<p>The multidegree vector of each equations is <span class="math inline">\(\text{deg}(f_i) = (1,1)\)</span>, since each equation is linear in the variable group <span class="math inline">\(\{x_i\}\)</span> and also linear in the variable group <span class="math inline">\(\{y_i\}\)</span>. In general the variable <code>degree</code> should be set to <span class="math inline">\((\text{deg}(f_0), \text{deg}(f_1), \ldots, \text{deg}(f_{n-1}))\)</span>, which in this case is <span class="math inline">\(((1,1), (1,1), (1,1))\)</span>.</p>
+<p>The option <code>verbose=1</code> tells multiregeneration.py to display a progress update.</p>
+<h4 id="bertiniinput_variables">bertiniInput_variables</h4>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1"></a>hom_variable_group x_0, x_1, x_2, x_3;</span>
+<span id="cb2-2"><a href="#cb2-2"></a>hom_variable_group y_0, y_1;</span></code></pre></div>
+<p>Above are two homogeneous variable groups. Note that the order in which the variable groups are declared in <code>bertiniInput_variables</code> should reflect the order in which degrees of variable groups are listed in <code>inputFile.py</code>. So in this example, we have <span class="math inline">\(\text{deg}(x_0y_0^2) = (1,2)\)</span> and not <span class="math inline">\((2,1)\)</span>.</p>
+<h4 id="bertiniinput_equations">bertiniInput_equations</h4>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1"></a>function f0, f1, f2;</span>
+<span id="cb3-2"><a href="#cb3-2"></a></span>
+<span id="cb3-3"><a href="#cb3-3"></a>f0 = x_0*y_0 + x_1*y_1;</span>
+<span id="cb3-4"><a href="#cb3-4"></a>f1 = x_1*y_0 + x_2*y_1;</span>
+<span id="cb3-5"><a href="#cb3-5"></a>f2 = x_2*y_0 + x_3*y_1;</span></code></pre></div>
+<h4 id="bertiniinput_trackingoptions">bertiniInput_trackingOptions</h4>
+<pre><code>SecurityLevel:1;</code></pre>
+<h3 id="running-multiregeneration.py">Running multiregeneration.py</h3>
+<p>Make sure that the four files discussed above are in your current directory</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a>$ <span class="fu">ls</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="ex">bertiniInput_equations</span>  bertiniInput_trackingOptions  bertiniInput_variables  inputFile.py</span></code></pre></div>
+<p>and then run multiregeneration.py from this directory using python2.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="ex">python2</span> /path/to/multiregeneration.py</span></code></pre></div>
+<p>The output will look like the following.</p>
+<pre><code>################### Setup multiregeneration ####################
+
+These variable groups have been selected:
+hom_variable_group x_0,x_1,x_2,x_3;
+hom_variable_group y_0,y_1;
+
+Solutions are found in run/_completed_smooth_solutions and:
+depth &gt;= 0 satisfy f1 = 0
+depth &gt;= 1 satisfy f2 = 0
+depth &gt;= 2 satisfy f3 = 0
+
+Exploring tree in order depthFirst
+
+################### Starting multiregeneration ####################
+
+PROGRESS
+Depth 0: 2
+Depth 1: 3
+Depth 2: 4
+
+------------------------------------------------------------------
+| # of smooth isolated solutions | # of general linear equations |
+| found                          | added with variables in group |
+------------------------------------------------------------------
+                                 | 0  1
+----------------------------------------------------------------
+  3                                1  0  
+  1                                0  1  
+Done.</code></pre>
+<h3 id="a-witness-set">A witness set</h3>
+<p>While multiregeneration.py is running, it creates a directory called <code>run</code> where it stores the partial witness set data. This data is organized in the folder <code>run/_completed_smooth_solutions</code>.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1"></a>$ <span class="ex">tree</span> run/_completed_smooth_solutions/</span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="ex">run/_completed_smooth_solutions/</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a>├── <span class="ex">depth_0</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a>│   ├── <span class="ex">solution_tracking_depth_0_gens_1_dim_2_1_varGroup_1_regenLinear_1_pointId_310677581240_324230684877</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a>│   └── <span class="ex">solution_tracking_depth_0_gens_1_dim_3_0_varGroup_1_regenLinear_1_pointId_310677581240_838208509710</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a>├── <span class="ex">depth_1</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a>│   ├── <span class="ex">solution_tracking_depth_1_gens_1_1_dim_1_1_varGroup_1_regenLinear_1_pointId_324230684877_137429507871</span></span>
+<span id="cb8-8"><a href="#cb8-8"></a>│   ├── <span class="ex">solution_tracking_depth_1_gens_1_1_dim_2_0_varGroup_1_regenLinear_1_pointId_324230684877_165716873287</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a>│   └── <span class="ex">solution_tracking_depth_1_gens_1_1_dim_2_0_varGroup_1_regenLinear_1_pointId_838208509710_800758061260</span></span>
+<span id="cb8-10"><a href="#cb8-10"></a>└── <span class="ex">depth_2</span></span>
+<span id="cb8-11"><a href="#cb8-11"></a>    ├── <span class="ex">solution_tracking_depth_2_gens_1_1_1_dim_0_1_varGroup_1_regenLinear_1_pointId_137429507871_741856788249</span></span>
+<span id="cb8-12"><a href="#cb8-12"></a>    ├── <span class="ex">solution_tracking_depth_2_gens_1_1_1_dim_1_0_varGroup_1_regenLinear_1_pointId_137429507871_844460712299</span></span>
+<span id="cb8-13"><a href="#cb8-13"></a>    ├── <span class="ex">solution_tracking_depth_2_gens_1_1_1_dim_1_0_varGroup_1_regenLinear_1_pointId_165716873287_538383802898</span></span>
+<span id="cb8-14"><a href="#cb8-14"></a>    └── <span class="ex">solution_tracking_depth_2_gens_1_1_1_dim_1_0_varGroup_1_regenLinear_1_pointId_800758061260_520778168949</span></span>
+<span id="cb8-15"><a href="#cb8-15"></a></span>
+<span id="cb8-16"><a href="#cb8-16"></a><span class="ex">3</span> directories, 9 files</span></code></pre></div>
+<p>The folder <code>depth_k</code> contains the data of a witness set collection for the system <span class="math inline">\(f_0, \ldots, f_{k}\)</span>.</p>
+<p>Since this variety is a complete intersection <span class="math inline">\(\{f_0,f_1,f_2\}\)</span> is a witness system.</p>
+<p>The remainder of the data for a multihomogenious witness set is given by the intersection of the variety with linear spaces of codimensions <span class="math inline">\((0,1)\)</span> and <span class="math inline">\((1,0)\)</span>. In general the intersection of the variety <span class="math inline">\(f_0 = \ldots = f_{k} = 0\)</span> with a linear space of codimension <span class="math inline">\((n_0, \ldots, n_k)\)</span> is stored in those files of <code>depth_k</code> containing the string <code>dim_n0_..._nk</code>.</p>
+<p>In this example there is one intersection point with a linear space of codimension <span class="math inline">\((0,1)\)</span> which is the following.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1"></a>$ <span class="fu">cat</span> run/_completed_smooth_solutions/depth_2/solution_tracking_depth_2_gens_1_1_1_dim_0_1_varGroup_1_regenLinear_1_pointId_137429507871_741856788249 </span>
+<span id="cb9-2"><a href="#cb9-2"></a></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="ex">5.332349620238169e-04</span> -8.765489370690931e-06</span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="ex">6.575954243512093e-03</span> -7.206150765581929e-05</span>
+<span id="cb9-5"><a href="#cb9-5"></a><span class="ex">8.109347480602777e-02</span> -4.443113815765128e-04</span>
+<span id="cb9-6"><a href="#cb9-6"></a><span class="ex">1.000000000000000e+00</span> 0.000000000000000e+00</span>
+<span id="cb9-7"><a href="#cb9-7"></a><span class="ex">1.000000000000000e+00</span> 0.000000000000000e+00</span>
+<span id="cb9-8"><a href="#cb9-8"></a><span class="ex">-8.109347480602816e-02</span> 4.443113815766047e-04</span></code></pre></div>
+<p>There are three intersection points with a linear space of codimension <span class="math inline">\((1,0)\)</span> which are the following.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1"></a>$ <span class="fu">cat</span> run/_completed_smooth_solutions/depth_2/solution_tracking_depth_2_gens_1_1_1_dim_1_0*</span>
+<span id="cb10-2"><a href="#cb10-2"></a></span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="ex">1.000000000000000e+00</span> 0.000000000000000e+00</span>
+<span id="cb10-4"><a href="#cb10-4"></a><span class="ex">-4.664599700721133e-02</span> 7.343186944133681e-01</span>
+<span id="cb10-5"><a href="#cb10-5"></a><span class="ex">-5.370480959281567e-01</span> -6.850605524389063e-02</span>
+<span id="cb10-6"><a href="#cb10-6"></a><span class="ex">7.535642092149711e-02</span> -3.911689233912669e-01</span>
+<span id="cb10-7"><a href="#cb10-7"></a><span class="ex">4.664599700721150e-02</span> -7.343186944133679e-01</span>
+<span id="cb10-8"><a href="#cb10-8"></a><span class="ex">1.000000000000000e+00</span> 0.000000000000000e+00</span>
+<span id="cb10-9"><a href="#cb10-9"></a></span>
+<span id="cb10-10"><a href="#cb10-10"></a><span class="ex">1.000000000000000e+00</span> 0.000000000000000e+00</span>
+<span id="cb10-11"><a href="#cb10-11"></a><span class="ex">-5.107328344332152e-01</span> -2.361601134924009e-01</span>
+<span id="cb10-12"><a href="#cb10-12"></a><span class="ex">2.050764289634426e-01</span> 2.412294482880871e-01</span>
+<span id="cb10-13"><a href="#cb10-13"></a><span class="ex">-4.777049195451646e-02</span> -1.716346726115581e-01</span>
+<span id="cb10-14"><a href="#cb10-14"></a><span class="ex">5.107328344332150e-01</span> 2.361601134924012e-01</span>
+<span id="cb10-15"><a href="#cb10-15"></a><span class="ex">1.000000000000000e+00</span> 0.000000000000000e+00</span>
+<span id="cb10-16"><a href="#cb10-16"></a></span>
+<span id="cb10-17"><a href="#cb10-17"></a><span class="ex">1.000000000000000e+00</span> 0.000000000000000e+00</span>
+<span id="cb10-18"><a href="#cb10-18"></a><span class="ex">3.950360716359839e-01</span> -5.288454235775965e-01</span>
+<span id="cb10-19"><a href="#cb10-19"></a><span class="ex">-1.236239841453772e-01</span> -4.178260372655233e-01</span>
+<span id="cb10-20"><a href="#cb10-20"></a><span class="ex">-2.698013207162134e-01</span> -9.967837812889078e-02</span>
+<span id="cb10-21"><a href="#cb10-21"></a><span class="ex">-3.950360716359837e-01</span> 5.288454235775963e-01</span>
+<span id="cb10-22"><a href="#cb10-22"></a><span class="ex">1.000000000000000e+00</span> 0.000000000000000e+00</span></code></pre></div>
+<p>The linear equations defining these linear spaces are given in the <code>run/_tracking_information</code> as <code>l[0][2]</code> and <code>l[1][0]</code>.</p>
+</body>
+</html>

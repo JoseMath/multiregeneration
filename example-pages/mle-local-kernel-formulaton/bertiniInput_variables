@@ -1,0 +1,3 @@
+hom_variable_group p11, p12, p22, pH ; 
+hom_variable_group l11, l21, l31, LH ; 
+hom_variable_group lam11, lam12, lam13, lam22, lam23, lam33, LamH ; 
