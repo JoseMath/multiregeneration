@@ -6,7 +6,7 @@ pre, code, pre code {
 </style>
 ## Regenerating in $\mathbb{P}^3 \times \mathbb{P}^1$
 
-#### Authors: [Colin Crowley](https://sites.google.com/view/colincrowley/home), and [Jose Israel Rodriguez](https://www.math.wisc.edu/~jose/)
+#### Authors: [Colin Crowley](https://sites.google.com/view/colincrowley/home) and [Jose Israel Rodriguez](https://www.math.wisc.edu/~jose/)
 
 <!-- We will demonstrate how multiregeneration.py handles noncomplete --> 
 <!-- intersections using the classical example of the twisted cubic. -->
@@ -16,7 +16,7 @@ Here we compute the multidegree of a specific curve in $\mathbb{P}^3 \times \mat
 ### Defining equations
 Consider the curve in $\mathbb{P}^3 \times \mathbb{P}^1$ given as the 
 points $[x_0:x_1:x_2:x_3] \times [y_0:y_1]$ which satisfy the following 
-multihomogeneus equations.
+multihomogeneous equations.
 $$
 \begin{align*}
     f_0 &= x_0y_0 + x_1y_1\\
@@ -27,7 +27,7 @@ $$
 
 ### Input format
 
-There are four files that comprise the input to multiregeneration.py
+There are four files that comprise the input to multiregeneration.py.
 
 #### inputFile.py
 ```python
@@ -79,9 +79,9 @@ directory
 $ ls
 bertiniInput_equations  bertiniInput_trackingOptions  bertiniInput_variables  inputFile.py
 ```
-and then run multiregeneration.py from this directory using python2.
+and then run multiregeneration.py from this directory using python.
 ```bash
-python2 /path/to/multiregeneration.py
+python /path/to/multiregeneration.py
 ```
 The output will look like the following.
 ```
@@ -145,7 +145,7 @@ the system $f_0, \ldots, f_{k}$.
 Since this variety is a complete intersection $\{f_0,f_1,f_2\}$ is a 
 witness system. 
 
-The remainder of the data for a multihomogenious witness 
+The remainder of the data for a multihomogeneous witness 
 set is given by the intersection of the variety with linear spaces of 
 codimensions $(0,1)$ and $(1,0)$. In general the intersection of the variety 
 $f_0 = \ldots = f_{k} = 0$ with a linear space of codimension $(n_0, 

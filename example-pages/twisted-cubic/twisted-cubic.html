@@ -88,7 +88,7 @@ pre, code, pre code {
 }
 </style>
 <h2 id="regenerating-the-twisted-cubic">Regenerating the twisted cubic</h2>
-<h4 id="authors-colin-crowley-and-jose-israel-rodriguez">Authors: <a href="https://sites.google.com/view/colincrowley/home">Colin Crowley</a>, and <a href="https://www.math.wisc.edu/~jose/">Jose Israel Rodriguez</a></h4>
+<h4 id="authors-colin-crowley-and-jose-israel-rodriguez">Authors: <a href="https://sites.google.com/view/colincrowley/home">Colin Crowley</a> and <a href="https://www.math.wisc.edu/~jose/">Jose Israel Rodriguez</a></h4>
 <p>We will demonstrate how multiregeneration.py handles noncomplete intersections using the classical example of the twisted cubic.</p>
 <h3 id="defining-equations">Defining equations</h3>
 <p>The twisted cubic is the image of the map <span class="math display">\[\mathbb{P}^1 \to 
@@ -116,7 +116,7 @@ o2 = {ideal (- x  + x x , - x  + x x , - x x  + x x ), ideal (x , x )}
 o2 : List</code></pre>
 <p>We now demonstrate how to use multiregeneration.py to compute a witness set for the twisted cubic.</p>
 <h3 id="input-format">Input format</h3>
-<p>There are four files that comprise the input to multiregeneration.py</p>
+<p>There are four files that comprise the input to multiregeneration.py.</p>
 <h4 id="inputfile.py">inputFile.py</h4>
 <div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>degrees <span class="op">=</span> [[<span class="dv">2</span>], [<span class="dv">2</span>], [<span class="dv">2</span>]]</span>
 <span id="cb2-2"><a href="#cb2-2"></a>verbose <span class="op">=</span> <span class="dv">1</span></span></code></pre></div>
@@ -135,8 +135,8 @@ o2 : List</code></pre>
 <p>Make sure that the four files discussed above are in your current directory</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a>$ <span class="fu">ls</span></span>
 <span id="cb6-2"><a href="#cb6-2"></a><span class="ex">bertiniInput_equations</span>  bertiniInput_trackingOptions  bertiniInput_variables  inputFile.py</span></code></pre></div>
-<p>and then run multiregeneration.py from this directory using python2.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a><span class="ex">python2</span> /path/to/multiregeneration.py</span></code></pre></div>
+<p>and then run multiregeneration.py from this directory using python.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a><span class="ex">python</span> /path/to/multiregeneration.py</span></code></pre></div>
 <p>The output will look like the following.</p>
 <pre><code>################### Setup multiregeneration ####################
 

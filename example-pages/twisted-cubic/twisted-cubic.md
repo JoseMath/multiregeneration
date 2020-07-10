@@ -6,7 +6,7 @@ pre, code, pre code {
 </style>
 ## Regenerating the twisted cubic
 
-#### Authors: [Colin Crowley](https://sites.google.com/view/colincrowley/home), and [Jose Israel Rodriguez](https://www.math.wisc.edu/~jose/)
+#### Authors: [Colin Crowley](https://sites.google.com/view/colincrowley/home) and [Jose Israel Rodriguez](https://www.math.wisc.edu/~jose/)
 
 We will demonstrate how multiregeneration.py handles noncomplete 
 intersections using the classical example of the twisted cubic.
@@ -53,7 +53,7 @@ set for the twisted cubic.
 
 ### Input format
 
-There are four files that comprise the input to multiregeneration.py
+There are four files that comprise the input to multiregeneration.py.
 
 #### inputFile.py
 ```python
@@ -89,9 +89,9 @@ directory
 $ ls
 bertiniInput_equations  bertiniInput_trackingOptions  bertiniInput_variables  inputFile.py
 ```
-and then run multiregeneration.py from this directory using python2.
+and then run multiregeneration.py from this directory using python.
 ```bash
-python2 /path/to/multiregeneration.py
+python /path/to/multiregeneration.py
 ```
 The output will look like the following.
 ```

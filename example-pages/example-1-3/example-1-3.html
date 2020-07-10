@@ -88,12 +88,12 @@ pre, code, pre code {
 }
 </style>
 <h2 id="regenerating-in-mathbbp3-times-mathbbp1">Regenerating in <span class="math inline">\(\mathbb{P}^3 \times \mathbb{P}^1\)</span></h2>
-<h4 id="authors-colin-crowley-and-jose-israel-rodriguez">Authors: <a href="https://sites.google.com/view/colincrowley/home">Colin Crowley</a>, and <a href="https://www.math.wisc.edu/~jose/">Jose Israel Rodriguez</a></h4>
+<h4 id="authors-colin-crowley-and-jose-israel-rodriguez">Authors: <a href="https://sites.google.com/view/colincrowley/home">Colin Crowley</a> and <a href="https://www.math.wisc.edu/~jose/">Jose Israel Rodriguez</a></h4>
 <!-- We will demonstrate how multiregeneration.py handles noncomplete -->
 <!-- intersections using the classical example of the twisted cubic. -->
 <p>Here we compute the multidegree of a specific curve in <span class="math inline">\(\mathbb{P}^3 \times \mathbb{P}^1\)</span>.</p>
 <h3 id="defining-equations">Defining equations</h3>
-<p>Consider the curve in <span class="math inline">\(\mathbb{P}^3 \times \mathbb{P}^1\)</span> given as the points <span class="math inline">\([x_0:x_1:x_2:x_3] \times [y_0:y_1]\)</span> which satisfy the following multihomogeneus equations. <span class="math display">\[
+<p>Consider the curve in <span class="math inline">\(\mathbb{P}^3 \times \mathbb{P}^1\)</span> given as the points <span class="math inline">\([x_0:x_1:x_2:x_3] \times [y_0:y_1]\)</span> which satisfy the following multihomogeneous equations. <span class="math display">\[
 \begin{align*}
     f_0 &amp;= x_0y_0 + x_1y_1\\
     f_1 &amp;= x_1y_0 + x_2y_1\\
@@ -101,7 +101,7 @@ pre, code, pre code {
 \end{align*}
 \]</span></p>
 <h3 id="input-format">Input format</h3>
-<p>There are four files that comprise the input to multiregeneration.py</p>
+<p>There are four files that comprise the input to multiregeneration.py.</p>
 <h4 id="inputfile.py">inputFile.py</h4>
 <div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a>degrees <span class="op">=</span> [[<span class="dv">1</span>,<span class="dv">1</span>], [<span class="dv">1</span>,<span class="dv">1</span>], [<span class="dv">1</span>,<span class="dv">1</span>]]</span>
 <span id="cb1-2"><a href="#cb1-2"></a>verbose <span class="op">=</span> <span class="dv">1</span></span></code></pre></div>
@@ -124,8 +124,8 @@ pre, code, pre code {
 <p>Make sure that the four files discussed above are in your current directory</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a>$ <span class="fu">ls</span></span>
 <span id="cb5-2"><a href="#cb5-2"></a><span class="ex">bertiniInput_equations</span>  bertiniInput_trackingOptions  bertiniInput_variables  inputFile.py</span></code></pre></div>
-<p>and then run multiregeneration.py from this directory using python2.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="ex">python2</span> /path/to/multiregeneration.py</span></code></pre></div>
+<p>and then run multiregeneration.py from this directory using python.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="ex">python</span> /path/to/multiregeneration.py</span></code></pre></div>
 <p>The output will look like the following.</p>
 <pre><code>################### Setup multiregeneration ####################
 
@@ -176,7 +176,7 @@ Done.</code></pre>
 <span id="cb8-16"><a href="#cb8-16"></a><span class="ex">3</span> directories, 9 files</span></code></pre></div>
 <p>The folder <code>depth_k</code> contains the data of a witness set collection for the system <span class="math inline">\(f_0, \ldots, f_{k}\)</span>.</p>
 <p>Since this variety is a complete intersection <span class="math inline">\(\{f_0,f_1,f_2\}\)</span> is a witness system.</p>
-<p>The remainder of the data for a multihomogenious witness set is given by the intersection of the variety with linear spaces of codimensions <span class="math inline">\((0,1)\)</span> and <span class="math inline">\((1,0)\)</span>. In general the intersection of the variety <span class="math inline">\(f_0 = \ldots = f_{k} = 0\)</span> with a linear space of codimension <span class="math inline">\((n_0, \ldots, n_k)\)</span> is stored in those files of <code>depth_k</code> containing the string <code>dim_n0_..._nk</code>.</p>
+<p>The remainder of the data for a multihomogeneous witness set is given by the intersection of the variety with linear spaces of codimensions <span class="math inline">\((0,1)\)</span> and <span class="math inline">\((1,0)\)</span>. In general the intersection of the variety <span class="math inline">\(f_0 = \ldots = f_{k} = 0\)</span> with a linear space of codimension <span class="math inline">\((n_0, \ldots, n_k)\)</span> is stored in those files of <code>depth_k</code> containing the string <code>dim_n0_..._nk</code>.</p>
 <p>In this example there is one intersection point with a linear space of codimension <span class="math inline">\((0,1)\)</span> which is the following.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1"></a>$ <span class="fu">cat</span> run/_completed_smooth_solutions/depth_2/solution_tracking_depth_2_gens_1_1_1_dim_0_1_varGroup_1_regenLinear_1_pointId_137429507871_741856788249 </span>
 <span id="cb9-2"><a href="#cb9-2"></a></span>

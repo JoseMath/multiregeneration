@@ -11,7 +11,7 @@ pre, code, pre code {
 
 #### Page Author: [Colin Crowley](https://sites.google.com/view/colincrowley/home)
 
-This example of multiregeneration is discusses as example 4.12 in [this 
+This example of multiregeneration is discussed as example 4.12 in [this 
 paper](https://arxiv.org/abs/1507.07069).
 
 ### Defining equations
