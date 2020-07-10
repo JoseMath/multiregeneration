@@ -47,7 +47,7 @@ reflected in witness set.
 
 ### Input format
 
-There are four files that comprise the input to multiregeneration.py
+There are four files that comprise the input to multiregeneration.py.
 
 #### inputFile.py
 ```python

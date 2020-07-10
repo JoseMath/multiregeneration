@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>nonzero-coordinates</title>
+  <title>prune-by-point</title>
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -87,30 +87,38 @@ pre, code, pre code {
   max-height: 400px;
 }
 </style>
-<h2 id="use-of-nonzerocoordinates">Use of <code>nonzeroCoordinates</code></h2>
+<h2 id="saturation-using-prunebypoint">Saturation using <code>pruneByPoint</code></h2>
 <h4 id="authors-colin-crowley-and-jose-israel-rodriguez">Authors: <a href="https://sites.google.com/view/colincrowley/home">Colin Crowley</a> and <a href="https://www.math.wisc.edu/~jose/">Jose Israel Rodriguez</a></h4>
-<p>Here we demonstrate how to use the user defined variable <code>nonzeroCoordinates</code>. If, in the relevant application, solutions with zeros in certain coordinates should be ignored, the user may specify this and <code>multiregeneration.py</code> will save time by not tracking these points.</p>
+<p>It is often the case that the solution set to a system of polynomials contains many irreducible components, only some of which are of interest. We will demonstrate how to saturate out unwanted components using the user defined method <code>pruneByPoint</code>. We view regeneration as analogous to exploring a tree (or a graph), and so we call this method <code>pruneByPoint</code> because it “prunes” a branch of the search tree.</p>
 <h3 id="defining-equations">Defining equations</h3>
-<p>Consider the multiaffine variety consisting of points <span class="math inline">\((x,y,z) \in \mathbb{C} \times \mathbb{C}^2\)</span> defined by the following equation.</p>
+<p>Consider the variety consisting of points <span class="math inline">\((x,y,z) \in \mathbb{C}^3\)</span> defined by the following equation.</p>
 <p><span class="math display">\[
-x*y*z = 0
+(x-y)(x^2+y^2+z^2) = 0
 \]</span></p>
-<p>This variety consists of the union of the three coordinate hyperplanes. Say we would like a witness set for all components which do not lie in either of the coordinate planes <span class="math inline">\(x = 0\)</span> and <span class="math inline">\(y = 0\)</span>.</p>
+<p>This variety consists of the union of the quadratic hypersurface <span class="math inline">\(x^2 + y^2 + z^2 = 0\)</span> together with the hyperplane <span class="math inline">\(x - y = 0\)</span>. Say we want a witness set for the component <span class="math inline">\(x^2 + y^2 + z^2 = 0\)</span>.</p>
 <h3 id="input-format">Input format</h3>
 <p>There are four files that comprise the input to multiregeneration.py.</p>
 <h4 id="inputfile.py">inputFile.py</h4>
-<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a>degrees <span class="op">=</span> [[<span class="dv">1</span>,<span class="dv">2</span>]]</span>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a>degrees <span class="op">=</span> [[<span class="dv">3</span>]]</span>
 <span id="cb1-2"><a href="#cb1-2"></a>verbose <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb1-3"><a href="#cb1-3"></a>nonzeroCoordinates <span class="op">=</span> [<span class="dv">0</span>,<span class="dv">1</span>]</span></code></pre></div>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="kw">def</span> pruneByPoint(coordinates):</span>
+<span id="cb1-4"><a href="#cb1-4"></a>    <span class="co"># If x-y is satisfied to within a </span></span>
+<span id="cb1-5"><a href="#cb1-5"></a>    <span class="co"># tolerance of 1e-10, then the point will lie on the &#39;extra&#39; </span></span>
+<span id="cb1-6"><a href="#cb1-6"></a>    <span class="co"># component, and should be pruned.</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a></span>
+<span id="cb1-8"><a href="#cb1-8"></a>    <span class="cf">if</span> <span class="bu">abs</span>(coordinates[<span class="dv">0</span>] <span class="op">-</span> coordinates[<span class="dv">1</span>]) <span class="op">&lt;</span> <span class="fl">1e-10</span>:</span>
+<span id="cb1-9"><a href="#cb1-9"></a>      <span class="cf">return</span> <span class="va">True</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a>    <span class="cf">else</span>:</span>
+<span id="cb1-11"><a href="#cb1-11"></a>      <span class="cf">return</span> <span class="va">False</span></span></code></pre></div>
 <p>This file contains the multidegrees of the defining equations, as well as additional options. The command <code>verbose=1</code> tells multiregeneration.py to display a progress update.</p>
-<p>The list <code>nonzeroCoordinates</code> tells <code>multiregeneration.py</code> that all points with zeros in the first two coordinates should be thrown away.</p>
+<p>The method prune by point is define by the user. It returns <code>True</code> if the given point lies on an unwanted component, and <code>False</code> otherwise. The argument <code>coordinates</code> is a list of complex numbers representing the coordinates of a point. (The coordinates are not separated into variable groups.)</p>
+<p>In this example, a point is ignored if it satisfies <span class="math inline">\(x-y\)</span> to within a tolerance of <span class="math inline">\(10^{-10}\)</span>.</p>
 <h4 id="bertiniinput_variables">bertiniInput_variables</h4>
-<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1"></a>variable_group x;</span>
-<span id="cb2-2"><a href="#cb2-2"></a>variable_group y,z;</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1"></a>variable_group x,y,z;</span></code></pre></div>
 <h4 id="bertiniinput_equations">bertiniInput_equations</h4>
 <div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1"></a>function f;</span>
 <span id="cb3-2"><a href="#cb3-2"></a></span>
-<span id="cb3-3"><a href="#cb3-3"></a>f = x*y*z;</span></code></pre></div>
+<span id="cb3-3"><a href="#cb3-3"></a>f = (x-y)*(x^<span class="dv">2</span>+y^<span class="dv">2</span>+z^<span class="dv">2</span>);</span></code></pre></div>
 <h4 id="bertiniinput_trackingoptions">bertiniInput_trackingOptions</h4>
 <pre><code>SecurityLevel:1;</code></pre>
 <h3 id="running-multiregeneration.py">Running multiregeneration.py</h3>
@@ -123,8 +131,7 @@ x*y*z = 0
 <pre><code>################### Setup multiregeneration ####################
 
 These variable groups have been selected:
-variable_group x;
-variable_group y,z;
+variable_group x,y,z;
 
 Solutions are found in run/_completed_smooth_solutions and:
 depth &gt;= 0 satisfy f = 0
@@ -134,29 +141,34 @@ Exploring tree in order depthFirst
 ################### Starting multiregeneration ####################
 
 PROGRESS
-Depth 0: 1
+Depth 0: 2
 
 ------------------------------------------------------------------
 | # of smooth isolated solutions | # of general linear equations |
 | found                          | added with variables in group |
 ------------------------------------------------------------------
-                                 | 0  1
+                                 | 0
 ----------------------------------------------------------------
-  1                                1  1  
+  2                                2  
 Done.</code></pre>
 <h3 id="a-witness-set">A witness set</h3>
 <p>While multiregeneration.py is running, it creates a directory called <code>run</code> where it stores the partial witness set data. This data is organized in the folder <code>run/_completed_smooth_solutions</code>.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1"></a>$ <span class="ex">tree</span> run/_completed_smooth_solutions/</span>
 <span id="cb8-2"><a href="#cb8-2"></a><span class="ex">run/_completed_smooth_solutions/</span></span>
 <span id="cb8-3"><a href="#cb8-3"></a>└── <span class="ex">depth_0</span></span>
-<span id="cb8-4"><a href="#cb8-4"></a>    └── <span class="ex">solution_tracking_depth_0_gens_1_dim_1_1_varGroup_1_regenLinear_1_pointId_420399841269_434492049963</span></span>
-<span id="cb8-5"><a href="#cb8-5"></a></span>
-<span id="cb8-6"><a href="#cb8-6"></a><span class="ex">1</span> directory, 1 file</span></code></pre></div>
-<p>The folder <code>depth_0</code> contains the point of intersection of <span class="math inline">\(z = 0\)</span> and the linear equation <code>l[1][0]</code>, which can be found in <code>run/_tracking_information</code>. This point is the following.</p>
+<span id="cb8-4"><a href="#cb8-4"></a>    ├── <span class="ex">solution_tracking_depth_0_gens_1_dim_2_varGroup_0_regenLinear_2_pointId_164244926985_420259138669</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a>    └── <span class="ex">solution_tracking_depth_0_gens_1_dim_2_varGroup_0_regenLinear_2_pointId_164244926985_467325455839</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a></span>
+<span id="cb8-7"><a href="#cb8-7"></a><span class="ex">1</span> directory, 2 files</span></code></pre></div>
+<p>The folder <code>depth_0</code> contains the two point on intersection of <span class="math inline">\(x^2+y^2+z^2 = 0\)</span> and the linear equation <code>l[0][0]</code>, which can be found in <code>run/_tracking_information</code>. The two points are the following.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1"></a>$ <span class="fu">cat</span> run/_completed_smooth_solutions/depth_0/*</span>
 <span id="cb9-2"><a href="#cb9-2"></a></span>
-<span id="cb9-3"><a href="#cb9-3"></a><span class="ex">3.394525056706128e-01</span> 4.060281681158974e-01</span>
-<span id="cb9-4"><a href="#cb9-4"></a><span class="ex">1.326130072769161e-01</span> -3.428814811548347e-01</span>
-<span id="cb9-5"><a href="#cb9-5"></a><span class="ex">8.117682338556469e-17</span> 4.004079930720481e-17</span></code></pre></div>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="ex">1.118119938371418e+00</span> 1.000657557857476e+00</span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="ex">-1.346697422340464e+00</span> 3.867478121940165e-01</span>
+<span id="cb9-5"><a href="#cb9-5"></a><span class="ex">4.142097786351300e-01</span> -1.443768148389819e+00</span>
+<span id="cb9-6"><a href="#cb9-6"></a></span>
+<span id="cb9-7"><a href="#cb9-7"></a><span class="ex">-7.993693379292369e-01</span> -5.015364124123406e-01</span>
+<span id="cb9-8"><a href="#cb9-8"></a><span class="ex">-4.938099911246115e-01</span> 3.771925837430750e-01</span>
+<span id="cb9-9"><a href="#cb9-9"></a><span class="ex">-2.843431885126573e-01</span> 7.549024283993541e-01</span></code></pre></div>
 </body>
 </html>

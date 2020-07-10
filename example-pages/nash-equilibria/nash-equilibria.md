@@ -6,7 +6,7 @@ pre, code, pre code {
 </style>
 ## Finding Nash Equilibria
 
-#### Authors: [Colin Crowley](https://sites.google.com/view/colincrowley/home), [Jose Israel Rodriguez](https://www.math.wisc.edu/~jose/), Jacob Weiker, and Jacob Zoromski
+#### Authors: [Colin Crowley](https://sites.google.com/view/colincrowley/home) [Jose Israel Rodriguez](https://www.math.wisc.edu/~jose/), Jacob Weiker, and Jacob Zoromski
 
 For a derivation of this system and how to solve it with 
 polyhedral homotopy methods ([PHCpack](https://homepages.math.uic.edu/~jan/PHCpack/phcpack.html)), see Chapter 6 of [Sturmfels2002](https://math.berkeley.edu/~bernd/cbms.pdf). 
@@ -38,7 +38,7 @@ contains the set of mixed Nash equilibria.
 
 ### Input format
 
-There are four files that comprise the input to multiregeneration.py
+There are four files that comprise the input to multiregeneration.py.
 
 #### inputFile.py
 ```python

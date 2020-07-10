@@ -6,7 +6,7 @@ pre, code, pre code {
 </style>
 ## Use of `targetDimensions`
 
-#### Authors: [Colin Crowley](https://sites.google.com/view/colincrowley/home), and [Jose Israel Rodriguez](https://www.math.wisc.edu/~jose/)
+#### Authors: [Colin Crowley](https://sites.google.com/view/colincrowley/home) and [Jose Israel Rodriguez](https://www.math.wisc.edu/~jose/)
 
 Here we demonstrate how to use the user defined variable 
 `targetDimensions`. This can be used when we have equations defining a 
@@ -36,7 +36,7 @@ when a general value is chosen for $x$.
 
 ### Input format
 
-There are four files that comprise the input to multiregeneration.py
+There are four files that comprise the input to multiregeneration.py.
 
 #### inputFile.py
 ```python
