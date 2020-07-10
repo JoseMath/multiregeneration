@@ -20,15 +20,15 @@ Consider the multiaffine variety consisting of points $(x,y,z) \in
 \mathbb{C} \times \mathbb{C}^2$ defined by the following equation.
 
 $$
-x*y*z = 0
+xyz = 0
 $$
 
 Variable group number zero is $x$, and variable group number one is 
 $y,z$.
 
 This variety consists of the union of the three coordinate hyperplanes. 
-Say we would like a witness set for all components on which none of the 
-coordinate functions in variable group one are not uniformly zero. 
+Say we are interested in components of the solution set where the 
+variables $\{y,z\}$ achieve nonzero values.
 (In this example, the plane $x = 0$ is the only such component.)
 
 
@@ -47,7 +47,7 @@ as additional options. The command `verbose=1` tells
 multiregeneration.py to display a progress update.
 
 The list `algebraicTorusVariableGroups` tells `multiregeneration.py` that all 
-points with zeros in the second variable group should be thrown away.
+points with zeros in variable group one (i.e. $\{y,z\}$) should be thrown away.
 
 #### bertiniInput_variables
 ```c
