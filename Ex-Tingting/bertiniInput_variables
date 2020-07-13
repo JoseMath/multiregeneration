@@ -1,0 +1,5 @@
+variable_group x11, x12, x13, x22, x23, x33;
+variable_group y1,y2;
+variable_group r;
+variable_group s11, s12, s13, s22, s23, s33;
+hom_variable_group lamb1, lamb2, lamb3, lamb4, lamb5, lamb6, lamb7, lamb8, lamb9, lamb10, lamb11, lamb12, lamb13, lamb14;
