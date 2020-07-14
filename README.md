@@ -125,16 +125,16 @@ Example pages
 -----------------
 Here are several pages which demonstrate features and applications.
 
- - Examples of computing witness sets: [here](https://colinwcrowley.github.io/multiregeneration-tutorial/example-pages/HR-example-4-12/HR-example-4-12.html) and also [here](https://colinwcrowley.github.io/multiregeneration-tutorial/example-pages/example-1-3/example-1-3.html).
+ - Examples of computing witness sets: [here](https://josemath.github.io/multiregeneration/example-pages/HR-example-4-12/HR-example-4-12.html) and also [here](https://josemath.github.io/multiregeneration/example-pages/example-1-3/example-1-3.html).
    
- - [A witness set for a noncomplete intersection](https://colinwcrowley.github.io/multiregeneration-tutorial/example-pages/twisted-cubic/twisted-cubic.html)
+ - [A witness set for a noncomplete intersection](https://josemath.github.io/multiregeneration/example-pages/twisted-cubic/twisted-cubic.html)
 
- - Excluding solutions with zero coordinates: [here](https://colinwcrowley.github.io/multiregeneration-tutorial/example-pages/nonzero-coordinates/nonzero-coordinates.html) and also [here.](https://colinwcrowley.github.io/multiregeneration-tutorial/example-pages/algebraic-torus-variable-groups/algebraic-torus-variable-groups.html)
+ - Excluding solutions with zero coordinates: [here](https://josemath.github.io/multiregeneration/example-pages/nonzero-coordinates/nonzero-coordinates.html) and also [here.](https://josemath.github.io/multiregeneration/example-pages/algebraic-torus-variable-groups/algebraic-torus-variable-groups.html)
  
- - [Saturating by an equation](https://colinwcrowley.github.io/multiregeneration-tutorial/example-pages/prune-by-point/prune-by-point.html)
+ - [Saturating by an equation](https://josemath.github.io/multiregeneration/example-pages/prune-by-point/prune-by-point.html)
  
- - [Computing multidegree coefficients in only certain dimensions](https://colinwcrowley.github.io/multiregeneration-tutorial/example-pages/target-dimensions/target-dimensions.html)
+ - [Computing multidegree coefficients in only certain dimensions](https://josemath.github.io/multiregeneration/example-pages/target-dimensions/target-dimensions.html)
 
- - [An application to deep linear networks](https://colinwcrowley.github.io/multiregeneration-tutorial/example-pages/deep-linear-networks/deep-linear-networks.html)
+ - [An application to deep linear networks](https://josemath.github.io/multiregeneration/example-pages/deep-linear-networks/deep-linear-networks.html)
 
- - [Computing Nash equilibria](https://colinwcrowley.github.io/multiregeneration-tutorial/example-pages/nash-equilibria/nash-equilibria.html)
+ - [Computing Nash equilibria](https://josemath.github.io/multiregeneration/example-pages/nash-equilibria/nash-equilibria.html)
