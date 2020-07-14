@@ -142,29 +142,29 @@ organized in the folder `run/_completed_smooth_solutions`.
 $ tree run/_completed_smooth_solutions/
 run/_completed_smooth_solutions/
 ├── depth_0
-│   └── solution_tracking_depth_0_gens_1_dim_1_2_varGroup_1_regenLinear_1_pointId_999166306418_123674091215
+│   └── solution_tracking_depth_0_gens_1_dim_1_2_varGroup_0_regenLinear_0_pointId_794909670162_531158193411
 ├── depth_1
-│   └── solution_tracking_depth_1_gens_1_1_dim_1_1_varGroup_1_regenLinear_1_pointId_123674091215_571837852155
+│   └── solution_tracking_depth_1_gens_1_1_dim_1_1_varGroup_1_regenLinear_0_pointId_531158193411_577030324551
 ├── depth_2
-│   ├── solution_tracking_depth_2_gens_1_1_1_dim_0_1_varGroup_1_regenLinear_1_pointId_571837852155_248959257075
-│   ├── solution_tracking_depth_2_gens_1_1_1_dim_0_1_varGroup_1_regenLinear_1_pointId_571837852155_467837258827
-│   └── solution_tracking_depth_2_gens_1_1_1_dim_1_0_varGroup_1_regenLinear_1_pointId_571837852155_713170692613
+│   ├── solution_tracking_depth_2_gens_1_1_1_dim_0_1_varGroup_0_regenLinear_0_pointId_577030324551_739361615029
+│   ├── solution_tracking_depth_2_gens_1_1_1_dim_0_1_varGroup_0_regenLinear_1_pointId_577030324551_427544025629
+│   └── solution_tracking_depth_2_gens_1_1_1_dim_1_0_varGroup_1_regenLinear_0_pointId_577030324551_418472866434
 ├── depth_3
-│   ├── solution_vanishing_depth_3_gens_1_1_1_0_dim_0_1_pointId_248959257075_248959257075
-│   ├── solution_vanishing_depth_3_gens_1_1_1_0_dim_0_1_pointId_467837258827_467837258827
-│   └── solution_vanishing_depth_3_gens_1_1_1_0_dim_1_0_pointId_713170692613_713170692613
+│   ├── solution_vanishing_depth_3_gens_1_1_1_0_dim_0_1_pointId_427544025629_427544025629
+│   ├── solution_vanishing_depth_3_gens_1_1_1_0_dim_0_1_pointId_739361615029_739361615029
+│   └── solution_vanishing_depth_3_gens_1_1_1_0_dim_1_0_pointId_418472866434_418472866434
 ├── depth_4
-│   ├── solution_tracking_depth_4_gens_1_1_1_0_1_dim_0_0_varGroup_1_regenLinear_1_pointId_248959257075_473775690656
-│   ├── solution_tracking_depth_4_gens_1_1_1_0_1_dim_0_0_varGroup_1_regenLinear_1_pointId_248959257075_917556880335
-│   ├── solution_tracking_depth_4_gens_1_1_1_0_1_dim_0_0_varGroup_1_regenLinear_1_pointId_467837258827_132778330808
-│   ├── solution_tracking_depth_4_gens_1_1_1_0_1_dim_0_0_varGroup_1_regenLinear_1_pointId_467837258827_870108075393
-│   └── solution_tracking_depth_4_gens_1_1_1_0_1_dim_0_0_varGroup_1_regenLinear_1_pointId_713170692613_601058697586
+│   ├── solution_tracking_depth_4_gens_1_1_1_0_1_dim_0_0_varGroup_0_regenLinear_0_pointId_418472866434_978338394354
+│   ├── solution_tracking_depth_4_gens_1_1_1_0_1_dim_0_0_varGroup_1_regenLinear_0_pointId_427544025629_722246884416
+│   ├── solution_tracking_depth_4_gens_1_1_1_0_1_dim_0_0_varGroup_1_regenLinear_0_pointId_739361615029_673190960791
+│   ├── solution_tracking_depth_4_gens_1_1_1_0_1_dim_0_0_varGroup_1_regenLinear_1_pointId_427544025629_456312849730
+│   └── solution_tracking_depth_4_gens_1_1_1_0_1_dim_0_0_varGroup_1_regenLinear_1_pointId_739361615029_503555277244
 └── depth_5
-    ├── solution_vanishing_depth_5_gens_1_1_1_0_1_0_dim_0_0_pointId_132778330808_132778330808
-    ├── solution_vanishing_depth_5_gens_1_1_1_0_1_0_dim_0_0_pointId_473775690656_473775690656
-    ├── solution_vanishing_depth_5_gens_1_1_1_0_1_0_dim_0_0_pointId_601058697586_601058697586
-    ├── solution_vanishing_depth_5_gens_1_1_1_0_1_0_dim_0_0_pointId_870108075393_870108075393
-    └── solution_vanishing_depth_5_gens_1_1_1_0_1_0_dim_0_0_pointId_917556880335_917556880335
+    ├── solution_vanishing_depth_5_gens_1_1_1_0_1_0_dim_0_0_pointId_456312849730_456312849730
+    ├── solution_vanishing_depth_5_gens_1_1_1_0_1_0_dim_0_0_pointId_503555277244_503555277244
+    ├── solution_vanishing_depth_5_gens_1_1_1_0_1_0_dim_0_0_pointId_673190960791_673190960791
+    ├── solution_vanishing_depth_5_gens_1_1_1_0_1_0_dim_0_0_pointId_722246884416_722246884416
+    └── solution_vanishing_depth_5_gens_1_1_1_0_1_0_dim_0_0_pointId_978338394354_978338394354
 
 6 directories, 18 files
 ```

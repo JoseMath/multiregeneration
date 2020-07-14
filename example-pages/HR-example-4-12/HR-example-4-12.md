@@ -134,19 +134,19 @@ organized in the folder `run/_completed_smooth_solutions`.
 $ tree run/_completed_smooth_solutions/
 run/_completed_smooth_solutions/
 ├── depth_0
-│   ├── solution_tracking_depth_0_gens_1_dim_1_2_varGroup_1_regenLinear_2_pointId_54792792578_658233741551
-│   └── solution_tracking_depth_0_gens_1_dim_2_1_varGroup_1_regenLinear_2_pointId_54792792578_874712251131
+│   ├── solution_tracking_depth_0_gens_1_dim_1_2_varGroup_0_regenLinear_0_pointId_477831161990_105681537259
+│   └── solution_tracking_depth_0_gens_1_dim_2_1_varGroup_1_regenLinear_0_pointId_477831161990_242318065846
 ├── depth_1
-│   ├── solution_tracking_depth_1_gens_1_1_dim_0_2_varGroup_1_regenLinear_2_pointId_658233741551_657024184119
-│   ├── solution_tracking_depth_1_gens_1_1_dim_1_1_varGroup_1_regenLinear_2_pointId_658233741551_739471123422
-│   ├── solution_tracking_depth_1_gens_1_1_dim_1_1_varGroup_1_regenLinear_2_pointId_874712251131_189644992126
-│   └── solution_tracking_depth_1_gens_1_1_dim_2_0_varGroup_1_regenLinear_2_pointId_874712251131_70371161626
+│   ├── solution_tracking_depth_1_gens_1_1_dim_0_2_varGroup_0_regenLinear_0_pointId_105681537259_955330768129
+│   ├── solution_tracking_depth_1_gens_1_1_dim_1_1_varGroup_0_regenLinear_0_pointId_242318065846_282410140261
+│   ├── solution_tracking_depth_1_gens_1_1_dim_1_1_varGroup_1_regenLinear_0_pointId_105681537259_756772977716
+│   └── solution_tracking_depth_1_gens_1_1_dim_2_0_varGroup_1_regenLinear_0_pointId_242318065846_918380047980
 └── depth_2
-    ├── solution_tracking_depth_2_gens_1_1_1_dim_0_1_varGroup_1_regenLinear_2_pointId_189644992126_612394311054
-    ├── solution_tracking_depth_2_gens_1_1_1_dim_0_1_varGroup_1_regenLinear_2_pointId_657024184119_706648938111
-    ├── solution_tracking_depth_2_gens_1_1_1_dim_1_0_varGroup_1_regenLinear_2_pointId_189644992126_186449096001
-    ├── solution_vanishing_depth_2_gens_1_1_0_dim_1_1_pointId_739471123422_739471123422
-    └── solution_vanishing_depth_2_gens_1_1_0_dim_2_0_pointId_70371161626_70371161626
+    ├── solution_tracking_depth_2_gens_1_1_1_dim_0_1_varGroup_0_regenLinear_0_pointId_282410140261_160719938471
+    ├── solution_tracking_depth_2_gens_1_1_1_dim_0_1_varGroup_1_regenLinear_0_pointId_955330768129_514794431021
+    ├── solution_tracking_depth_2_gens_1_1_1_dim_1_0_varGroup_1_regenLinear_1_pointId_282410140261_580840922751
+    ├── solution_vanishing_depth_2_gens_1_1_0_dim_1_1_pointId_756772977716_756772977716
+    └── solution_vanishing_depth_2_gens_1_1_0_dim_2_0_pointId_918380047980_918380047980
 
 3 directories, 11 files
 ```

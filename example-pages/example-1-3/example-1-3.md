@@ -124,17 +124,17 @@ organized in the folder `run/_completed_smooth_solutions`.
 $ tree run/_completed_smooth_solutions/
 run/_completed_smooth_solutions/
 ├── depth_0
-│   ├── solution_tracking_depth_0_gens_1_dim_2_1_varGroup_1_regenLinear_1_pointId_310677581240_324230684877
-│   └── solution_tracking_depth_0_gens_1_dim_3_0_varGroup_1_regenLinear_1_pointId_310677581240_838208509710
+│   ├── solution_tracking_depth_0_gens_1_dim_2_1_varGroup_0_regenLinear_0_pointId_901259670772_104705144887
+│   └── solution_tracking_depth_0_gens_1_dim_3_0_varGroup_1_regenLinear_0_pointId_901259670772_430601512091
 ├── depth_1
-│   ├── solution_tracking_depth_1_gens_1_1_dim_1_1_varGroup_1_regenLinear_1_pointId_324230684877_137429507871
-│   ├── solution_tracking_depth_1_gens_1_1_dim_2_0_varGroup_1_regenLinear_1_pointId_324230684877_165716873287
-│   └── solution_tracking_depth_1_gens_1_1_dim_2_0_varGroup_1_regenLinear_1_pointId_838208509710_800758061260
+│   ├── solution_tracking_depth_1_gens_1_1_dim_1_1_varGroup_0_regenLinear_0_pointId_104705144887_317932376878
+│   ├── solution_tracking_depth_1_gens_1_1_dim_2_0_varGroup_0_regenLinear_0_pointId_430601512091_339809936363
+│   └── solution_tracking_depth_1_gens_1_1_dim_2_0_varGroup_1_regenLinear_0_pointId_104705144887_546599719650
 └── depth_2
-    ├── solution_tracking_depth_2_gens_1_1_1_dim_0_1_varGroup_1_regenLinear_1_pointId_137429507871_741856788249
-    ├── solution_tracking_depth_2_gens_1_1_1_dim_1_0_varGroup_1_regenLinear_1_pointId_137429507871_844460712299
-    ├── solution_tracking_depth_2_gens_1_1_1_dim_1_0_varGroup_1_regenLinear_1_pointId_165716873287_538383802898
-    └── solution_tracking_depth_2_gens_1_1_1_dim_1_0_varGroup_1_regenLinear_1_pointId_800758061260_520778168949
+    ├── solution_tracking_depth_2_gens_1_1_1_dim_0_1_varGroup_0_regenLinear_0_pointId_317932376878_302519529756
+    ├── solution_tracking_depth_2_gens_1_1_1_dim_1_0_varGroup_0_regenLinear_0_pointId_339809936363_931396092590
+    ├── solution_tracking_depth_2_gens_1_1_1_dim_1_0_varGroup_0_regenLinear_0_pointId_546599719650_142535662716
+    └── solution_tracking_depth_2_gens_1_1_1_dim_1_0_varGroup_1_regenLinear_0_pointId_317932376878_657921025737
 
 3 directories, 9 files
 ```
@@ -156,8 +156,7 @@ In this example there is one intersection point
 with a linear space of codimension $(0,1)$ which is the following.
 
 ```bash
-$ cat run/_completed_smooth_solutions/depth_2/solution_tracking_depth_2_gens_1_1_1_dim_0_1_varGroup_1_regenLinear_1_pointId_137429507871_741856788249 
-
+$ cat run/_completed_smooth_solutions/solution_tracking_depth_2_gens_1_1_1_dim_1_0_varGroup_1_regenLinear_0_pointId_317932376878_657921025737
 5.332349620238169e-04 -8.765489370690931e-06
 6.575954243512093e-03 -7.206150765581929e-05
 8.109347480602777e-02 -4.443113815765128e-04

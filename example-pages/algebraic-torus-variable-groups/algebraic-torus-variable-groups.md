@@ -110,10 +110,10 @@ While multiregeneration.py is running, it creates a directory called
 `run` where it stores the partial witness set data. This data is 
 organized in the folder `run/_completed_smooth_solutions`.
 ```bash
-$ tree run/_completed_smooth_solutions/
+$ tree run/_completed_smooth_solutions
 run/_completed_smooth_solutions/
 └── depth_0
-    └── solution_tracking_depth_0_gens_1_dim_0_2_varGroup_1_regenLinear_1_pointId_76815293686_175634001278
+    └── solution_tracking_depth_0_gens_1_dim_0_2_varGroup_0_regenLinear_0_pointId_866084791946_158664827564
 
 1 directory, 1 file
 ```
