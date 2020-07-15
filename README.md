@@ -142,7 +142,13 @@ Here are several pages which demonstrate features and applications.
 Contributing an example page
 ----------------------------
 
-To create an example page, follow these steps:
+The example pages are written in the easy to learn markup language
+[Markdown](https://www.markdownguide.org/basic-syntax), and then 
+converted into html via [Pandoc](https://pandoc.org/). 
+
+To create your own example page, follow these seven steps. 
+The first three steps involve Markdown and you can take a look at the ``.md`` files in the other examples to get a better idea of how it works.
+If you get stuck at steps 4-6, then feel free to jump to step 7. Afterwhich, we can try to help.
 
   1. [Fork](https://docs.github.com/en/enterprise/2.13/user/articles/fork-a-repo) this repository.
   2. Create a new folder in the directory `example-pages`.
@@ -152,19 +158,14 @@ To create an example page, follow these steps:
   ```
 
   3. Create a markdown file in the new directory, and copy the 
-     `modest.css` (or whatever stylesheet you want) to this directory.
+     `modest.css` (we welcome other stylesheet choices as well) to this directory.
   ```
   $ cp twisted-cubic/modest.css our-new-example
   $ cd our-new-example
   $ vim our-new-example.md #Open a new file with your favorite editor.
   ```
-  The example pages are written in 
-  [Markdown](https://www.markdownguide.org/basic-syntax), and then 
-  converted into html via [Pandoc](https://pandoc.org/). Markdown syntax 
-  is easy to learn, and you can take a look at the ``.md`` files in the 
-  other examples to get an idea of how it works. 
 
-  In the `.md` file you created, add the following text to get started. 
+  4. In the `.md` file you created, add the following text to get started. 
   The first few lines before `## Our new example` will style this page 
   to look like the others.
 
@@ -185,15 +186,15 @@ To create an example page, follow these steps:
   Here is an example of using latex syntax $$e^{2 \pi i} = 1$$.
   ```
   
-  4. Download and install [Pandoc](https://pandoc.org/). Then use pandoc 
+  5. Download and install [Pandoc](https://pandoc.org/). Then use pandoc 
      to convert the `.md` file into a `.html` file.
     ```bash
     $ pandoc our-new-example.md -s --mathjax -o our-new-example.html
     ```
     To read more about Pandoc, see the demos page (in particular example 17) [here](https://pandoc.org/demos.html).
-  5. Once you see a file named `our-new-example.html`, you can open it 
+  6. Once you see a file named `our-new-example.html`, you can open it 
      in your web browser to check how the page looks. You can now continue to edit 
      the `.md` file, and when you are done, convert it to html using 
      Pandoc.
-  6. Once you are happy with the example page, commit your changes, and 
+  7. Once you are happy with the example page, commit your changes, and 
      send us a pull request.
