@@ -1,4 +1,4 @@
-<slink rel="stylesheet" href="modest.css">
+<link rel="stylesheet" href="modest.css">
 <style>
 pre, code, pre code {
   max-height: 400px;
