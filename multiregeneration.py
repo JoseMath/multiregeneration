@@ -643,7 +643,7 @@ def outlineRegenerate(depth,G,B,bfe,P):
                                 solText = "\n"
                                 for line in PPrime:
                                     solText += line+"\n"
-                                solName = directoryNameTrackingSolution(depth, G, bfePrime, i3, j3, PPrime, startHash)
+                                solName = directoryNameTrackingSolution(depth, G, bfePrime, i, j, PPrime, startHash)
                                 try:
                                   startFile = open(completedSmoothSolutions+"/depth_%s/%s" %(depth,solName), "w")
                                   startFile.write(solText)

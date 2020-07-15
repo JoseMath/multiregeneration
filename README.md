@@ -138,3 +138,62 @@ Here are several pages which demonstrate features and applications.
  - [An application to deep linear networks](https://josemath.github.io/multiregeneration/example-pages/deep-linear-networks/deep-linear-networks.html)
 
  - [Computing Nash equilibria](https://josemath.github.io/multiregeneration/example-pages/nash-equilibria/nash-equilibria.html)
+
+Contributing an example page
+----------------------------
+
+To create an example page, follow these steps:
+
+  1. [Fork](https://docs.github.com/en/enterprise/2.13/user/articles/fork-a-repo) this repository.
+  2. Create a new folder in the directory `example-pages`.
+  ```bash
+  $ cd example-pages/
+  $ mkdir our-new-example
+  ```
+
+  3. Create a markdown file in the new directory, and copy the 
+     `modest.css` (or whatever stylesheet you want) to this directory.
+  ```
+  $ cp twisted-cubic/modest.css our-new-example
+  $ cd our-new-example
+  $ vim our-new-example.md #Open a new file with your favorite editor.
+  ```
+  The example pages are written in 
+  [Markdown](https://www.markdownguide.org/basic-syntax), and then 
+  converted into html via [Pandoc](https://pandoc.org/). Markdown syntax 
+  is easy to learn, and you can take a look at the ``.md`` files in the 
+  other examples to get an idea of how it works. 
+
+  In the `.md` file you created, add the following text to get started. 
+  The first few lines before `## Our new example` will style this page 
+  to look like the others.
+
+  ```markdown
+  <link rel="stylesheet" href="modest.css">
+  <style>
+  pre, code, pre code {
+    max-height: 400px;
+  }
+  </style>
+
+  ## Our new example
+
+  #### Authors: Your name
+
+  We demonstrate how to solve the following neat polynomial system...
+
+  Here is an example of using latex syntax $$e^{2 \pi i} = 1$$.
+  ```
+  
+  4. Download and install [Pandoc](https://pandoc.org/). Then use pandoc 
+     to convert the `.md` file into a `.html` file.
+    ```bash
+    $ pandoc our-new-example.md -s --mathjax -o our-new-example.html
+    ```
+    To read more about Pandoc, see the demos page (in particular example 17) [here](https://pandoc.org/demos.html).
+  5. Once you see a file named `our-new-example.html`, you can open it 
+     in your web browser to check how the page looks. You can now continue to edit 
+     the `.md` file, and when you are done, convert it to html using 
+     Pandoc.
+  6. Once you are happy with the example page, commit your changes, and 
+     send us a pull request.
