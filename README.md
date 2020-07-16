@@ -28,10 +28,14 @@ Running an example
 ------------------
 
 Here we include an example of how to run our implementation on the 
-examples and tests that are included in this repository.
+examples and tests that are included in this repository. 
 
 After cloning this repository, change into the directory 
-`CyclicRoots`. Included in this directory are the following four 
+`CyclicRoots`. This directory contains the n=5 case of the Cyclic 
+n-Roots problem, which is a common benchmark in computer algebra. (See 
+e.g. [here](https://homepages.math.uic.edu/~adrovic/jmm13a.pdf).)
+
+Included in this directory are the following four 
 files:`inputFile.py`, `bertiniInput_variables`, `bertiniInput_equations`,
 and `bertiniInput_trackingOptions`.
 
@@ -78,13 +82,14 @@ variable_group x2;
 variable_group x3;
 variable_group x4;
 
-Solutions in a 'linearProduct' directory and :
+Solutions are found in run/_completed_smooth_solutions and:
 depth >= 0 satisfy f0 = 0
 depth >= 1 satisfy f1 = 0
 depth >= 2 satisfy f2 = 0
 depth >= 3 satisfy f3 = 0
 depth >= 4 satisfy f4 = 0
-exploring tree in order depthFirst
+
+Exploring tree in order depthFirst
 
 ################### Starting multiregeneration ####################
 
@@ -92,16 +97,16 @@ PROGRESS
 Depth 0: 5
 Depth 1: 15
 Depth 2: 45
-Depth 3: 90
+Depth 3: 70
 Depth 4: 70
 
+------------------------------------------------------------------
+| # of smooth isolated solutions | # of general linear equations |
+| found                          | added with variables in group |
+------------------------------------------------------------------
+                                 | 0  1  2  3  4
 ----------------------------------------------------------------
-| # smooth isolated solutions  | # of general linear equations |
-| found                        | added with variables in group |
-----------------------------------------------------------------
-                               | 0  1  2  3  4
-----------------------------------------------------------------
-  70                             0  0  0  0  0
+  70                               0  0  0  0  0
 Done.
 ```
 The table at the bottom of the output indicates how many smooth isolated 
