@@ -25,15 +25,15 @@ hom_variable_group lamb1, lamb2, lamb3, lamb4, lamb5, lamb6, lamb7, lamb8, lamb9
 ```
 
 The system consists of  28 multilinear polynomials with total degree no more than three. 
-The polynomials are list as $f1\dots f28$ in the [bertiniInput_equations](bertiniInput_equations) file. 
+The polynomials are listed as $f1\dots f28$ in the [bertiniInput_equations](bertiniInput_equations) file. 
 
 Our aim is to  find the solution having an $r$-coordinate near $0.1632$. 
 
 ### Running `multiregeneration.py`
 
-In the python input file, we set the exploration order to be depth-first.
+In the python [input file](inputFile.py), we set the exploration order to be depth-first:
 
-[inputFile.py](inputFile.py)
+
 ```python
 explorationOrder = "depthFirst"
 #explorationOrder = "breadthFirst"
@@ -54,16 +54,22 @@ logTolerance = -10
 With these settings, it took multiregeneration.py only two minutes to find the 
 [real solution](pointId_614277916977_726917631421)
 of interest, which has an $r$-coordinate 
-approximately equal to $0.1632$
+approximately equal to $0.1632$.
 In total, there are 19 real isolated solutions. 
-
-<img src="directorySS.png" class="center">
-
 In contrast, a breadth-first order took two hours and sixteen minutes. 
 In total, we found 105 nonsingular isolated solutions to the system along with an addtional 11 witness points on a solution curve. 
 
+<img src="directorySS.png" class="center">
+
+
 ### Appendix
 
-The Bertini settings were configured like this in our computation:
-
+The settings used by Bertini are configured in the 
 [bertiniInput_trackingOptions](bertiniInput_trackingOptions)
+file.
+
+To reproduce the results, we save the 
+[tracking information](_tracking_information).  
+All of the solutions that we computed can be found in the directory "_completed_solutions/depth_27".
+
+
