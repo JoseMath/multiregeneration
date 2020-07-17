@@ -1,0 +1,4 @@
+FinalTol : 1e-8;
+CONDNUMTHRESHOLD : 1e8 ;
+SecurityLevel :1;
+MaxNorm : 1e8 ; 
