@@ -11,19 +11,25 @@ max-height: 400px;
 In some applications only real solutions of a polynomial system are useful.
 In this example page we illustrate the effectiveness of a depth-first approach in finding these real solutions.
 
-### Defining equations
 
-The polynomial system of interest is in these variable groups
+### Defining equations and variables
 
-[bertiniInput_variables](bertiniInput_variables)
+The polynomial system of interest is in five variable groups
+as seen in the  [bertiniInput_variables](bertiniInput_variables) file: 
+```python
+variable_group x11, x12, x13, x22, x23, x33;
+variable_group y1,y2;
+variable_group r;
+variable_group s11, s12, s13, s22, s23, s33;
+hom_variable_group lamb1, lamb2, lamb3, lamb4, lamb5, lamb6, lamb7, lamb8, lamb9, lamb10, lamb11, lamb12, lamb13, lamb14;
+```
 
-and has these equations.
-
-[bertiniInput_equations](bertiniInput_equations)
+The system consists of  28 multilinear polynomials with total degree no more than three. 
+The polynomials are list as $f1\dots f28$ in the [bertiniInput_equations](bertiniInput_equations) file. 
 
 ### Running `multiregeneration.py`
 
-In the python input file, we use the default exploration order of depth first.
+In the python input file, we set the exploration order to be depth-first.
 
 [inputFile.py](inputFile.py)
 ```python
@@ -43,45 +49,16 @@ degrees = [
 logTolerance = -10
 ```
 
-It took multiregeneration.py only two minutes to find the solution of interest.
-
-[The solution](pointId_614277916977_726917631421)
-
-```python
-0.307835263658861882678e0 0.625417144288487047987e-13
-0.330213449483667262146e0 0.328604466770868186565e-13
-0.243552565083704674386e0 0.251975496674480825554e-13
-0.354218424893456225878e0 0.283140752597305089822e-14
-0.261257698975031913671e0 0.307802286263203495054e-14
-0.192693492141914084033e0 0.300037365829133872985e-14
--0.144883006444664718174e1 -0.192178087679573117441e-13
--0.210380865904422291934e1 -0.448924751539347965945e-14
-0.163262379067193584635e0 0.248416467518025596561e-14
--0.446139568659640603699e-2 0.181282558883440018949e-13
--0.129281595618343879590e1 0.108848883682496899716e-12
-0.175846471257296806253e1 -0.185753376655967139541e-12
-0.135336057025002174563e2 0.115904898526086874710e-12
--0.167150950795414090164e2 -0.126437922631783550287e-12
-0.204400711383278643023e2 0.198475784418672418496e-12
--0.989870410228596672283e-1 -0.614432617740585940158e-15
--0.247467602556997500520e-1 0.269608046012202035024e-14
-0.357993283302330157330e0 -0.317606184407903668898e-14
-0.279735879678558930101e0 0.150481705004854027230e-13
--0.830454240814710361891e0 -0.171128031450223927479e-13
-0.833130568324471310342e0 0.612975382258129641855e-14
--0.723870007463096563200e0 0.167601257308400142243e-13
-0.100000000000000000000e1 0.000000000000000000000e0
-0.293531776180954748147e0 0.712877029813725054952e-12
-0.163891172589560047744e0 0.438770534120190569549e-12
-0.121056986181205185464e0 0.308587550179812222795e-12
-0.138508350721430529037e-1 0.365738645288380889720e-13
-0.104059684731871346226e-1 0.357361294622457990877e-15
-0.781527098576269778155e-2 -0.185803050903158867985e-13
-```
+With these settings, it took multiregeneration.py only two minutes to find the 
+[real solution](pointId_614277916977_726917631421)
+of interest, which has an $r$-coordinate 
+approximately equal to $0.1632$
+In total, there are 19 real isolated solutions. 
 
 <img src="directorySS.png" class="center">
 
 In contrast, a breadth-first order took two hours and sixteen minutes. 
+In total, we found 105 nonsingular isolated solutions to the system along with an addtional 11 witness points for a curve of solutions. 
 
 ### Appendix
 
