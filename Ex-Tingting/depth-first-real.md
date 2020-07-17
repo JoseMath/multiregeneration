@@ -10,7 +10,7 @@ max-height: 400px;
 
 In some applications only real solutions of a polynomial system are useful.
 In this example page we illustrate the effectiveness of a depth-first approach in finding these real solutions.
-
+The system arises from semidefinite programming.
 
 ### Defining equations and variables
 
@@ -26,6 +26,8 @@ hom_variable_group lamb1, lamb2, lamb3, lamb4, lamb5, lamb6, lamb7, lamb8, lamb9
 
 The system consists of  28 multilinear polynomials with total degree no more than three. 
 The polynomials are list as $f1\dots f28$ in the [bertiniInput_equations](bertiniInput_equations) file. 
+
+Our aim is to  find the solution having an $r$-coordinate near $0.1632$. 
 
 ### Running `multiregeneration.py`
 
