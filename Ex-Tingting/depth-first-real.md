@@ -58,7 +58,7 @@ In total, there are 19 real isolated solutions.
 <img src="directorySS.png" class="center">
 
 In contrast, a breadth-first order took two hours and sixteen minutes. 
-In total, we found 105 nonsingular isolated solutions to the system along with an addtional 11 witness points for a curve of solutions. 
+In total, we found 105 nonsingular isolated solutions to the system along with an addtional 11 witness points on a solution curve. 
 
 ### Appendix
 
