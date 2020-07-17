@@ -97,11 +97,10 @@ max-height: 400px;
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a>variable_group r<span class="op">;</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a>variable_group s11, s12, s13, s22, s23, s33<span class="op">;</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a>hom_variable_group lamb1, lamb2, lamb3, lamb4, lamb5, lamb6, lamb7, lamb8, lamb9, lamb10, lamb11, lamb12, lamb13, lamb14<span class="op">;</span></span></code></pre></div>
-<p>The system consists of 28 multilinear polynomials with total degree no more than three. The polynomials are list as <span class="math inline">\(f1\dots f28\)</span> in the <a href="bertiniInput_equations">bertiniInput_equations</a> file.</p>
+<p>The system consists of 28 multilinear polynomials with total degree no more than three. The polynomials are listed as <span class="math inline">\(f1\dots f28\)</span> in the <a href="bertiniInput_equations">bertiniInput_equations</a> file.</p>
 <p>Our aim is to find the solution having an <span class="math inline">\(r\)</span>-coordinate near <span class="math inline">\(0.1632\)</span>.</p>
 <h3 id="running-multiregeneration.py">Running <code>multiregeneration.py</code></h3>
-<p>In the python input file, we set the exploration order to be depth-first.</p>
-<p><a href="inputFile.py">inputFile.py</a></p>
+<p>In the python <a href="inputFile.py">input file</a>, we set the exploration order to be depth-first:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>explorationOrder <span class="op">=</span> <span class="st">&quot;depthFirst&quot;</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a><span class="co">#explorationOrder = &quot;breadthFirst&quot;</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>verbose <span class="op">=</span> <span class="dv">0</span></span>
@@ -116,11 +115,11 @@ max-height: 400px;
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true"></a>    [<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>],[<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>],[<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>]</span>
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true"></a>    ]</span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true"></a>logTolerance <span class="op">=</span> <span class="op">-</span><span class="dv">10</span></span></code></pre></div>
-<p>With these settings, it took multiregeneration.py only two minutes to find the <a href="pointId_614277916977_726917631421">real solution</a> of interest, which has an <span class="math inline">\(r\)</span>-coordinate approximately equal to <span class="math inline">\(0.1632\)</span> In total, there are 19 real isolated solutions.</p>
+<p>With these settings, it took multiregeneration.py only two minutes to find the <a href="pointId_614277916977_726917631421">real solution</a> of interest, which has an <span class="math inline">\(r\)</span>-coordinate approximately equal to <span class="math inline">\(0.1632\)</span>. In total, there are 19 real isolated solutions. In contrast, a breadth-first order took two hours and sixteen minutes. In total, we found 105 nonsingular isolated solutions to the system along with an addtional 11 witness points on a solution curve.</p>
 <p><img src="directorySS.png" class="center"></p>
-<p>In contrast, a breadth-first order took two hours and sixteen minutes. In total, we found 105 nonsingular isolated solutions to the system along with an addtional 11 witness points on a solution curve.</p>
 <h3 id="appendix">Appendix</h3>
-<p>The Bertini settings were configured like this in our computation:</p>
-<p><a href="bertiniInput_trackingOptions">bertiniInput_trackingOptions</a></p>
+<p>The settings used by Bertini are configured in the <a href="bertiniInput_trackingOptions">bertiniInput_trackingOptions</a> file.</p>
+<p>To reproduce the results, we save the <a href="_tracking_information">tracking information</a>.<br />
+All of the solutions that we found can be found in the directory "_completed_solutions/depth_27".</p>
 </body>
 </html>
