@@ -144,6 +144,8 @@ Here are several pages which demonstrate features and applications.
 
  - [Computing Nash equilibria](https://josemath.github.io/multiregeneration/example-pages/nash-equilibria/nash-equilibria.html)
 
+ - [Depth first for real solutions](https://josemath.github.io/multiregeneration/depth-first-real/depth-first-real.html)
+
 Contributing an example page
 ----------------------------
 
