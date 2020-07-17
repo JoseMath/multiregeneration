@@ -89,7 +89,7 @@ max-height: 400px;
 </style>
 <h2 id="depth-first-for-real-solutions">Depth first for real solutions</h2>
 <h4 id="authors-tingting-tang-and-jose-israel-rodriguez">Authors: <a href="https://sites.nd.edu/tingting-tang/">Tingting Tang</a> and <a href="https://www.math.wisc.edu/~jose/">Jose Israel Rodriguez</a></h4>
-<p>In some applications only real solutions of a polynomial system are useful. In this example page we illustrate the effectiveness of a depth-first approach in finding these real solutions.</p>
+<p>In some applications only real solutions of a polynomial system are useful. In this example page we illustrate the effectiveness of a depth-first approach in finding these real solutions. The system arises from semidefinite programming.</p>
 <h3 id="defining-equations-and-variables">Defining equations and variables</h3>
 <p>The polynomial system of interest is in five variable groups as seen in the <a href="bertiniInput_variables">bertiniInput_variables</a> file:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a>variable_group x11, x12, x13, x22, x23, x33<span class="op">;</span></span>
@@ -98,6 +98,7 @@ max-height: 400px;
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a>variable_group s11, s12, s13, s22, s23, s33<span class="op">;</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a>hom_variable_group lamb1, lamb2, lamb3, lamb4, lamb5, lamb6, lamb7, lamb8, lamb9, lamb10, lamb11, lamb12, lamb13, lamb14<span class="op">;</span></span></code></pre></div>
 <p>The system consists of 28 multilinear polynomials with total degree no more than three. The polynomials are list as <span class="math inline">\(f1\dots f28\)</span> in the <a href="bertiniInput_equations">bertiniInput_equations</a> file.</p>
+<p>Our aim is to find the solution having an <span class="math inline">\(r\)</span>-coordinate near <span class="math inline">\(0.1632\)</span>.</p>
 <h3 id="running-multiregeneration.py">Running <code>multiregeneration.py</code></h3>
 <p>In the python input file, we set the exploration order to be depth-first.</p>
 <p><a href="inputFile.py">inputFile.py</a></p>
