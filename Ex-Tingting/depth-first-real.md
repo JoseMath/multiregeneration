@@ -10,7 +10,11 @@ max-height: 400px;
 
 In some applications only real solutions of a polynomial system are useful.
 In this example page we illustrate the effectiveness of a depth-first approach in finding these real solutions.
-The system arises from semidefinite programming.
+The system arises from semidefinite programming to find exceptional parameters. 
+For details see Section 4.3,
+[On semidefinite programming under perturbationswith unknown boundaries](https://www3.nd.edu/~jhauenst/preprints/htSDPperturb.pdf).
+
+
 
 ### Defining equations and variables
 
