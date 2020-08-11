@@ -267,6 +267,7 @@ def main():
     global pruneByDimension
     global pruneByPoint
     global pruneBySelectedGenerators
+    global pruneByDepthSelectedGeneratorsDimension
     global pathToBertini
 
     # We read in the users configuration by evaluating the following
@@ -296,6 +297,7 @@ global loadDegreeLinears
 global pruneByDimension
 global pruneByPoint
 global pruneBySelectedGenerators
+global pruneByDepthSelectedGeneratorsDimension
 global pathToBertini
 """
     # Read in the user's input frim the files 'bertiniInput_*'
@@ -594,6 +596,8 @@ def outlineRegenerate(depth,G,B,bfe,P):
                     prune = pruneByDimension(bfePrime)
                 if not prune:
                     prune = pruneBySelectedGenerators(G)
+                if not prune:
+                    prune = pruneByDepthSelectedGeneratorsDimension(depth,G,bfePrime)
                 if not prune:
                     for j in range(M[i]):
                         if verbose > 1:
