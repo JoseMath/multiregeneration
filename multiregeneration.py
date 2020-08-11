@@ -187,6 +187,19 @@ def pruneBySelectedGenerators(G):
     return False
 
 
+# Prune by depth, generators used, and dimension are combined in this function.
+
+# For a polynomial system in one variable group, we prune at depth 4 when the solution
+# corresponds to a curve or larger dimensional variety.
+# # def pruneByDepthSelectedGeneratorsDimension(depth,G,bfe):
+# #     if depth == 4:
+# #         if bfe[0]>=1:
+# #             return True
+# #     return False
+
+def pruneByDepthSelectedGeneratorsDimension(depth,G,bfe):
+    return False
+
 # We use the 'multiprocessing' python module. There is
 # a pool of processes of size maxProcesses, each of which
 # removes jobs from 'queue', does them, and then adds any resulting new
